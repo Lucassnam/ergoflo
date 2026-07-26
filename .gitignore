@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# stray working files kept on disk but out of history.
+# The two PNGs are byte-identical duplicates of public/demo/sweaty.png and
+# public/demo/dry.png; the html is an unreferenced early draft.
+/sweatyback.png
+/ChatGPT Image *.png
+/truss-preorder_1.html
