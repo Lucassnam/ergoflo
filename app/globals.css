@@ -1,40 +1,52 @@
 @import "tailwindcss";
 
 /* ============================================================
-   ERGO FLOW — pitch-black rim-lit theme
-   Accent runs cyan -> electric blue. No outlined boxes:
-   surfaces are solid or glass, separated by light, not borders.
+   ERGO FLOW — clean white theme
+   Single accent: cyan. No gradients, no blue. Surfaces are white
+   or near-white, separated by hairlines rather than glow.
    ============================================================ */
 
 @theme {
-  --color-ink: #000000;
-  --color-surface: #08090b;
-  --color-surface-2: #0e1014;
-  --color-surface-3: #14171d;
+  --color-ink: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #fafafa;
+  --color-surface-3: #f4f4f5;
 
-  --color-fg: #f2f5f8;
-  --color-fg-dim: #98a2ae;
-  --color-fg-faint: #5c6672;
+  --color-fg: #0a0a0a;
+  --color-fg-dim: #52525b;
+  --color-fg-faint: #71717a;
 
-  --color-cyan: #22d3ee;
-  --color-blue: #3b82f6;
-  --color-glow: #38bdf8;
+  --color-cyan: #0891b2;
+  --color-blue: #0891b2;
+  --color-glow: #22d3ee;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-baskerville), ui-serif, Georgia, serif;
+}
+
+/* Editorial headline face. Baskerville runs wide and sets loose, so it
+   needs tighter tracking and leading than the sans it replaces.
+   NOT named `display` — that collides with Tailwind's display namespace
+   (block/flex/...) and the utility silently never emits. */
+@utility headline {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
   scroll-behavior: smooth;
-  background: #000000;
+  background: #ffffff;
 }
 
 body {
-  background: #000000;
+  background: #ffffff;
   color: var(--color-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -68,73 +80,41 @@ body {
   }
 }
 
-/* ---------------- rim light ----------------
-   A 1px gradient hairline that reads as a machined edge catching
-   light, rather than a drawn border. Top-left is brightest. */
+/* ---------------- rim ----------------
+   A 1px hairline border. On white this is a drawn edge rather than
+   a catch of light, so it's a flat neutral. */
 @utility rim {
   position: relative;
   isolation: isolate;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0.06) 28%,
-      rgba(255, 255, 255, 0) 55%,
-      rgba(34, 211, 238, 0.16) 100%
-    );
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 1;
-  }
+  box-shadow: inset 0 0 0 1px rgba(9, 9, 11, 0.08);
 }
 
-/* Glass surface used for the sticky header and floating cards. */
+/* Frosted surface for the sticky header and floating cards. */
 @utility glass {
-  background: color-mix(in srgb, #0e1014 62%, transparent);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  background: color-mix(in srgb, #ffffff 80%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
 }
 
 @utility accent-text {
-  background: linear-gradient(100deg, #22d3ee, #3b82f6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-cyan);
+  font-weight: 600;
 }
 
 /* The one loud element on the page: the reserve button. */
 @utility glow-btn {
-  background: linear-gradient(100deg, #22d3ee, #3b82f6);
-  color: #00121a;
-  box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.4),
-    0 6px 22px -4px rgba(34, 211, 238, 0.45),
-    0 2px 10px -2px rgba(59, 130, 246, 0.5);
+  background: #0a0a0a;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(9, 9, 11, 0.16);
   transition:
     box-shadow 0.25s ease,
     transform 0.18s ease,
-    filter 0.25s ease;
+    background-color 0.2s ease;
 
   &:hover {
-    filter: brightness(1.08);
-    box-shadow:
-      0 0 0 1px rgba(34, 211, 238, 0.6),
-      0 10px 34px -4px rgba(34, 211, 238, 0.6),
-      0 4px 16px -2px rgba(59, 130, 246, 0.65);
-    transform: translateY(-1px);
+    background: #27272a;
+    box-shadow: 0 8px 20px -6px rgba(9, 9, 11, 0.35);
+    transform: translateY(-2px);
   }
 
   &:active {
@@ -146,31 +126,11 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.14) 18%,
-    rgba(34, 211, 238, 0.22) 50%,
-    rgba(255, 255, 255, 0.14) 82%,
+    rgba(9, 9, 11, 0.08) 18%,
+    rgba(9, 9, 11, 0.14) 50%,
+    rgba(9, 9, 11, 0.08) 82%,
     transparent
   );
 }
 
-/* Ambient pool of light behind hero / CTA sections. */
-@utility bloom {
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        60% 45% at 50% 0%,
-        rgba(34, 211, 238, 0.13),
-        transparent 70%
-      ),
-      radial-gradient(
-        45% 40% at 78% 30%,
-        rgba(59, 130, 246, 0.1),
-        transparent 70%
-      );
-    z-index: 0;
-  }
-}
+/* Bloom utility removed - using clean aesthetic without gradients */
