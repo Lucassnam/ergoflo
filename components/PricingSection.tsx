@@ -24,11 +24,11 @@ const PRICING_TIERS = [
     price: 39.99,
     status: "Available Now",
     statusType: "available",
-    description: "Dual brushless fans for active cooling",
+    description: "A single brushless fan for active cooling",
     popular: true,
     features: [
       "Everything in Passive, plus:",
-      "Dual brushless PWM fans",
+      "One brushless PWM fan",
       "46 hours runtime per charge",
       "USB-C charging",
       "26 dB near-silent operation",
@@ -150,7 +150,7 @@ export default function PricingSection() {
                   >
                     {tier.statusType === "coming-soon"
                       ? "Notify me"
-                      : `Reserve — $${PRICING.deposit} deposit`}
+                      : `Reserve · $${PRICING.deposit} deposit`}
                   </button>
                 </CardHeader>
 

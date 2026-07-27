@@ -20,7 +20,7 @@ const sizes = {
  * instead of dumping the user on a broken Stripe page.
  */
 export default function ReserveButton({
-  children = "Reserve — $15",
+  children = "Reserve · $15",
   size = "md",
   className = "",
 }: Props) {

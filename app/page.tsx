@@ -1,7 +1,6 @@
 import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
 import CountUp from "@/components/CountUp";
 import ExplodedDiagram from "@/components/ExplodedDiagram";
-import FanModes from "@/components/FanModes";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import ReserveButton from "@/components/ReserveButton";
@@ -10,7 +9,6 @@ import {
   BRAND,
   FAQ,
   HERO_STATS,
-  PARTS,
   PREORDER_LIMIT,
   PRICING,
   SHIP_WINDOW,
@@ -72,7 +70,7 @@ export default function Home() {
               Engineered for active cooling.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-center text-[17px] leading-relaxed text-neutral-600">
-              Two brushless fans move air on purpose. Passive panels don&rsquo;t cut it.
+              One brushless fan moves air on purpose. Passive panels don&rsquo;t cut it.
             </p>
           </Reveal>
 
@@ -107,47 +105,6 @@ export default function Home() {
         <ExplodedDiagram />
       </section>
 
-      {/* ============ BUILD ============ */}
-      <section id="build" className="relative scroll-mt-24 px-5 py-24 sm:px-8 bg-white">
-        <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <p className="text-center font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
-              How it&rsquo;s built
-            </p>
-            <h2 className="mx-auto mt-4 max-w-2xl text-center headline text-[clamp(1.9rem,4.2vw,3rem)] text-black">
-              Four parts. Each one earns its place.
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-center text-[17px] leading-relaxed text-neutral-600">
-              No part on {BRAND} is decorative. The frame is the vent. The rails
-              are the suspension.
-            </p>
-          </Reveal>
-
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {PARTS.map((p, i) => (
-              <Reveal key={p.num} delay={i * 0.07}>
-                <div className="h-full rounded-2xl border border-neutral-200 bg-white p-9 transition-colors hover:border-neutral-300">
-                  <p className="font-mono text-[12px] tracking-[0.14em] text-neutral-400">
-                    {p.num}
-                  </p>
-                  <h3 className="headline mt-4 text-[20px] text-black">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2.5 text-[14px] leading-relaxed text-neutral-600">
-                    {p.body}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={0.1}>
-            <div className="mx-auto mt-16 max-w-2xl">
-              <FanModes />
-            </div>
-          </Reveal>
-        </div>
-      </section>
 
       {/* ============ SPECS ============ */}
       <section id="specs" className="relative scroll-mt-24 px-5 py-24 sm:px-8 bg-white">
@@ -236,7 +193,7 @@ export default function Home() {
               </ul>
 
               <ReserveButton size="lg" className="w-full">
-                Reserve — ${PRICING.deposit} deposit
+                Reserve · ${PRICING.deposit} deposit
               </ReserveButton>
             </div>
           </Reveal>
@@ -272,7 +229,7 @@ export default function Home() {
             </p>
             <div className="mt-9 flex justify-center">
               <ReserveButton size="lg">
-                Reserve — ${PRICING.deposit} deposit
+                Reserve · ${PRICING.deposit} deposit
               </ReserveButton>
             </div>
           </Reveal>

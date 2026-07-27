@@ -345,12 +345,12 @@ export default function ScrollMorphHero() {
             Every climate. Every climb.
           </h2>
           <p className="mb-8 max-w-md text-sm leading-relaxed text-neutral-600 md:text-base">
-            Two brushless fans keep air moving against your back — on the
+            A single brushless fan keeps air moving against your back on the
             commute, on the trail, and everywhere in between.
           </p>
           <div className="pointer-events-auto">
             <ReserveButton size="lg">
-              Reserve — ${PRICING.deposit} deposit
+              Reserve · ${PRICING.deposit} deposit
             </ReserveButton>
           </div>
         </motion.div>
