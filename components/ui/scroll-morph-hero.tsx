@@ -9,6 +9,8 @@ export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
 
 interface FlipCardProps {
   src: string;
+  width: number;
+  height: number;
   target: {
     x: number;
     y: number;
@@ -18,10 +20,22 @@ interface FlipCardProps {
   };
 }
 
-const IMG_WIDTH = 60;
-const IMG_HEIGHT = 85;
+/** Card proportion, preserved at every size. */
+const CARD_ASPECT = 85 / 60;
+const CARD_MIN = 42;
+const CARD_MAX = 104;
 
-function FlipCard({ src, target }: FlipCardProps) {
+/**
+ * Card width derived from the viewport. Bound by height as well as width so
+ * a short, wide window doesn't produce cards taller than the arc has room
+ * for.
+ */
+function cardWidthFor(w: number, h: number) {
+  if (!w || !h) return CARD_MIN;
+  return Math.max(CARD_MIN, Math.min(w * 0.05, h * 0.09, CARD_MAX));
+}
+
+function FlipCard({ src, width, height, target }: FlipCardProps) {
   return (
     <motion.div
       animate={{
@@ -34,8 +48,8 @@ function FlipCard({ src, target }: FlipCardProps) {
       transition={{ type: "spring", stiffness: 40, damping: 15 }}
       style={{
         position: "absolute",
-        width: IMG_WIDTH,
-        height: IMG_HEIGHT,
+        width,
+        height,
         transformStyle: "preserve-3d",
         perspective: "1000px",
       }}
@@ -81,8 +95,12 @@ function FlipCard({ src, target }: FlipCardProps) {
 }
 
 const TOTAL_IMAGES = 20;
-/** Virtual wheel distance the intro consumes before the page scrolls again. */
-const MAX_SCROLL = 2000;
+/**
+ * Virtual wheel distance the intro consumes before the page scrolls again.
+ * The arc has fully formed by 600; everything past that is just sweeping it,
+ * so keep the tail short — this is dead scroll where the page looks frozen.
+ */
+const MAX_SCROLL = 1100;
 
 const IMAGES = [
   "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&q=80",
@@ -265,6 +283,10 @@ export default function ScrollMorphHero() {
     };
   }, [smoothMorph, smoothScrollRotate, smoothMouseX]);
 
+  // Cards scale with the viewport rather than sitting at a fixed 60x85.
+  const cardW = cardWidthFor(containerSize.width, containerSize.height);
+  const cardH = cardW * CARD_ASPECT;
+
   const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
   const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
@@ -340,7 +362,8 @@ export default function ScrollMorphHero() {
             if (introPhase === "scatter") {
               target = scatterPositions[i];
             } else if (introPhase === "line") {
-              const lineSpacing = 70;
+              // Gap grows with the card so the line never bunches or gaps.
+              const lineSpacing = cardW + cardW * 0.17;
               const lineTotalWidth = TOTAL_IMAGES * lineSpacing;
               target = {
                 x: i * lineSpacing - lineTotalWidth / 2,
@@ -356,7 +379,12 @@ export default function ScrollMorphHero() {
                 containerSize.height
               );
 
-              const circleRadius = Math.min(minDimension * 0.35, 350);
+              // Floor keeps 20 cards from colliding now that they scale:
+              // circumference must exceed 20 * cardW, so r > ~3.6 * cardW.
+              const circleRadius = Math.max(
+                cardW * 3.8,
+                Math.min(minDimension * 0.35, 420)
+              );
               const circleAngle = (i / TOTAL_IMAGES) * 360;
               const circleRad = (circleAngle * Math.PI) / 180;
               const circlePos = {
@@ -405,7 +433,13 @@ export default function ScrollMorphHero() {
               };
             }
 
-            return <FlipCard key={i} src={src} target={target} />;
+            return <FlipCard
+                key={i}
+                src={src}
+                width={cardW}
+                height={cardH}
+                target={target}
+              />;
           })}
         </div>
       </div>

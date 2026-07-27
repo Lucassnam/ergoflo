@@ -29,6 +29,10 @@ export const PRICING = {
   atShipping: 25,
 } as const;
 
+/** Hard cap on the first production run. Stated as a limit, never as a
+    live "N left" counter — there is no backend to make that number true. */
+export const PREORDER_LIMIT = 100;
+
 /** Hero stats. `value` is numeric so it can be counted up; `suffix` is rendered after. */
 export const HERO_STATS = [
   {
