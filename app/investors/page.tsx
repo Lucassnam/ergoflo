@@ -4,7 +4,7 @@ import { BRAND, CONTACT_EMAIL, PRICING, SHIP_WINDOW } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Investors",
-  description: `The thesis, the status, and the unit economics behind ${BRAND} — an active-cooling panel that retrofits into packs people already own.`,
+  description: `The thesis, the status, and the unit economics behind ${BRAND}: an active-cooling panel that retrofits into packs people already own.`,
 };
 
 /* NOTE FOR THE FOUNDER
@@ -56,7 +56,7 @@ const ECONOMICS = [
 const RISKS = [
   {
     q: "Fit fragmentation",
-    a: "Packs vary. The first run targets 15–45L bags with a suspended back panel — a large but bounded slice. Compatibility guidance ships with the product, and fit data from run one directs the geometry of run two.",
+    a: "Packs vary. The first run targets 15–45L bags with a suspended back panel, a large but bounded slice. Compatibility guidance ships with the product, and fit data from run one directs the geometry of run two.",
   },
   {
     q: "Battery logistics",
@@ -68,7 +68,7 @@ const RISKS = [
   },
   {
     q: "Preorder credibility",
-    a: "Deposits are small, and non-refundable only once production begins. Under-promising the ship window is deliberate — the first run is sized to what preorders actually fund.",
+    a: "Deposits are small, and non-refundable only once production begins. Under-promising the ship window is deliberate. The first run is sized to what preorders actually fund.",
   },
 ];
 
@@ -216,7 +216,7 @@ export default function Investors() {
             <div className="mt-8 flex justify-center">
               <a
                 href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                  `${BRAND} — investor materials`
+                  `${BRAND} investor materials`
                 )}`}
                 className="glow-btn inline-flex items-center justify-center rounded-full px-8 py-4 text-[16px] font-medium tracking-tight"
               >

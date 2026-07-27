@@ -28,20 +28,20 @@ const libreBaskerville = Libre_Baskerville({
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND} — Active cooling backpack panel`,
+    default: `${BRAND}: Active cooling backpack panel`,
     template: `%s · ${BRAND}`,
   },
-  description: `${TAGLINE} Dual brushless fans and a tensioned spacer mesh panel that feels up to 25°F cooler against your back. 46-hour runtime, 26 dB, 168 g.`,
+  description: `${TAGLINE} A single brushless fan and a tensioned spacer mesh panel that feels up to 25°F cooler against your back. 46-hour runtime, 26 dB, 168 g.`,
   applicationName: BRAND,
   openGraph: {
-    title: `${BRAND} — Active cooling backpack panel`,
+    title: `${BRAND}: Active cooling backpack panel`,
     description: TAGLINE,
     siteName: BRAND,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND} — Active cooling backpack panel`,
+    title: `${BRAND}: Active cooling backpack panel`,
     description: TAGLINE,
   },
 };

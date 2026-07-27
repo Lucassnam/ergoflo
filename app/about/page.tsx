@@ -17,7 +17,7 @@ const PRINCIPLES = [
   {
     num: "02",
     title: "Quiet or it doesn’t ship",
-    body: "A fan you can hear is a fan you turn off. 26 dB was a hard gate, not a target — everything else was designed around hitting it.",
+    body: "A fan you can hear is a fan you turn off. 26 dB was a hard gate, not a target. Everything else was designed around hitting it.",
   },
   {
     num: "03",
@@ -50,8 +50,8 @@ export default function About() {
             </h1>
             <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-fg-dim sm:text-[19px]">
               Straps got adjustable. Fabrics got waterproof. Frames got light.
-              The panel pressed against your spine — the one surface that
-              actually decides whether you arrive comfortable — is still a slab
+              The panel pressed against your spine, the one surface that
+              actually decides whether you arrive comfortable, is still a slab
               of foam doing nothing at all.
             </p>
           </Reveal>
@@ -65,7 +65,7 @@ export default function About() {
               <p className="text-[16px] leading-relaxed text-fg-dim">
                 {BRAND} started as a commute problem. A 20-minute walk from a
                 train, a laptop in a pack, and a shirt that had to be changed on
-                arrival — every day, all summer. Every product that claimed to
+                arrival, every day, all summer. Every product that claimed to
                 fix it moved the foam around instead of moving air.
               </p>
               <p className="mt-5 text-[16px] leading-relaxed text-fg-dim">
@@ -152,7 +152,7 @@ export default function About() {
             </h2>
             <div className="mt-8 flex justify-center">
               <ReserveButton size="lg">
-                Reserve — ${PRICING.deposit} deposit
+                Reserve · ${PRICING.deposit} deposit
               </ReserveButton>
             </div>
           </Reveal>

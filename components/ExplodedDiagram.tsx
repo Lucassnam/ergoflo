@@ -114,27 +114,108 @@ function Layer({
   );
 }
 
-/** Fan face drawn in the isometric plane. */
-function Fan({ dx }: { dx: number }) {
+/**
+ * The single centrifugal fan, drawn in the isometric plane. Blades are swept
+ * arcs off the hub rather than straight spokes so it reads as an impeller.
+ */
+function Fan() {
+  const R = 84; // impeller radius along x
+  const ry = (R * RY) / RX; // same radius projected onto the iso plane
+  const BLADES = 11;
+
   return (
-    <g transform={`translate(${dx} ${(-dx * RY) / RX})`}>
-      <ellipse rx="44" ry="19.7" fill="#ffffff" stroke="rgba(9,9,11,0.4)" strokeWidth="1.1" />
-      <ellipse rx="30" ry="13.4" fill="none" stroke="rgba(9,9,11,0.22)" strokeWidth="0.9" />
-      {[0, 45, 90, 135].map((deg) => {
-        const rad = (deg * Math.PI) / 180;
+    <g>
+      {/* housing */}
+      <ellipse rx={R + 9} ry={ry + 4} fill="#ffffff" stroke="rgba(9,9,11,0.38)" strokeWidth="1.2" />
+      <ellipse rx={R} ry={ry} fill="#f4f4f5" stroke="rgba(9,9,11,0.2)" strokeWidth="0.9" />
+
+      {/* swept impeller blades */}
+      {Array.from({ length: BLADES }, (_, i) => {
+        const a = (i / BLADES) * Math.PI * 2;
+        const b = a + 0.62; // sweep
+        const inner = 0.34;
+        const x1 = Math.cos(a) * R * inner;
+        const y1 = Math.sin(a) * ry * inner;
+        const x2 = Math.cos(b) * R * 0.94;
+        const y2 = Math.sin(b) * ry * 0.94;
+        const cx = Math.cos(a + 0.34) * R * 0.7;
+        const cy = Math.sin(a + 0.34) * ry * 0.7;
         return (
-          <line
-            key={deg}
-            x1={-Math.cos(rad) * 40}
-            y1={-Math.sin(rad) * 17.9}
-            x2={Math.cos(rad) * 40}
-            y2={Math.sin(rad) * 17.9}
-            stroke="rgba(9,9,11,0.28)"
-            strokeWidth="0.9"
+          <path
+            key={i}
+            d={`M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`}
+            fill="none"
+            stroke="rgba(9,9,11,0.42)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
           />
         );
       })}
-      <ellipse rx="10" ry="4.5" fill="#3f3f46" stroke="rgba(9,9,11,0.5)" strokeWidth="1" />
+
+      {/* motor hub */}
+      <ellipse rx={R * 0.3} ry={ry * 0.3} fill="#e4e4e7" stroke="rgba(9,9,11,0.35)" strokeWidth="1" />
+      <ellipse rx={R * 0.12} ry={ry * 0.12} fill="#52525b" />
+    </g>
+  );
+}
+
+/** Louvred intake slots on the pack-facing plate. */
+function Intake() {
+  return (
+    <g>
+      {[-2, -1, 0, 1, 2].map((n) => {
+        const off = n * 26;
+        const w = 62 - Math.abs(n) * 7;
+        return (
+          <g key={n} transform={`translate(${off} ${(off * RY) / RX})`}>
+            <path
+              d={`M ${-w} 0 L 0 ${(w * RY) / RX} L ${w} 0 L 0 ${(-w * RY) / RX} Z`}
+              fill="#ffffff"
+              stroke="rgba(9,9,11,0.3)"
+              strokeWidth="1"
+            />
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+/** Branching ducts that spread one fan's output across the panel. */
+function Distributor() {
+  const arm = (sx: number, sy: number) => (
+    <path
+      d={`M 0 0 L ${sx * 96} ${sy * 43}`}
+      stroke="rgba(9,9,11,0.34)"
+      strokeWidth="3"
+      strokeLinecap="round"
+      fill="none"
+    />
+  );
+  return (
+    <g>
+      {arm(1, 1)}
+      {arm(-1, -1)}
+      {arm(1, -1)}
+      {arm(-1, 1)}
+      {[
+        [1, 1],
+        [-1, -1],
+        [1, -1],
+        [-1, 1],
+      ].map(([sx, sy], i) => (
+        <ellipse
+          key={i}
+          cx={sx * 96}
+          cy={sy * 43}
+          rx="13"
+          ry="6"
+          fill="#ffffff"
+          stroke="rgba(9,9,11,0.32)"
+          strokeWidth="1"
+        />
+      ))}
+      <ellipse rx="17" ry="7.6" fill="#e4e4e7" stroke="rgba(9,9,11,0.34)" strokeWidth="1" />
     </g>
   );
 }
@@ -158,61 +239,62 @@ export default function ExplodedDiagram() {
           <h2 className="headline mt-3 text-center text-[clamp(1.7rem,4vw,2.75rem)] text-black">
             Four layers. Nothing decorative.
           </h2>
+          <p className="mx-auto mt-4 max-w-lg text-center text-[15px] leading-relaxed text-neutral-600">
+            Air enters at the pack, gets moved by a single brushless fan, is
+            split four ways by the distributor, and leaves through the mesh
+            against your back.
+          </p>
 
           <svg
             viewBox="0 0 840 640"
             className="mx-auto mt-1 block h-auto w-full max-w-3xl"
             style={{ maxHeight: "58vh" }}
             role="img"
-            aria-label="Exploded diagram of the panel, from the bag outward: pack-side plate, rigid PETG perimeter, dual brushless fan deck, and 3D spacer mesh."
+            aria-label="Exploded diagram of the panel, following the airflow from the bag outward: intake, single brushless fan, air distributor, and 3D spacer mesh against your back."
           >
-            {/* 0 — pack side (bottom) */}
+            {/* 0 — intake, against the pack (air enters here) */}
             <Layer
               progress={scrollYProgress}
               index={0}
               total={4}
               reduced={reduced}
-              label="Pack side"
-              detail="Sits against your bag"
+              label="Intake"
+              detail="Draws air in · pack side"
               fill="#d4d4d8"
               edge="#a1a1aa"
-            />
+            >
+              <Intake />
+            </Layer>
 
-            {/* 1 — PETG perimeter */}
+            {/* 1 — the single centrifugal fan */}
             <Layer
               progress={scrollYProgress}
               index={1}
               total={4}
               reduced={reduced}
-              label="Rigid PETG perimeter"
-              detail="Holds mesh tension"
+              label="Brushless fan"
+              detail="PWM · 26 dB · 46 hr"
               fill="#e4e4e7"
               edge="#b8b8c0"
             >
-              <path
-                d={`M 0 ${-RY * 0.58} L ${RX * 0.58} 0 L 0 ${RY * 0.58} L ${-RX * 0.58} 0 Z`}
-                fill="#cfcfd6"
-                stroke="rgba(9,9,11,0.25)"
-                strokeWidth="1"
-              />
+              <Fan />
             </Layer>
 
-            {/* 2 — fan deck */}
+            {/* 2 — spreads one fan's output across the whole panel */}
             <Layer
               progress={scrollYProgress}
               index={2}
               total={4}
               reduced={reduced}
-              label="Dual brushless fans"
-              detail="PWM · 26 dB"
+              label="Air distributor"
+              detail="Splits flow to four corners"
               fill="#f0f0f2"
               edge="#c9c9d1"
             >
-              <Fan dx={-58} />
-              <Fan dx={58} />
+              <Distributor />
             </Layer>
 
-            {/* 3 — spacer mesh (touches you) */}
+            {/* 3 — spacer mesh (touches you, air exits here) */}
             <Layer
               progress={scrollYProgress}
               index={3}
