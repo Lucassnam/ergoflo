@@ -62,7 +62,13 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${libreBaskerville.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-ink text-fg">
+      {/* Grammarly and similar extensions inject attributes onto <body>
+          before React hydrates (data-gr-ext-installed, ...), which React
+          reports as a mismatch. Scoped to this element only. */}
+      <body
+        suppressHydrationWarning
+        className="flex min-h-full flex-col bg-ink text-fg"
+      >
         <a
           href="#main"
           className="glow-btn sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:px-5 focus:py-2.5 focus:text-sm"

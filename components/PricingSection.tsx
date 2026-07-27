@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { PRICING } from "@/lib/site"
+import { PREORDER_LIMIT, PRICING } from "@/lib/site"
 import { motion } from "framer-motion"
 import Reveal from "./Reveal"
 
@@ -130,6 +130,11 @@ export default function PricingSection() {
                     >
                       {tier.status}
                     </span>
+                    {tier.statusType === "available" && (
+                      <p className="mt-1 font-mono text-[11px] tracking-[0.1em] text-neutral-400 uppercase">
+                        First run · {PREORDER_LIMIT} units
+                      </p>
+                    )}
                   </div>
 
                   {/* CTA Button */}

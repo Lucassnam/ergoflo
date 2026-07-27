@@ -11,6 +11,7 @@ import {
   FAQ,
   HERO_STATS,
   PARTS,
+  PREORDER_LIMIT,
   PRICING,
   SHIP_WINDOW,
   SPECS,
@@ -204,7 +205,7 @@ export default function Home() {
           <Reveal delay={0.1}>
             <div className="relative mt-12 rounded-3xl border border-neutral-200 bg-white p-8 sm:p-10 shadow-sm">
               <span className="absolute -top-3 left-8 rounded-full bg-black px-3.5 py-1 font-mono text-[10px] font-bold tracking-[0.12em] text-white uppercase">
-                Early bird
+                First run · {PREORDER_LIMIT} units
               </span>
 
               <p className="font-mono text-[11px] tracking-[0.16em] text-neutral-500 uppercase">
@@ -223,6 +224,7 @@ export default function Home() {
               <ul className="mt-8 mb-8 list-none space-y-0 p-0">
                 {[
                   SHIP_WINDOW,
+                  `First production run is capped at ${PREORDER_LIMIT} units`,
                   "Production starts as soon as preorders come in",
                   "Refunded only if production doesn’t move forward",
                 ].map((line) => (

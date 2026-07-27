@@ -29,7 +29,12 @@ export default function Reveal({ children, delay = 0, className, as = "div" }: P
       className={className}
       initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2, margin: "0px 0px -80px 0px" }}
+      /* `amount: "some"` fires as soon as any part of the block crosses the
+         viewport. The old 0.2 threshold plus a -80px bottom margin meant a
+         tall block sitting just under a full-height hero could fail to
+         trigger and stay at opacity 0 — invisible content, not just
+         un-animated content. Failing visible is the safer default. */
+      viewport={{ once: true, amount: "some" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
     >
       {children}
