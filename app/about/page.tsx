@@ -40,10 +40,10 @@ export default function About() {
       <section className="bloom relative overflow-hidden px-5 pt-20 pb-16 sm:px-8 sm:pt-28">
         <div className="relative z-10 mx-auto max-w-3xl">
           <Reveal>
-            <p className="font-mono text-[11px] tracking-[0.2em] text-cyan uppercase">
+            <p className="font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
               About
             </p>
-            <h1 className="mt-4 text-[clamp(2.2rem,6vw,4rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
+            <h1 className="mt-4 headline text-[clamp(2.2rem,6vw,4rem)]">
               The back panel is the{" "}
               <span className="accent-text">last unsolved part</span> of a
               backpack.
@@ -82,7 +82,7 @@ export default function About() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <h2 className="text-center text-[clamp(1.8rem,4vw,2.6rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="text-center headline text-[clamp(1.8rem,4vw,2.6rem)]">
               What we hold to
             </h2>
           </Reveal>
@@ -90,10 +90,10 @@ export default function About() {
             {PRINCIPLES.map((p, i) => (
               <Reveal key={p.num} delay={i * 0.08}>
                 <div className="rim h-full rounded-2xl bg-surface-2 p-7">
-                  <p className="font-mono text-[12px] tracking-[0.14em] text-cyan">
+                  <p className="font-mono text-[12px] tracking-[0.14em] text-neutral-400">
                     {p.num}
                   </p>
-                  <h3 className="mt-4 text-[17px] font-semibold tracking-tight">
+                  <h3 className="mt-4 headline text-[17px]">
                     {p.title}
                   </h3>
                   <p className="mt-2.5 text-[14px] leading-relaxed text-fg-dim">
@@ -109,7 +109,7 @@ export default function About() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-2xl">
           <Reveal>
-            <h2 className="mb-10 text-center text-[clamp(1.8rem,4vw,2.6rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="mb-10 text-center headline text-[clamp(1.8rem,4vw,2.6rem)]">
               How it got here
             </h2>
           </Reveal>
@@ -120,18 +120,17 @@ export default function About() {
                   <div className="flex flex-col items-center pt-1.5">
                     <span
                       aria-hidden="true"
-                      className="h-2 w-2 shrink-0 rounded-full bg-cyan"
-                      style={{ boxShadow: "0 0 10px 2px rgba(34,211,238,0.7)" }}
+                      className="h-2 w-2 shrink-0 rounded-full bg-neutral-900"
                     />
                     {i < TIMELINE.length - 1 && (
                       <span
                         aria-hidden="true"
-                        className="mt-2 w-px flex-1 bg-gradient-to-b from-cyan/40 to-transparent"
+                        className="mt-2 w-px flex-1 bg-neutral-200"
                       />
                     )}
                   </div>
                   <div className="pb-2">
-                    <h3 className="text-[16px] font-semibold tracking-tight">
+                    <h3 className="headline text-[16px]">
                       {title}
                     </h3>
                     <p className="mt-1.5 text-[14.5px] leading-relaxed text-fg-dim">
@@ -148,7 +147,7 @@ export default function About() {
       <section className="bloom relative overflow-hidden px-5 py-24 text-center sm:px-8">
         <div className="relative z-10">
           <Reveal>
-            <h2 className="text-[clamp(1.9rem,4.6vw,3rem)] font-semibold tracking-[-0.03em]">
+            <h2 className="headline text-[clamp(1.9rem,4.6vw,3rem)]">
               Be in the first run.
             </h2>
             <div className="mt-8 flex justify-center">

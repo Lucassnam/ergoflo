@@ -29,11 +29,13 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled || menuOpen ? "glass" : "bg-transparent"
+        scrolled || menuOpen
+          ? "bg-white/80 backdrop-blur-xl backdrop-saturate-150"
+          : "bg-transparent"
       }`}
     >
       <div
-        className="hairline absolute inset-x-0 bottom-0 h-px transition-opacity duration-300"
+        className="absolute inset-x-0 bottom-0 h-px bg-neutral-200 transition-opacity duration-300"
         style={{ opacity: scrolled || menuOpen ? 1 : 0 }}
       />
 
@@ -41,16 +43,8 @@ export default function Header() {
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          className="flex items-center gap-2.5 text-[17px] font-semibold tracking-tight"
+          className="headline text-[19px] tracking-tight text-black"
         >
-          <span
-            aria-hidden="true"
-            className="inline-block h-2.5 w-2.5 rounded-full"
-            style={{
-              background: "linear-gradient(135deg,#22d3ee,#3b82f6)",
-              boxShadow: "0 0 12px 2px rgba(34,211,238,0.6)",
-            }}
-          />
           {BRAND}
         </Link>
 
@@ -59,7 +53,7 @@ export default function Header() {
             <Link
               key={n.href}
               href={n.href}
-              className="text-[13.5px] text-fg-dim transition-colors hover:text-fg"
+              className="text-[13.5px] text-neutral-600 transition-colors hover:text-black"
             >
               {n.label}
             </Link>
@@ -73,7 +67,7 @@ export default function Header() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="rim flex h-9 w-9 items-center justify-center rounded-full bg-surface-2/70 lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-black lg:hidden"
           >
             <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true">
               <path
@@ -88,14 +82,14 @@ export default function Header() {
       </nav>
 
       {menuOpen && (
-        <div className="glass lg:hidden">
+        <div className="bg-white/95 backdrop-blur-xl lg:hidden">
           <div className="flex flex-col gap-1 px-5 pt-2 pb-6 sm:px-8">
             {NAV.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
                 onClick={() => setMenuOpen(false)}
-                className="py-3 text-[15px] text-fg-dim transition-colors hover:text-fg"
+                className="py-3 text-[15px] text-neutral-600 transition-colors hover:text-black"
               >
                 {n.label}
               </Link>

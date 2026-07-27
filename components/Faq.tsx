@@ -22,12 +22,12 @@ export default function Faq() {
                 aria-expanded={isOpen}
                 aria-controls={`faq-panel-${i}`}
                 id={`faq-trigger-${i}`}
-                className="flex w-full items-center justify-between gap-6 py-6 text-left text-[17px] font-medium text-fg transition-colors hover:text-cyan"
+                className="flex w-full items-center justify-between gap-6 py-6 text-left text-[17px] font-medium text-fg transition-colors hover:text-neutral-500"
               >
                 <span>{item.q}</span>
                 <span
                   aria-hidden="true"
-                  className="shrink-0 text-2xl leading-none text-cyan transition-transform duration-200"
+                  className="shrink-0 text-2xl leading-none text-neutral-400 transition-transform duration-200"
                   style={{ transform: isOpen ? "rotate(45deg)" : "none" }}
                 >
                   +

@@ -30,7 +30,7 @@ function Slab({
       <path
         d={`M 0 ${-RY} L ${RX} 0 L 0 ${RY} L ${-RX} 0 Z`}
         fill={fill}
-        stroke="rgba(255,255,255,0.15)"
+        stroke="rgba(9,9,11,0.22)"
         strokeWidth="1.1"
       />
       {children}
@@ -85,14 +85,14 @@ function Layer({
             y1={2}
             x2={RX + 54}
             y2={2}
-            stroke="rgba(34,211,238,0.5)"
+            stroke="rgba(9,9,11,0.3)"
             strokeWidth="1"
           />
-          <circle cx={RX + 54} cy={2} r="2.4" fill="#22d3ee" />
+          <circle cx={RX + 54} cy={2} r="2.4" fill="#0a0a0a" />
           <text
             x={RX + 64}
             y={-1}
-            fill="#f2f5f8"
+            fill="#0a0a0a"
             fontSize="13.5"
             fontWeight="600"
             fontFamily="var(--font-geist-sans), sans-serif"
@@ -102,7 +102,7 @@ function Layer({
           <text
             x={RX + 64}
             y={15}
-            fill="#98a2ae"
+            fill="#71717a"
             fontSize="11.5"
             fontFamily="var(--font-geist-mono), monospace"
           >
@@ -118,8 +118,8 @@ function Layer({
 function Fan({ dx }: { dx: number }) {
   return (
     <g transform={`translate(${dx} ${(-dx * RY) / RX})`}>
-      <ellipse rx="44" ry="19.7" fill="#08090b" stroke="rgba(34,211,238,0.45)" strokeWidth="1.1" />
-      <ellipse rx="30" ry="13.4" fill="none" stroke="rgba(148,163,175,0.25)" strokeWidth="0.9" />
+      <ellipse rx="44" ry="19.7" fill="#ffffff" stroke="rgba(9,9,11,0.4)" strokeWidth="1.1" />
+      <ellipse rx="30" ry="13.4" fill="none" stroke="rgba(9,9,11,0.22)" strokeWidth="0.9" />
       {[0, 45, 90, 135].map((deg) => {
         const rad = (deg * Math.PI) / 180;
         return (
@@ -129,12 +129,12 @@ function Fan({ dx }: { dx: number }) {
             y1={-Math.sin(rad) * 17.9}
             x2={Math.cos(rad) * 40}
             y2={Math.sin(rad) * 17.9}
-            stroke="rgba(148,163,175,0.3)"
+            stroke="rgba(9,9,11,0.28)"
             strokeWidth="0.9"
           />
         );
       })}
-      <ellipse rx="10" ry="4.5" fill="#14171d" stroke="rgba(34,211,238,0.55)" strokeWidth="1" />
+      <ellipse rx="10" ry="4.5" fill="#3f3f46" stroke="rgba(9,9,11,0.5)" strokeWidth="1" />
     </g>
   );
 }
@@ -152,10 +152,10 @@ export default function ExplodedDiagram() {
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         {/* pt clears the sticky header, which would otherwise cover the eyebrow */}
         <div className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8">
-          <p className="text-center font-mono text-[11px] tracking-[0.2em] text-cyan uppercase">
+          <p className="text-center font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
             Exploded view
           </p>
-          <h2 className="mt-3 text-center text-[clamp(1.7rem,4vw,2.75rem)] leading-[1.1] font-semibold tracking-[-0.02em]">
+          <h2 className="headline mt-3 text-center text-[clamp(1.7rem,4vw,2.75rem)] text-black">
             Four layers. Nothing decorative.
           </h2>
 
@@ -174,8 +174,8 @@ export default function ExplodedDiagram() {
               reduced={reduced}
               label="Pack side"
               detail="Sits against your bag"
-              fill="#0e1014"
-              edge="#08090b"
+              fill="#d4d4d8"
+              edge="#a1a1aa"
             />
 
             {/* 1 — PETG perimeter */}
@@ -186,13 +186,13 @@ export default function ExplodedDiagram() {
               reduced={reduced}
               label="Rigid PETG perimeter"
               detail="Holds mesh tension"
-              fill="#14171d"
-              edge="#0b0d11"
+              fill="#e4e4e7"
+              edge="#b8b8c0"
             >
               <path
                 d={`M 0 ${-RY * 0.58} L ${RX * 0.58} 0 L 0 ${RY * 0.58} L ${-RX * 0.58} 0 Z`}
-                fill="#08090b"
-                stroke="rgba(34,211,238,0.26)"
+                fill="#cfcfd6"
+                stroke="rgba(9,9,11,0.25)"
                 strokeWidth="1"
               />
             </Layer>
@@ -205,8 +205,8 @@ export default function ExplodedDiagram() {
               reduced={reduced}
               label="Dual brushless fans"
               detail="PWM · 26 dB"
-              fill="#12151b"
-              edge="#0a0c10"
+              fill="#f0f0f2"
+              edge="#c9c9d1"
             >
               <Fan dx={-58} />
               <Fan dx={58} />
@@ -220,8 +220,8 @@ export default function ExplodedDiagram() {
               reduced={reduced}
               label="3D spacer mesh"
               detail="5 mm loft · touches you"
-              fill="#171b22"
-              edge="#0d0f13"
+              fill="#fcfcfd"
+              edge="#dcdce2"
             >
               {Array.from({ length: 9 }, (_, r) =>
                 Array.from({ length: 9 }, (_, c) => {
@@ -234,7 +234,7 @@ export default function ExplodedDiagram() {
                       cx={(u + v) * RX * 0.46}
                       cy={(v - u) * RY * 0.46}
                       r="2"
-                      fill="rgba(34,211,238,0.32)"
+                      fill="rgba(9,9,11,0.3)"
                     />
                   );
                 })

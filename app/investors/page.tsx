@@ -78,10 +78,10 @@ export default function Investors() {
       <section className="bloom relative overflow-hidden px-5 pt-20 pb-16 sm:px-8 sm:pt-28">
         <div className="relative z-10 mx-auto max-w-3xl">
           <Reveal>
-            <p className="font-mono text-[11px] tracking-[0.2em] text-cyan uppercase">
+            <p className="font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
               Investors
             </p>
-            <h1 className="mt-4 text-[clamp(2.2rem,6vw,4rem)] leading-[1.05] font-semibold tracking-[-0.03em]">
+            <h1 className="mt-4 headline text-[clamp(2.2rem,6vw,4rem)]">
               A hardware category that{" "}
               <span className="accent-text">never got its upgrade.</span>
             </h1>
@@ -98,7 +98,7 @@ export default function Investors() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-3xl">
           <Reveal>
-            <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="headline text-[clamp(1.7rem,3.6vw,2.4rem)]">
               Thesis
             </h2>
           </Reveal>
@@ -106,7 +106,7 @@ export default function Investors() {
             {THESIS.map((t, i) => (
               <Reveal key={t.k} delay={i * 0.07}>
                 <div className="rim rounded-2xl bg-surface-2 p-7">
-                  <h3 className="text-[16px] font-semibold tracking-tight">
+                  <h3 className="headline text-[16px]">
                     {t.k}
                   </h3>
                   <p className="mt-2.5 text-[14.5px] leading-relaxed text-fg-dim">
@@ -122,7 +122,7 @@ export default function Investors() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-3xl">
           <Reveal>
-            <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="headline text-[clamp(1.7rem,3.6vw,2.4rem)]">
               Where it stands
             </h2>
           </Reveal>
@@ -148,7 +148,7 @@ export default function Investors() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <h2 className="text-center text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="text-center headline text-[clamp(1.7rem,3.6vw,2.4rem)]">
               Unit model
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-center text-[14.5px] text-fg-dim">
@@ -179,7 +179,7 @@ export default function Investors() {
       <section className="px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-3xl">
           <Reveal>
-            <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+            <h2 className="headline text-[clamp(1.7rem,3.6vw,2.4rem)]">
               What could go wrong
             </h2>
             <p className="mt-4 text-[14.5px] text-fg-dim">
@@ -190,7 +190,7 @@ export default function Investors() {
             {RISKS.map((r, i) => (
               <Reveal key={r.q} delay={i * 0.06}>
                 <div className="rim h-full rounded-2xl bg-surface-2 p-7">
-                  <h3 className="text-[15.5px] font-semibold tracking-tight">
+                  <h3 className="headline text-[15.5px]">
                     {r.q}
                   </h3>
                   <p className="mt-2.5 text-[14px] leading-relaxed text-fg-dim">
@@ -206,7 +206,7 @@ export default function Investors() {
       <section className="bloom relative overflow-hidden px-5 py-24 text-center sm:px-8">
         <div className="relative z-10 mx-auto max-w-xl">
           <Reveal>
-            <h2 className="text-[clamp(1.9rem,4.6vw,3rem)] font-semibold tracking-[-0.03em]">
+            <h2 className="headline text-[clamp(1.9rem,4.6vw,3rem)]">
               Want the deck?
             </h2>
             <p className="mx-auto mt-5 text-[16px] leading-relaxed text-fg-dim">
