@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { BRAND, TAGLINE } from "@/lib/site";
+import { BRAND, SITE_URL, TAGLINE } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +27,17 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
+  /* Without metadataBase, OG and Twitter image URLs resolve relative and
+     break the moment anyone shares a link. Swap SITE_URL in lib/site.ts for
+     the real domain before launch. */
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${BRAND}: Active cooling backpack panel`,
     template: `%s · ${BRAND}`,
   },
-  description: `${TAGLINE} A single brushless fan and a tensioned spacer mesh panel that feels up to 25°F cooler against your back. 46-hour runtime, 26 dB, 168 g.`,
+  /* Targets, flagged as targets — this string is quoted verbatim in search
+     results, which makes it exactly the wrong place for an unqualified claim. */
+  description: `${TAGLINE} A single brushless fan and a tensioned spacer mesh panel, in development. Design targets: 9–12 hour runtime, 26 dB, 168 g. Not yet built, tested, or for sale.`,
   applicationName: BRAND,
   openGraph: {
     title: `${BRAND}: Active cooling backpack panel`,
