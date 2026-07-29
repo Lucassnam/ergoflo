@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
-import ReserveButton from "@/components/ReserveButton";
-import { PRICING } from "@/lib/site";
+import { motion, useTransform, useSpring, useMotionValue } from "motion/react";
+import WaitlistButton from "@/components/WaitlistButton";
 
 export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
 
@@ -114,12 +113,14 @@ const IMAGES = [
   "https://images.unsplash.com/photo-1500485035595-cbe6f645feb1?w=300&q=80",
   "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&q=80",
   "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300&q=80",
-  "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=300&q=80",
+  // was a pug portrait — swapped for a campus, which is who actually carries this
+  "https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=300&q=80",
   "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&q=80",
   "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=300&q=80",
   "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300&q=80",
   "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=300&q=80",
-  "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=300&q=80",
+  // was an interior lamp — swapped for a city street, the daily commute
+  "https://images.unsplash.com/photo-1663340549279-ad59ab0751fd?w=300&q=80",
   "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=300&q=80",
   "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=300&q=80",
   "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=300&q=80",
@@ -334,6 +335,33 @@ export default function ScrollMorphHero() {
           >
             Scroll to explore
           </motion.p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={
+              introPhase === "circle" && morphValue < 0.5
+                ? { opacity: 0.5 - morphValue }
+                : { opacity: 0 }
+            }
+            transition={{ duration: 1, delay: 0.2 }}
+            className="mt-2.5 flex justify-center"
+          >
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              aria-hidden="true"
+              className="animate-bounce text-neutral-500"
+            >
+              <path
+                d="M1 1L7 7L13 1"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.div>
         </div>
 
         {/* Arc content — fades in once the rainbow has formed. */}
@@ -349,9 +377,9 @@ export default function ScrollMorphHero() {
             commute, on the trail, and everywhere in between.
           </p>
           <div className="pointer-events-auto">
-            <ReserveButton size="lg">
-              Reserve · ${PRICING.deposit} deposit
-            </ReserveButton>
+            <WaitlistButton size="lg">
+              Join the waitlist
+            </WaitlistButton>
           </div>
         </motion.div>
 

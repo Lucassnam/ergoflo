@@ -1,6 +1,14 @@
 import Link from "next/link";
 import FlowFieldBackground from "@/components/ui/flow-field-background";
-import { BRAND, CONTACT_EMAIL, NAV } from "@/lib/site";
+import {
+  BRAND,
+  CONTACT_EMAIL,
+  LEGAL_ENTITY,
+  LEGAL_NAV,
+  NAV,
+  NOT_AN_OFFER_NOTICE,
+  TARGETS_DISCLAIMER,
+} from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -30,7 +38,7 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-x-7 gap-y-2">
-            {NAV.map((n) => (
+            {[...NAV, ...LEGAL_NAV].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
@@ -48,11 +56,17 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* This block previously claimed figures came "from bench testing"
+            (nothing was ever bench-tested) and stated a refund rule that
+            contradicted two other pages. Both sentences now come from
+            lib/site.ts so the footer, the FAQ and /terms cannot drift apart
+            again. The "not an offer" sentence is legally load-bearing —
+            see the commerce note in lib/site.ts before removing it. */}
         <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
-          <p className="text-[11.5px] text-neutral-400">
-            © {new Date().getFullYear()} {BRAND}. Preorder figures are targets
-            from bench testing, not guarantees. Deposits are refunded only if
-            production does not move forward.
+          <p className="max-w-3xl text-[11.5px] leading-relaxed text-neutral-400">
+            © {new Date().getFullYear()} {LEGAL_ENTITY}. {BRAND} is a design in
+            development — no finished unit exists, and nothing has been tested
+            or certified. {TARGETS_DISCLAIMER} {NOT_AN_OFFER_NOTICE}
           </p>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BRAND, NAV } from "@/lib/site";
-import ReserveButton from "./ReserveButton";
+import WaitlistButton from "./WaitlistButton";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,7 +61,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ReserveButton size="sm" className="hidden sm:inline-flex" />
+          <WaitlistButton size="sm" className="hidden sm:inline-flex" />
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -94,7 +94,7 @@ export default function Header() {
                 {n.label}
               </Link>
             ))}
-            <ReserveButton size="md" className="mt-3 w-full sm:hidden" />
+            <WaitlistButton size="md" className="mt-3 w-full sm:hidden" />
           </div>
         </div>
       )}
