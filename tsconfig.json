@@ -30,5 +30,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  /* `functions/` holds Cloudflare Pages Functions. They run on the Workers
+     runtime, not Next's, and Cloudflare bundles them separately — including
+     them here makes Next's typecheck complain about a runtime it doesn't
+     know. Excluded so `next build` stays clean. */
+  "exclude": ["node_modules", "functions"]
 }

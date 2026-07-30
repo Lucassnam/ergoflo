@@ -1,0 +1,56 @@
+# ============================================================
+# Security headers — Cloudflare Pages.
+#
+# THIS FILE IS THE ONLY PLACE SECURITY HEADERS EXIST. The site is a
+# static export, and Next's `headers()` config is silently ignored in
+# that mode — a build with a headers() block succeeds and ships with
+# no CSP at all. Everything below was moved here verbatim from
+# next.config.ts on 2026-07-30. Change headers HERE.
+#
+# Verify after every deploy — it is the only way to know this file was
+# picked up:
+#   curl -sI https://ergoflo.tech | grep -iE 'content-security|strict-transport'
+#
+# Anything in public/ is copied to out/ by the export, and Cloudflare
+# Pages reads _headers from the root of the deployed directory.
+# ============================================================
+
+/*
+  # `img-src` MUST keep images.unsplash.com — the scroll-morph hero loads
+  # 20 remote photos with raw <img> tags. Drop it and the hero renders
+  # empty, with only a console error to show for it.
+  #
+  # `script-src` allows 'unsafe-inline' because Next injects inline
+  # bootstrap scripts. The strict alternative is a per-request nonce,
+  # which a static export cannot produce — there is no request-time
+  # server to generate one. This is a documented trade-off.
+  #
+  # `connect-src 'self'` covers the same-origin POST to /api/notify.
+  # That endpoint is a Cloudflare Pages Function on THIS origin, and it
+  # is the only thing that talks to Supabase — the browser never does.
+  # So no Supabase origin is needed here. If a client-side Supabase call
+  # is ever added, this line must change AND /privacy must change: that
+  # page states there is no third-party tracking, and it has to stay true.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com; font-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+  # Cloudflare terminates TLS and redirects :80 -> :443, so asserting HSTS
+  # is safe. `preload` is a one-way door: once the domain is submitted to
+  # the browser preload list, removal takes months and ships with the
+  # browser. The header is harmless until you actually submit it — don't,
+  # until every ergoflo.tech subdomain is permanently HTTPS-only.
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  # frame-ancestors 'none' above is the modern clickjacking defence; this
+  # is the legacy equivalent for older browsers.
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+# The notify endpoint must never be cached — a cached 200 would make both
+# the rate limiter and the honeypot meaningless.
+/api/*
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex
+
+# Hashed filenames, so these are safe to cache forever.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
