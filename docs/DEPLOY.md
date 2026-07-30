@@ -1,236 +1,161 @@
-# Deploying ErgoFlo — EC2 + Caddy + Docker
+# Deploying ErgoFlo — Cloudflare Pages
 
-**Domain:** `ergoflo.tech` · **Host:** AWS EC2 · **TLS:** automatic, Let's Encrypt via Caddy
+**Domain:** `ergoflo.tech` · **Host:** Cloudflare Pages · **TLS:** automatic
 
-The site runs as two containers behind Caddy. Caddy owns ports 80 and 443,
-terminates TLS, and proxies to the Next.js container on an internal network.
-The app port is never published to the host.
+The site is a **static export**. `next build` writes plain HTML/CSS/JS to `out/`,
+Cloudflare serves it from their CDN, and the one dynamic endpoint runs as a Pages
+Function on the Workers runtime.
 
 ```
-internet ──▶ :443 ┌──────────────┐        ┌──────────────┐
-             :80  │    caddy     │──────▶ │     web      │
-                  │ auto Let's   │  :3000 │ next.js      │
-                  │ Encrypt TLS  │        │ standalone   │
-                  └──────────────┘        └──────────────┘
-                    caddy_data              .env.production
-                    (certs — persist!)      (supabase keys)
+                    ┌─────────────────────────────┐
+ visitor ──▶ :443 ──│   Cloudflare Pages (CDN)    │
+                    │  out/  static HTML + assets │
+                    │  functions/api/notify.ts    │──▶ Supabase (PostgREST)
+                    └─────────────────────────────┘
 ```
 
-**Builds happen on the server.** `./deploy.sh` SSHes in, pulls the branch from
-GitHub, and rebuilds. Nothing is uploaded from your Mac. Whatever is **pushed**
-is what ships — uncommitted or unpushed local work is not deployed (the script
-warns you about both).
+**There is no server to run out of memory.** That is the point. The previous
+EC2/Docker/Caddy setup is retired in `deploy/aws-ec2-retired/` — see its README and
+`docs/plans/2026-07-30-memory-audit-and-production-hardening.md` for why.
 
 ---
 
 ## Files
 
-| File | Lives | Committed | Purpose |
-|---|---|---|---|
-| `Dockerfile` | repo | yes | 3-stage build → minimal runtime image |
-| `docker-compose.yml` | repo | yes | the two services, volumes, network |
-| `Caddyfile` | repo | yes | domain, TLS, reverse proxy |
-| `deploy.sh` | repo | yes | everything you run |
-| `deploy.env` | your Mac | **no** | server address + SSH key |
-| `.env.production` | the server | **no** | Supabase keys + ACME email |
+| File | Purpose |
+|---|---|
+| `next.config.ts` | `output: "export"`, `images.unoptimized` |
+| `public/_headers` | **the only place security headers exist** |
+| `functions/api/notify.ts` | the waitlist endpoint (Workers runtime) |
+| `.env.local.example` | local dev template |
+| `out/` | build output — this is what gets deployed. Not committed. |
 
 ---
 
 ## First-time setup
 
-### 1. DNS
+### 1. Connect the repo
 
-Two A records at your registrar, both pointing at the instance's public IP:
+Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → connect to Git.
 
-| Type | Name | Value |
-|---|---|---|
-| A | `@` (ergoflo.tech) | `<elastic-ip>` |
-| A | `www` | `<elastic-ip>` |
+| Setting | Value |
+|---|---|
+| Framework preset | Next.js (Static HTML Export) |
+| Build command | `npx next build` |
+| Build output directory | `out` |
+| Production branch | whichever you ship from |
 
-**Use an Elastic IP.** A default EC2 public IP changes when the instance stops
-and starts, and your DNS silently goes stale — the site is down and nothing in
-the logs says why.
+Use `npx next build`, **not** `npm run build` — see the Node caveat at the bottom.
 
-If you decide not to run `www`, delete the `www.ergoflo.tech` block from the
-`Caddyfile`. Leaving it in with no A record makes Caddy retry a certificate
-order it can never complete, forever.
+### 2. Environment variables
 
-Verify before going further — Let's Encrypt resolves the name itself, so it has
-to be publicly correct, not just correct on your laptop:
+Pages → Settings → **Environment variables**. Set for **both** Production and Preview,
+or previews will 503 on every signup:
 
-```bash
-dig +short ergoflo.tech
-dig +short www.ergoflo.tech
-```
+| Name | Value |
+|---|---|
+| `SUPABASE_URL` | from Supabase → Settings → API |
+| `SUPABASE_SECRET_KEY` | the **service-role** key |
+| `NODE_VERSION` | `22` |
 
-### 2. EC2 security group
+`SUPABASE_SECRET_KEY` bypasses row-level security. It is read only by the Pages
+Function, server-side. **Never** give it a `NEXT_PUBLIC_` prefix — that ships it to
+every visitor's browser.
 
-| Port | Protocol | Source | Why |
-|---|---|---|---|
-| 22 | TCP | **your IP only** | SSH. Do not open to 0.0.0.0/0. |
-| 80 | TCP | 0.0.0.0/0 | ACME HTTP-01 challenge + the →HTTPS redirect |
-| 443 | TCP | 0.0.0.0/0 | the site |
-| 443 | UDP | 0.0.0.0/0 | HTTP/3 (optional; drop if you don't want it) |
+### 3. DNS
 
-**Port 80 is not optional.** Certificates are issued *and renewed* over it.
-Close it and the site works for ~60 days, then silently starts serving an
-expired certificate.
+Keep the domain registered wherever it is; point it at Cloudflare.
 
-Instance size: a Next build needs roughly 2 GB RAM. `t3.small` is the realistic
-floor; `t3.micro` (1 GB) will OOM mid-build. If you're stuck on `t3.micro`, add
-swap before the first deploy:
+- Pages → Custom domains → add `ergoflo.tech` and `www.ergoflo.tech`.
+- If the domain is not already on Cloudflare, move its nameservers there (free).
+  Cloudflare then issues and renews TLS automatically.
 
-```bash
-sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
-sudo mkswap /swapfile && sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-```
+### 4. Verify the headers — do not skip this
 
-### 3. Local config
+`public/_headers` is the **only** place CSP, HSTS and clickjacking protection are
+defined. Next's `headers()` config does nothing in a static export: a build with one
+succeeds and silently ships a site with no CSP. The only proof it worked is the
+live response:
 
 ```bash
-cp deploy.env.example deploy.env
-$EDITOR deploy.env          # host, user, key path, path, branch, domain
-chmod 400 ~/.ssh/ergoflo-ec2.pem
+curl -sI https://ergoflo.tech | grep -iE 'content-security|strict-transport|x-frame'
 ```
 
-`DEPLOY_USER` is `ubuntu` on Ubuntu AMIs, `ec2-user` on Amazon Linux.
+If those are missing, `_headers` did not get picked up. It must end up at the root
+of `out/` — anything in `public/` is copied there by the export.
 
-### 4. Bootstrap the server
+### 5. Verify a real signup
 
-```bash
-./deploy.sh bootstrap
-```
-
-Installs Docker Engine + the compose plugin (handles both apt and dnf AMIs) and
-clones the repo to `DEPLOY_PATH`. It asks for confirmation first — it changes
-system packages.
-
-**If the GitHub repo is private,** the clone will hang waiting for credentials
-on a non-interactive SSH session. Set up access first — generate a key on the
-server, add the public half as a GitHub deploy key, and clone over SSH:
-
-```bash
-ssh -i ~/.ssh/ergoflo-ec2.pem ubuntu@<host>
-ssh-keygen -t ed25519 -C ergoflo-deploy -f ~/.ssh/id_ed25519 -N ''
-cat ~/.ssh/id_ed25519.pub    # → GitHub repo → Settings → Deploy keys (read-only)
-```
-
-then use the `git@github.com:...` URL rather than `https://`.
-
-### 5. Runtime secrets
-
-`deploy.sh` **refuses to deploy** until this exists. That's deliberate: without
-it the site looks perfectly fine and drops every waitlist signup on the floor.
-
-```bash
-./deploy.sh ssh
-cp .env.production.example .env.production
-nano .env.production        # SUPABASE_URL, SUPABASE_SECRET_KEY, ACME_EMAIL
-chmod 600 .env.production
-exit
-```
-
-`git reset --hard` during a deploy does not touch untracked files, so this
-survives every subsequent deploy. Back it up somewhere — it is the one piece of
-state not in the repo.
-
-### 6. Log out and back in
-
-The bootstrap adds your user to the `docker` group, which only applies to a new
-session. Skip this and the first deploy fails on a permission-denied socket.
-
-### 7. Deploy
-
-```bash
-./deploy.sh
-```
-
-First run pulls base images and builds from scratch — a few minutes. Certificate
-issuance normally completes within a minute of the container starting, and the
-script polls `https://ergoflo.tech` for up to a minute before reporting.
+Submit the form on `/notify` and confirm the row lands in `notify_signups`.
+A 503 means the environment variables are missing for that deployment.
 
 ---
 
 ## Day-to-day
 
 ```bash
-git push origin main        # this is the part that matters
-./deploy.sh                 # pull, rebuild, restart, verify HTTPS
-
-./deploy.sh status          # what's running, current commit, disk free
-./deploy.sh logs web        # app logs
-./deploy.sh logs caddy      # TLS / proxy logs
-./deploy.sh restart         # bounce containers without rebuilding
-./deploy.sh certs           # issuer + expiry of the live certificate
-./deploy.sh ssh             # shell in the deploy directory
+git push          # Cloudflare builds and deploys automatically
 ```
 
-Rollback is a git operation — point the branch at a known-good commit, push,
-redeploy:
+Every branch and PR gets a preview URL. Rollback is one click in the Pages
+dashboard — **Deployments** → pick a previous build → *Rollback*. No git revert
+needed.
+
+To check the build locally before pushing:
 
 ```bash
-git revert <bad-sha> && git push && ./deploy.sh
+npx next build && ls out
 ```
-
----
-
-## Certificates: what not to do
-
-Caddy stores issued certificates **and the ACME account key** in the
-`caddy_data` Docker volume. It is the only stateful thing in the stack.
-
-- **Never run `docker compose down -v`** on this server. `-v` deletes named
-  volumes. Every certificate is re-requested from scratch.
-- Let's Encrypt rate-limits **5 duplicate certificates per registered domain per
-  week**. Blow through it and `ergoflo.tech` cannot get a certificate until the
-  window rolls — there is no appeal and no override.
-- Testing issuance changes? Uncomment the `acme_ca` staging line in the
-  `Caddyfile` first. Staging certs are untrusted by browsers (expect a warning)
-  but are not rate-limited. Comment it out and `./deploy.sh restart` when done.
-
-Check what a browser actually gets:
-
-```bash
-./deploy.sh certs
-```
-
----
-
-## Troubleshooting
-
-| Symptom | Cause | Check |
-|---|---|---|
-| `curl` times out, `000` | DNS wrong, or 443 not open in the security group | `dig +short ergoflo.tech`, then the SG rules |
-| Browser TLS warning | cert not issued yet, or staging CA still enabled | `./deploy.sh logs caddy`, grep `obtain` |
-| `502 Bad Gateway` | Caddy is up, app isn't | `./deploy.sh logs web` |
-| 502 with a container that looks healthy | app bound to 127.0.0.1 inside the container | `HOSTNAME=0.0.0.0` must be set (it is, in the Dockerfile) |
-| Page renders unstyled, no JS | `.next/static` missing from the image | the Dockerfile's second `COPY --from=builder` |
-| Every image 404s | `public/` missing from the image | the Dockerfile's third `COPY --from=builder` |
-| Waitlist form returns an error | Supabase env missing or wrong | `./deploy.sh logs web`; check `.env.production` |
-| Build killed partway through | out of RAM | add swap (step 2) or resize the instance |
-| `permission denied ... docker.sock` | docker group not applied | log out and back in |
 
 ---
 
 ## Things that must stay in sync
 
-Three files name the domain. If they drift, share cards and canonical URLs
-point at something that isn't served:
+- `lib/site.ts` → `SITE_URL`, and the Pages custom domain. Drift here breaks
+  canonical URLs and share cards.
+- The `product` allowlist exists in **two** places and both must agree:
+  `app/notify/page.tsx` (`PRODUCT_LABELS`) and `functions/api/notify.ts`
+  (`ALLOWED_PRODUCTS`). Adding a product to only the first silently stores `null`.
+- `components/PricingSection.tsx` `notifySlug` values must be in that allowlist.
 
-- `lib/site.ts` → `SITE_URL`
-- `Caddyfile` → the site block
-- `deploy.env` → `DEPLOY_DOMAIN`
+## Local build caveat — `npm run build` is broken on this machine
+
+`~/node_modules/.bin/node` is **v18.20.8** and npm prepends every ancestor
+`node_modules/.bin` to PATH, so it shadows nvm's v20+ for every `npm run` under your
+home directory. `node -v` in the terminal looks fine; the build fails anyway with a
+version error.
+
+Use the binary directly:
+
+```bash
+npx next build
+# or: node ./node_modules/next/dist/bin/next build
+```
+
+Cloudflare's build environment is unaffected — this is local only. Fixing it for
+good means deleting the stray `~/node_modules`.
+
+## Troubleshooting
+
+| Symptom | Cause | Check |
+|---|---|---|
+| No CSP/HSTS on the live site | `_headers` not deployed | `curl -sI`; confirm `out/_headers` exists |
+| Signup returns 503 | env vars missing for that environment | Pages → Settings → Environment variables |
+| Signup returns 429 unexpectedly | rate limit: 5 per IP per 10 min | expected; wait it out |
+| `/notify` renders blank before JS | a `useSearchParams` + `Suspense` regression | `grep -c "Be first to know" out/notify.html` must be 1 |
+| Build fails on `/robots.txt` | missing `export const dynamic = "force-static"` | `app/robots.ts`, `app/sitemap.ts` |
+| Images look soft/large | `images.unoptimized` is on by necessity | keep source images small |
 
 ## Still outstanding
 
-- **`hello@ergoflo.tech` does not exist yet.** Owning the domain does not give
-  you a mailbox — MX records and a mail host are separate. That address is
-  published on `/privacy` and `/terms` as the route for data deletion and
-  disputes, and a legal page naming an address that bounces is worse than one
-  naming none. Set up mail before launch.
-- **HSTS `preload` is asserted** in `next.config.ts`. That header is harmless
-  until you actually submit the domain to the browser preload list — but
-  submission is close to irreversible (removal takes months and ships with the
-  browser). Don't submit until you're certain every `ergoflo.tech` subdomain
-  will be HTTPS-only, forever.
+- **`hello@ergoflo.tech` does not exist.** It is published on `/privacy` and
+  `/terms` as the route for data deletion and disputes, and a legal page naming an
+  address that bounces is worse than one naming none. Cloudflare Email Routing
+  forwards it to an existing inbox for free; sending *as* that address needs an SMTP
+  relay configured in Gmail.
+- **HSTS `preload` is asserted** in `public/_headers`. Harmless until you actually
+  submit the domain to the browser preload list — but submission is close to
+  irreversible. Don't submit until every `ergoflo.tech` subdomain is HTTPS-only,
+  forever.
+- **`public/demo/` is 3.4 MB and unreferenced** by any mounted page — 60% of the
+  deployed payload. See the note in the migration summary.

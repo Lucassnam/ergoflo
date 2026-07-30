@@ -56,3 +56,5 @@ next-env.d.ts
 /truss-preorder_1.html
 # Source render for public/product-render.webp; nothing imports it.
 /whitebackgroundproduct render.png
+# Stray working screenshot; nothing imports it.
+/Untitled-2.png

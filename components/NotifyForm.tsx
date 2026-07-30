@@ -5,7 +5,12 @@ import Link from "next/link";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-export default function NotifyForm({ product }: { product: string | null }) {
+/* Takes no `product` prop on purpose. Reading it from a server-rendered
+   searchParams made /notify a dynamic route, and reading it with
+   useSearchParams needs a <Suspense> boundary that empties the prerendered
+   HTML. Reading window.location at SUBMIT time keeps the whole page static
+   — see the block comment in app/notify/page.tsx. */
+export default function NotifyForm() {
   const [email, setEmail] = useState("");
   /* Honeypot. Never shown to a human, so a non-empty value means a bot.
      The server returns an ordinary success for these — see the route. */
@@ -18,7 +23,15 @@ export default function NotifyForm({ product }: { product: string | null }) {
     setStatus("loading");
     setErrorMsg("");
 
+    /* Read at submit time, not at render time — this is what keeps the page
+       statically prerenderable. Safe here because onSubmit only ever runs in
+       the browser. The server re-validates it against its own allowlist. */
+    const product = new URLSearchParams(window.location.search).get("product");
+
     try {
+      /* Same URL as before, but this is now a Cloudflare Pages Function at
+         functions/api/notify.ts, not a Next route. The request and response
+         shapes are unchanged, so nothing below needed to move. */
       const res = await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

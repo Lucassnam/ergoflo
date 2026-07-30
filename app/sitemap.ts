@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
+/* Required by `output: "export"` — see the note in app/robots.ts. */
+export const dynamic = "force-static";
+
 /* /specs, /investors and /refunds were deleted on 2026-07-29 and must not be
    listed here — a sitemap entry for a 404 is a live SEO error. */
 export default function sitemap(): MetadataRoute.Sitemap {
