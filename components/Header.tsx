@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BRAND, NAV } from "@/lib/site";
@@ -43,8 +44,9 @@ export default function Header() {
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          className="headline text-[19px] tracking-tight text-black"
+          className="flex items-center gap-2 headline text-[19px] tracking-tight text-black"
         >
+          <Image src="/logo.png" alt="" width={24} height={24} priority />
           {BRAND}
         </Link>
 

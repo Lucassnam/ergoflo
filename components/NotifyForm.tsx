@@ -99,12 +99,23 @@ export default function NotifyForm({ product }: { product: string | null }) {
 
       {/* Consent disclosure, at the point of collection rather than buried in
           the privacy policy. States the scope (one email), the exit (reply to
-          be removed), and that this is not an order. */}
+          be removed), and that this is not an order.
+
+          The "by joining you agree to the Terms" sentence is load-bearing and
+          must stay adjacent to the submit button. Without notice plus an act of
+          assent, /terms is browsewrap — and courts routinely decline to enforce
+          browsewrap, which would take the arbitration clause and class-action
+          waiver down with it. Those are the strongest protections on the site;
+          this sentence is what gives them a chance of holding. */}
       <p className="mt-4 text-left text-[12.5px] leading-relaxed text-neutral-500">
         We store your email address and nothing else, and we&rsquo;ll use it to
         send you one message if this becomes a real product. Reply to be
         removed at any time. This is a waitlist, not an order &mdash; nothing
-        is for sale. See our{" "}
+        is for sale. By joining, you agree to our{" "}
+        <Link href="/terms" className="underline underline-offset-4 hover:text-black">
+          Terms
+        </Link>{" "}
+        and{" "}
         <Link href="/privacy" className="underline underline-offset-4 hover:text-black">
           Privacy Policy
         </Link>

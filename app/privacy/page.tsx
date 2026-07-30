@@ -23,8 +23,16 @@ const LAST_UPDATED = "29 July 2026";
 
    IF THAT CHANGES — if analytics, a pixel, a chat widget, or any
    third-party script is added — this page must be updated in the same
-   commit, and a cookie notice becomes necessary. California's CCPA/CPRA
-   applies here because the operator is California-based.
+   commit, and a cookie notice becomes necessary.
+
+   ON CCPA/CPRA: it does NOT legally apply. The thresholds are $25M
+   revenue, 100k California consumers, or 50%+ of revenue from selling
+   personal information, and this project meets none of them. The rights
+   below are offered voluntarily. CalOPPA is the law that DOES apply to
+   any commercial site collecting personal information from Californians,
+   and this page satisfies it: conspicuous link, categories collected,
+   third parties named, effective date, change process, and how to review
+   your own information.
    ============================================================ */
 
 export default function Privacy() {
@@ -45,7 +53,7 @@ export default function Privacy() {
       <LegalSection heading="What we collect">
         <p>
           <strong className="font-semibold text-black">
-            If you join the notify list:
+            If you join the waitlist:
           </strong>{" "}
           your email address, which product you expressed interest in if you
           arrived from a specific link, and the date and time you signed up.
@@ -69,11 +77,12 @@ export default function Privacy() {
 
       <LegalSection heading="Why we collect it">
         <p>
-          To email you when {BRAND} is ready to order, and to fulfil and support
-          any reservation you place. Nothing else.
+          To email you if {BRAND} ever becomes a product you can buy. Nothing
+          else. There are no reservations and no orders to support, because
+          nothing is for sale.
         </p>
         <p>
-          If you join the notify list, expect one email at launch. We are not
+          If you join the waitlist, expect one email at launch. We are not
           running a newsletter and will not add you to one without asking you
           first.
         </p>
@@ -82,13 +91,25 @@ export default function Privacy() {
       <LegalSection heading="Who else processes it">
         <p>
           <strong className="font-semibold text-black">Supabase</strong> hosts
-          the database that stores notify-list email addresses, as our
-          processor.
+          the database that stores waitlist email addresses, as our processor.
         </p>
         <p>
           <strong className="font-semibold text-black">Vercel</strong> hosts this
           site and processes standard server request logs, including IP
           addresses, as part of operating and protecting it.
+        </p>
+        <p>
+          {/* The homepage hero loads 20 photographs from images.unsplash.com.
+              Those are third-party requests made by your browser, so Unsplash
+              receives the visitor's IP and user-agent. It is not tracking, but
+              it IS a third-party recipient, and this policy claims to list all
+              of them — so it has to be named. If the hero images are ever
+              self-hosted, delete this paragraph. */}
+          <strong className="font-semibold text-black">Unsplash</strong> hosts
+          the photographs on our homepage. Because your browser fetches them
+          directly, Unsplash receives your IP address and browser type, as it
+          would for any image loaded from another site. We send them nothing
+          about you, and we receive nothing back.
         </p>
         <p>
           We do not sell, rent, or share your personal information with anyone
@@ -115,7 +136,7 @@ export default function Privacy() {
           <li>Delete it.</li>
           <li>Correct it.</li>
           <li>Send you a copy of it.</li>
-          <li>Remove you from the notify list.</li>
+          <li>Remove you from the waitlist.</li>
         </ul>
         <p>
           We aim to respond within 5 business days, and will not treat you
@@ -139,8 +160,8 @@ export default function Privacy() {
           server-side secrets that are never exposed to the page.
         </p>
         <p>
-          No system is perfectly secure, and {BRAND} is a small operation run by
-          one person. We are not going to claim a level of protection we cannot
+          No system is perfectly secure, and {BRAND} is a student project run by
+          two people. We are not going to claim a level of protection we cannot
           guarantee. Please do not send us information you would not want
           disclosed, and never send payment details by email — we will never ask
           for them that way.
@@ -160,7 +181,7 @@ export default function Privacy() {
         <p>
           If this policy changes, the date at the top of the page changes with
           it. If we ever start collecting something new — analytics included —
-          this page will say so before it happens. {LEGAL_NAME} is responsible
+          this page will say so before it happens. {LEGAL_NAME} are responsible
           for this policy.
         </p>
       </LegalSection>

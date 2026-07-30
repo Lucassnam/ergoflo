@@ -19,7 +19,7 @@ import Reveal from "./Reveal"
         kind of FTC deception claim to prove.
      2. "Lifetime warranty" — a federal commitment under the
         Magnuson-Moss Warranty Act, unbounded, on an unbuilt
-        product, from a sole proprietor with no entity behind him.
+        product, from students with no entity behind them.
      3. "IPX4 water resistant" — a formal IEC 60529 rating never
         tested.
      4. Prices (39.99 / 20 / 120) that contradicted lib/site.ts.

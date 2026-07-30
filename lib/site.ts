@@ -6,9 +6,7 @@
      2. SITE_URL      — the real launch domain (used by metadataBase,
                         sitemap, robots and OG tags; share cards break
                         without it).
-     3. LEGAL_ADDRESS — required in Terms. The site refuses to render it
-                        until it is real.
-     4. TEAM roles    — the /about team block is gated on these.
+   No postal address is published on purpose — see the identity note.
    Nothing else in the codebase hardcodes these.
 
    There is deliberately NO STRIPE_LINK. It was removed on 2026-07-29 —
@@ -37,19 +35,46 @@ export const CONTACT_EMAIL = "hello@ergoflow.com";
 /** No trailing slash. Swap before launch — OG/Twitter cards and sitemap depend on it. */
 export const SITE_URL = "https://ergoflow.com";
 
-/* ---------------- legal identity ---------------- */
+/* ---------------- identity ---------------- */
 
-/** Seller of record. ErgoFlow is operated by one person as a sole
-    proprietorship — there is no LLC, no corporation, and deliberately no
-    claim of one anywhere on the site. */
-export const LEGAL_NAME = "Lucas Nam";
-export const LEGAL_ENTITY = `${LEGAL_NAME}, sole proprietor, doing business as ${BRAND}`;
+/* ============================================================
+   NO BUSINESS ENTITY IS CLAIMED. Changed 2026-07-29.
 
-/** Physical mailing address. Legally required in Terms and in the footer of
-    any marketing email. Left as a placeholder on purpose: `hasLegalAddress`
-    is false until it is filled, and the legal pages render a visible gate
-    instead of a fake address. */
-export const LEGAL_ADDRESS = "REPLACE_WITH_MAILING_ADDRESS";
+   This block previously declared "Lucas Nam, sole proprietor, doing
+   business as ErgoFlow". That was removed once it became clear that
+   BOTH people building this are under 18.
+
+   Why the site now asserts no structure at all:
+     - A minor's contracts are voidable (Cal. Family Code §6710), so
+       declaring a business structure a minor cannot be bound to is at
+       best meaningless and at worst a false statement about who
+       operates the site — the one fact legal pages most need right.
+     - Naming a second person as an owner would create an implied
+       general partnership (Cal. Corp. Code §16202), making both
+       personally liable. Neither wants that and neither needs it.
+     - Nothing is sold here, so no seller of record is required.
+
+   Saying "a student project" is accurate, claims nothing, and is the
+   honest description. Do not reintroduce "sole proprietor", "LLC",
+   "company", or an ownership claim without an adult with legal capacity
+   actually holding that role.
+
+   NO POSTAL ADDRESS IS PUBLISHED, deliberately. Both operators are
+   minors, so a public mailing address would be a minor's home address.
+   It is not required: CalOPPA does not ask for one, and CAN-SPAM only
+   requires a physical address inside a commercial EMAIL. Before sending
+   any launch email, use a PO box or a school/organisation address —
+   never a home address.
+   ============================================================ */
+
+/** People who build it. Not owners, not an entity — see the note above. */
+export const LEGAL_NAME = "Lucas Nam and Edison Hsu";
+
+/** Used wherever the site has to say who is behind it. */
+export const LEGAL_ENTITY = `${BRAND}, a student project by ${LEGAL_NAME}`;
+
+/** Rendered in the legal pages so a reader knows exactly what this is. */
+export const NOT_A_COMPANY_NOTICE = `${BRAND} is a student business project, not a company. No business entity has been formed, nothing is sold here, and no money is collected. It is run by students and the only information it collects is an email address.`;
 
 export const GOVERNING_LAW = "the State of California, United States";
 
@@ -58,7 +83,6 @@ export const GOVERNING_LAW = "the State of California, United States";
     product) and per-destination lithium air-freight rules entirely out of scope. */
 export const SHIPS_TO = "the United States only";
 
-export const hasLegalAddress = !LEGAL_ADDRESS.includes("REPLACE_WITH");
 export const isSiteUrlLive = !SITE_URL.includes("REPLACE_WITH");
 
 /* ---------------- product ---------------- */
@@ -248,44 +272,26 @@ export const LEGAL_NAV = [
 
 /* ---------------- team ---------------- */
 
-/** The people who actually build ErgoFlow.
+/** The people who build ErgoFlow.
 
-    LIABILITY NOTE — read before adding anyone here.
-    ErgoFlow is a sole proprietorship owned by one person. Publicly presenting
-    several people as a "team" on a commercial venture is evidence of an
-    implied general partnership (Cal. Corp. Code §16202 — one forms by conduct,
-    with no filing). Partners are jointly and severally liable, personally, for
-    the whole business, which would spread Lucas's exposure — a lithium-battery
-    product and a live patent question — onto people who do not control either.
+    NO ROLES, NO TITLES, NO OWNERSHIP — deliberate, 2026-07-29.
+    Both are minors and no business entity exists, so the site names who
+    builds it and asserts nothing about who owns it. Titles like
+    "co-founder", "partner", "owner" or "sole proprietor" all imply a
+    structure that either does not exist or would create an implied
+    general partnership (Cal. Corp. Code §16202) making both personally
+    liable. Names only.
 
-    The list was cut from four to two on 2026-07-29, because only two people
-    do the work. Listing non-contributors was both inaccurate and the strongest
-    partnership evidence the site could publish. It cuts the other way too: on
-    an implied partnership with no written agreement, partners share profits
-    EQUALLY regardless of contribution, so listing someone who does nothing
-    hands them an argument for a quarter of the business.
+    NO_PARTNERSHIP_NOTICE renders wherever this list renders. Never show
+    one without the other. Only people who actually contribute go here. */
+export const TEAM = ["Lucas Nam", "Edison Hsu"] as const;
 
-    Three rules, all load-bearing:
-      1. NO_PARTNERSHIP_NOTICE renders wherever this list renders. Never show
-         one without the other.
-      2. Roles describe contribution, never ownership, authority, or an
-         officer title. Do not write "co-founder", "partner", "CTO", or
-         anything implying a stake or the power to bind the business.
-      3. Only people who actually contribute go here. */
-export const TEAM = [
-  { name: "Lucas Nam", role: "Founder and sole proprietor" },
-  { name: "Edison Hsu", role: "REPLACE_WITH_ROLE" },
-] as const;
-
-/** False until every contributor role is filled in. The team block refuses to
-    render while this is false, so the site cannot ship "REPLACE_WITH_ROLE". */
-export const hasTeamRoles = !TEAM.some((m) => m.role.includes("REPLACE_WITH"));
 
 /* "named on this site", NOT "listed above" — this string renders on /terms,
    where no team list precedes it, and a dangling cross-reference in a legal
    notice is exactly the kind of sloppiness that undermines the clause it is
    trying to make. Keep it position-independent. */
-export const NO_PARTNERSHIP_NOTICE = `${BRAND} is owned and operated solely by ${LEGAL_NAME} as a sole proprietorship. Any other contributors named on this site are not owners, partners, employees, or agents of the business, hold no stake in it, and have no authority to enter into obligations on its behalf. Nothing on this site creates a partnership, joint venture, or agency relationship between them.`;
+export const NO_PARTNERSHIP_NOTICE = `${BRAND} is a student project, not a company, and no business entity has been formed. The people named on this site are students working on a design together. Nothing on this site creates a partnership, joint venture, agency relationship, or any ownership interest, and no one named here has authority to enter into obligations on anyone else's behalf.`;
 
 /* ---------------- third-party marks ---------------- */
 
