@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import WaitlistButton from "@/components/WaitlistButton";
 import {
@@ -6,7 +7,6 @@ import {
   NO_PARTNERSHIP_NOTICE,
   TEAM,
   TRADEMARK_NOTICE,
-  hasTeamRoles,
 } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -79,6 +79,13 @@ export default function About() {
       <section className="relative overflow-hidden px-5 pt-20 pb-16 sm:px-8 sm:pt-28">
         <div className="relative z-10 mx-auto max-w-3xl">
           <Reveal>
+            <Image
+              src="/logo.png"
+              alt=""
+              width={48}
+              height={48}
+              className="mb-6"
+            />
             <p className="font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
               About
             </p>
@@ -195,35 +202,33 @@ export default function About() {
       <section className="relative overflow-hidden px-5 py-24 text-center sm:px-8">
         <div className="relative z-10">
           <Reveal>
-            {/* TEAM — renders only once every role in lib/site.ts is real, so
-                the page can never ship "REPLACE_WITH_ROLE".
+            {/* WHO BUILDS IT — names only, no titles, no ownership claim.
 
-                NO_PARTNERSHIP_NOTICE must stay directly beneath this list. It
-                is not boilerplate: presenting four people as a team is
-                evidence of an implied general partnership under Cal. Corp.
-                Code §16202, which would make all four personally liable for
-                the whole venture. See the note on TEAM in lib/site.ts. */}
-            {hasTeamRoles && (
-              <div className="mx-auto mb-24 max-w-3xl text-left">
-                <h2 className="text-center headline text-[clamp(1.8rem,4vw,2.6rem)]">
-                  Who&rsquo;s building it
-                </h2>
-                <ul className="mt-10 grid list-none gap-4 p-0 sm:grid-cols-2">
-                  {TEAM.map((m) => (
-                    <li key={m.name} className="rim rounded-2xl bg-surface-2 p-6">
-                      <p className="headline text-[16px]">{m.name}</p>
-                      <p className="mt-1.5 text-[13.5px] text-fg-dim">{m.role}</p>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-6 text-[12px] leading-relaxed text-neutral-500">
-                  {NO_PARTNERSHIP_NOTICE}
-                </p>
-                <p className="mt-3 text-[12px] leading-relaxed text-neutral-500">
-                  {TRADEMARK_NOTICE}
-                </p>
-              </div>
-            )}
+                NO_PARTNERSHIP_NOTICE must stay directly beneath this. It is
+                not boilerplate: publicly presenting people as a team is
+                evidence of an implied general partnership (Cal. Corp. Code
+                §16202), which would make each of them personally liable for
+                the whole venture. Both are minors and no entity exists, so
+                the page states what is true — a student project — and claims
+                no structure. Do not add roles or titles here. */}
+            <div className="mx-auto mb-24 max-w-2xl text-left">
+              <h2 className="text-center headline text-[clamp(1.8rem,4vw,2.6rem)]">
+                Who&rsquo;s building it
+              </h2>
+              <p className="mt-6 text-center text-[16px] leading-relaxed text-fg-dim">
+                {BRAND} is a student business project by{" "}
+                {TEAM.slice(0, -1).join(", ")} and {TEAM[TEAM.length - 1]}. It
+                is not a company, and it isn&rsquo;t selling anything &mdash;
+                we&rsquo;re two students trying to find out whether this is
+                worth building.
+              </p>
+              <p className="mt-8 text-[12px] leading-relaxed text-neutral-500">
+                {NO_PARTNERSHIP_NOTICE}
+              </p>
+              <p className="mt-3 text-[12px] leading-relaxed text-neutral-500">
+                {TRADEMARK_NOTICE}
+              </p>
+            </div>
 
             <h2 className="headline text-[clamp(1.9rem,4.6vw,3rem)]">
               Hear about it when it’s real.

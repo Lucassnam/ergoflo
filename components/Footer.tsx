@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import FlowFieldBackground from "@/components/ui/flow-field-background";
 import {
@@ -29,7 +30,8 @@ export default function Footer() {
       <div className="relative z-10">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-9 sm:px-8 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-1">
-            <span className="text-[15px] font-semibold tracking-tight text-black">
+            <span className="flex items-center gap-2 text-[15px] font-semibold tracking-tight text-black">
+              <Image src="/logo.png" alt="" width={20} height={20} />
               {BRAND}
             </span>
             <span className="text-[12.5px] text-neutral-500">

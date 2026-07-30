@@ -8,6 +8,7 @@ import {
   LEGAL_ENTITY,
   LEGAL_NAME,
   NOT_AN_OFFER_NOTICE,
+  NOT_A_COMPANY_NOTICE,
   NO_PARTNERSHIP_NOTICE,
   TARGETS_DISCLAIMER,
   TRADEMARK_NOTICE,
@@ -36,10 +37,10 @@ const LAST_UPDATED = "29 July 2026";
      1. §2 — no offer, no sale, no reliance. The load-bearing section.
         Backs the §271(a) position that nothing here is an offer to sell.
      2. §5 and §7 — warranty disclaimer and liability cap, which matter
-        because the operator is a sole proprietor with no entity behind him.
+        because no entity exists to absorb a claim.
      3. §8 — arbitration + class waiver.
-     4. §1 — no-partnership clause, protecting the three non-owner
-        contributors from an implied general partnership.
+     4. §1 — no-entity / no-partnership clause. Both people building this
+        are minors; the site asserts no business structure at all.
      5. §3 — pre-production disclosure, which is what makes the target
         figures defensible instead of deceptive.
 
@@ -68,9 +69,9 @@ export default function Terms() {
     >
       <LegalSection heading="1. Who you are dealing with">
         <p>
-          {BRAND} is operated by {LEGAL_ENTITY}. There is no company,
-          corporation, or limited liability company behind {BRAND}, and nothing
-          on this site should be read as claiming otherwise.
+          {NOT_A_COMPANY_NOTICE} There is no company, corporation, or limited
+          liability company behind {BRAND}, and nothing on this site should be
+          read as claiming otherwise.
         </p>
         <p>{NO_PARTNERSHIP_NOTICE}</p>
       </LegalSection>
@@ -80,7 +81,7 @@ export default function Terms() {
         <p>
           Joining the waitlist creates no contract, no reservation, no queue
           position, and no right to buy anything. It does not hold a price,
-          because no price has been set. Neither you nor {LEGAL_NAME} owes the
+          because no price has been set. Neither you nor we owe the
           other anything as a result of it, and either side can walk away at any
           time without notice.
         </p>
@@ -131,7 +132,7 @@ export default function Terms() {
         <p className="uppercase">
           To the maximum extent permitted by law, this site and everything on it
           is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;,
-          without warranty of any kind. {LEGAL_NAME} disclaims all implied
+          without warranty of any kind. We disclaim all implied
           warranties, including the implied warranties of merchantability,
           fitness for a particular purpose, and non-infringement.
         </p>
@@ -167,15 +168,14 @@ export default function Terms() {
 
       <LegalSection heading="7. Limits on our liability">
         <p className="uppercase">
-          To the maximum extent permitted by law, the total liability of{" "}
-          {LEGAL_NAME} to you, for all claims arising out of or relating to{" "}
+          To the maximum extent permitted by law, our total liability to you, for all claims arising out of or relating to{" "}
           {BRAND}, this site, or these terms, will not exceed one hundred US
           dollars ($100) or the total amount you have actually paid us,
           whichever is greater. You have not paid us anything, because nothing
           here is for sale.
         </p>
         <p className="uppercase">
-          Neither {LEGAL_NAME} nor any contributor will be liable for indirect,
+          Neither we nor any contributor will be liable for indirect,
           incidental, special, consequential, exemplary, or punitive damages, or
           for lost profits, lost data, or loss of use, even if advised of the
           possibility.
@@ -202,7 +202,7 @@ export default function Terms() {
           for 30 days to try.
         </p>
         <p>
-          If we cannot resolve it, you and {LEGAL_NAME} agree that any dispute
+          If we cannot resolve it, you and we agree that any dispute
           arising out of or relating to {BRAND} or these terms will be resolved
           by binding individual arbitration, administered under the consumer
           rules of a recognised arbitration provider, rather than in court. You
@@ -211,7 +211,7 @@ export default function Terms() {
           government agency.
         </p>
         <p className="uppercase">
-          You and {LEGAL_NAME} each waive the right to a jury trial and the
+          You and we each waive the right to a jury trial and the
           right to participate in a class action, class arbitration, or
           representative proceeding. Claims may be brought only in an individual
           capacity.

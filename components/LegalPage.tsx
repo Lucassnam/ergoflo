@@ -1,12 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import {
-  BRAND,
-  CONTACT_EMAIL,
-  LEGAL_ADDRESS,
-  LEGAL_ENTITY,
-  hasLegalAddress,
-} from "@/lib/site";
+import { CONTACT_EMAIL, LEGAL_ENTITY, NOT_A_COMPANY_NOTICE } from "@/lib/site";
 
 /**
  * Shared chrome for /terms, /privacy and /refunds.
@@ -40,9 +34,12 @@ export default function LegalPage({
         <h1 className="mt-4 headline text-[clamp(2rem,5vw,3rem)] text-black">
           {title}
         </h1>
+        {/* LEGAL_ENTITY already begins with the brand name ("ErgoFlow, a
+            student project by ..."), so do not prefix it with BRAND again —
+            that rendered as "Applies to ErgoFlow, operated by ErgoFlow, a
+            student project by ...". */}
         <p className="mt-4 text-[13.5px] text-neutral-500">
-          Last updated {lastUpdated} · Applies to {BRAND}, operated by{" "}
-          {LEGAL_ENTITY}
+          Last updated {lastUpdated} · {LEGAL_ENTITY}
         </p>
 
         {intro && (
@@ -65,21 +62,17 @@ export default function LegalPage({
             </a>
             .
           </p>
+          {/* Email only, no postal address. Both people running this are
+              minors, so publishing a mailing address would publish a minor's
+              home address. It is not required either: CalOPPA doesn't ask for
+              one, and CAN-SPAM only requires a physical address inside a
+              commercial email. When that email goes out, use a PO box or a
+              school address — never a home address. */}
           <p className="mt-3 text-[15px] leading-relaxed text-neutral-700">
             {LEGAL_ENTITY}
-            <br />
-            {hasLegalAddress ? (
-              LEGAL_ADDRESS
-            ) : (
-              /* Visible on purpose. A missing mailing address is a launch
-                 blocker — it is required in these terms and in the footer of
-                 any marketing email under CAN-SPAM — so it is surfaced to the
-                 reader rather than hidden in a code comment nobody reads. */
-              <span className="text-red-600">
-                [Mailing address not yet published — set LEGAL_ADDRESS in
-                lib/site.ts before launch]
-              </span>
-            )}
+          </p>
+          <p className="mt-3 text-[14px] leading-relaxed text-neutral-500">
+            {NOT_A_COMPANY_NOTICE}
           </p>
           <p className="mt-6 text-[13.5px] text-neutral-500">
             <Link href="/terms" className="underline underline-offset-4">
