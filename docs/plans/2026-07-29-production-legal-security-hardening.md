@@ -442,4 +442,9 @@ dead `bloom` class; `next` → 16.2.12; `sharp`/`postcss` pinned via `overrides`
 4. **Entity timing.** If an LLC is ever formed, form it *before* taking money —
    it does not retroactively cover obligations incurred personally. California
    ~$70 filing + ~$800/yr minimum franchise tax.
-5. **Trademark clearance on "ErgoFlow"** — never searched.
+5. ~~**Trademark clearance on "ErgoFlow"** — never searched.~~ **Searched
+   2026-07-30**, and it drove a rename: the brand is now **ErgoFlo** on
+   **ergoflo.tech**, because `ergoflow.com` has been third-party owned since
+   2003. See `docs/plans/2026-07-30-legal-risk-review.md` and the brand note in
+   `lib/site.ts`. Still not a clearance search — no Class 018/009 knock-out
+   search has been run on the new name.

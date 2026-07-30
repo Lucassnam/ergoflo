@@ -1,0 +1,40 @@
+# Everything here is excluded from the build context. Keep it tight: the
+# context is uploaded to the daemon on every `docker compose build`, and
+# node_modules alone is several hundred MB.
+
+.git
+.github
+node_modules
+.next
+out
+build
+coverage
+
+# Secrets. These must NEVER enter an image layer — the container reads
+# them from .env.production at runtime via docker-compose.
+.env
+.env.*
+!.env.*.example
+deploy.env
+
+# Deploy tooling — needed on the host, not inside the image.
+deploy.sh
+docker-compose.yml
+Caddyfile
+Dockerfile
+.dockerignore
+
+# Docs and working files. Nothing in the build reads markdown.
+docs
+*.md
+
+# Stray source assets kept on disk but not shipped (see .gitignore).
+*.pem
+*.tsbuildinfo
+.DS_Store
+npm-debug.log*
+sweatyback.png
+ChatGPT Image *.png
+truss-preorder_1.html
+whitebackgroundproduct render.png
+Untitled-*.png

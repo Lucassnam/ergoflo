@@ -1,0 +1,77 @@
+# ============================================================
+# ErgoFlo landing — Caddy reverse proxy, ergoflo.tech
+#
+# TLS IS AUTOMATIC. There is no certificate path in this file and there
+# should never be one. Caddy sees a public hostname in a site block and
+# provisions a Let's Encrypt certificate over the HTTP-01 challenge on
+# port 80, then renews it in the background at ~2/3 of its lifetime.
+#
+# The three things that make that work, all of which live outside this
+# file — if HTTPS fails, it is one of these, in this order:
+#   1. DNS: A records for BOTH ergoflo.tech and www.ergoflo.tech must
+#      resolve to this server's public IP. Let's Encrypt resolves the
+#      name itself; a hosts-file entry or a proxied/orange-cloud
+#      Cloudflare record will not do.
+#   2. Ports 80 AND 443 open to 0.0.0.0/0 in the EC2 security group.
+#      Port 80 is not optional — closing it breaks HTTP-01 renewal, and
+#      the site then works for 90 days and dies quietly.
+#   3. The `caddy_data` volume in docker-compose.yml must persist. It
+#      holds the issued certs AND the ACME account key. Delete it and
+#      every restart re-requests certs; Let's Encrypt rate-limits that
+#      at 5 duplicate certificates per week, and there is no appeal.
+#
+# Test changes against the staging CA first (see docs/DEPLOY.md) —
+# staging certs are untrusted by browsers but not rate-limited.
+# ============================================================
+
+{
+	# Where Let's Encrypt sends expiry warnings if renewal ever stalls.
+	# Set ACME_EMAIL in .env.production; a real monitored inbox.
+	email {$ACME_EMAIL}
+
+	# Uncomment ONLY while debugging issuance. Certs from this endpoint
+	# are not trusted by browsers — every visitor gets a scary warning.
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+# --- www → apex -------------------------------------------------------
+# One canonical origin. lib/site.ts SITE_URL, the sitemap, robots.txt and
+# every OG tag all say the apex, so www must not serve a second copy of
+# the site — that is duplicate content and it splits share-card caches.
+# If you decide not to create a www DNS record, DELETE this whole block.
+# Leaving it in place with no A record means Caddy retries a doomed
+# certificate order forever and logs an error every few minutes.
+www.ergoflo.tech {
+	redir https://ergoflo.tech{uri} permanent
+}
+
+# --- the site ---------------------------------------------------------
+ergoflo.tech {
+	encode zstd gzip
+
+	# `web` is the compose service name, resolved on the internal
+	# network. Port 3000 is never published to the host — the only way
+	# in is through this proxy.
+	reverse_proxy web:3000 {
+		# Fail fast to Caddy's error page rather than hanging a browser
+		# tab if the app container is wedged mid-deploy.
+		transport http {
+			dial_timeout 5s
+		}
+	}
+
+	# Caddy stamps `Server: Caddy` on every response. next.config.ts sets
+	# poweredByHeader:false for exactly the same reason — don't hand a
+	# scanner the stack for free.
+	header -Server
+
+	# NOTE: security headers (CSP, HSTS, X-Frame-Options, Referrer-Policy,
+	# Permissions-Policy) are set by Next in next.config.ts and pass
+	# straight through. They are deliberately NOT duplicated here —
+	# two sources for one header is how they drift apart.
+
+	log {
+		output stdout
+		format json
+	}
+}
