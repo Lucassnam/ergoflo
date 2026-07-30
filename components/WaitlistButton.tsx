@@ -17,7 +17,7 @@ const sizes = {
  * pointed at a Stripe Payment Link.
  *
  * WHY THERE IS NO CHECKOUT HERE — 2026-07-29:
- * ErgoFlow collects interest, not money. Two reasons, and both matter.
+ * ErgoFlo collects interest, not money. Two reasons, and both matter.
  *
  *   1. Consumer law. No payment means no FTC Mail Order Rule ship-window
  *      obligation, no refund policy to honour, no chargeback exposure, and
@@ -26,7 +26,7 @@ const sizes = {
  *   2. Patent law. 35 U.S.C. §271(a) makes "offers to sell" an act of
  *      infringement in its own right — you do not have to ship anything.
  *      A competitor (Vaucluse Gear, US 11,779,097) holds a granted patent
- *      on a retrofit backpack ventilation spacer, and ErgoFlow has not yet
+ *      on a retrofit backpack ventilation spacer, and ErgoFlo has not yet
  *      had a freedom-to-operate opinion. Until it does, the site must not
  *      make a definite offer at a definite price.
  *

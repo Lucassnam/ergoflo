@@ -37,6 +37,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# deployment
+# deploy.env names the server and points at the SSH key. It does NOT
+# match the .env* pattern above (that only catches names starting with
+# ".env"), so it needs its own line — without it, `git add .` publishes
+# your EC2 hostname and key path.
+/deploy.env
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

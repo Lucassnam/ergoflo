@@ -44,7 +44,11 @@ const csp = [
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
-  // Vercel terminates TLS, so asserting HSTS here is safe.
+  // Caddy terminates TLS on ergoflo.tech and redirects :80 → :443
+  // automatically, so asserting HSTS here is safe. `preload` is a
+  // one-way door: once the domain is submitted to the preload list,
+  // browsers refuse plain HTTP for it and removal takes months. Keep it
+  // only while every subdomain is genuinely HTTPS-only.
   {
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
@@ -59,6 +63,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  /* Emits .next/standalone — a self-contained server.js plus only the
+     node_modules it actually traced. The Dockerfile depends on this; drop
+     it and the runner stage has nothing to copy and the image will not
+     boot. Note that standalone deliberately excludes `public` and
+     `.next/static`, which is why the Dockerfile copies both by hand. */
+  output: "standalone",
+
   // There's a stray package-lock.json in the home directory on this machine,
   // which makes Turbopack infer the wrong workspace root. Pin it.
   turbopack: {

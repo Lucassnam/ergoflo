@@ -1,7 +1,15 @@
-# ErgoFlow — landing page
+# ErgoFlo — landing page
 
-Marketing site and preorder page for ErgoFlow, an active-cooling back panel
-that retrofits into a backpack you already own.
+Marketing site and **waitlist** page for ErgoFlo, an active-cooling back panel
+that retrofits into a backpack you already own. It is not a shop: nothing is for
+sale, no price is published and no payment is taken — see the commerce note in
+`lib/site.ts` before adding any of that back.
+
+> Renamed from **ErgoFlow** to **ErgoFlo** on 2026-07-30, because
+> `ergoflow.com` has been owned by a third party since 2003. The brand string
+> lives only in `BRAND` (`lib/site.ts`). The GitHub repo and the local folder
+> are still named `ergoflow-landing`; that is cosmetic and the clone URL below
+> is correct as written.
 
 Next.js 16 · React 19 · Tailwind CSS v4 · Motion
 

@@ -1,18 +1,25 @@
 /* ============================================================
    SITE CONFIG — single source of truth.
 
-   THINGS TO SWAP BEFORE LAUNCH (all in this block):
-     1. CONTACT_EMAIL — point at a real inbox.
-     2. SITE_URL      — the real launch domain (used by metadataBase,
-                        sitemap, robots and OG tags; share cards break
-                        without it).
+   CONTACT_EMAIL and SITE_URL are both set to the real ergoflo.tech
+   domain as of 2026-07-30. Two things still have to be true off-site:
+     1. hello@ergoflo.tech must actually receive mail. /privacy promises
+        a 5-business-day answer to deletion requests at that address and
+        /terms promises 30 days on disputes — those are the only two
+        enforceable promises on the site, so a dead mailbox is a broken
+        legal commitment, not a cosmetic gap.
+     2. A records for ergoflo.tech AND www.ergoflo.tech must point at
+        the deploy host, or Caddy cannot issue a certificate. See the
+        header of ./Caddyfile.
    No postal address is published on purpose — see the identity note.
-   Nothing else in the codebase hardcodes these.
+   Nothing else in the codebase hardcodes these two values.
 
    There is deliberately NO STRIPE_LINK. It was removed on 2026-07-29 —
    see the commerce note below before adding one back.
 
-   BRAND is settled: one word, capital E, capital F — "ErgoFlow".
+   BRAND is settled: one word, capital E, capital F — "ErgoFlo".
+   Renamed from "ErgoFlow" on 2026-07-30. Read the brand note below the
+   identity block before changing it again.
 
    ─── CLAIMS RULE, READ BEFORE EDITING ANY NUMBER ───
    As of 2026-07-29 NOTHING on this product has been bench-measured and
@@ -28,12 +35,45 @@
    or Lanham Act problem.
    ============================================================ */
 
-export const BRAND = "ErgoFlow";
+export const BRAND = "ErgoFlo";
 
-export const CONTACT_EMAIL = "hello@ergoflow.com";
+/* ============================================================
+   BRAND NAME — "ErgoFlo", set 2026-07-30. Was "ErgoFlow".
 
-/** No trailing slash. Swap before launch — OG/Twitter cards and sitemap depend on it. */
-export const SITE_URL = "https://ergoflow.com";
+   The rename happened because ergoflow.com is not available: it has
+   been registered to a third party since 2003-12-09 and serves a parked
+   resale lander. No email on that domain could ever be reached, which
+   mattered because CONTACT_EMAIL is the address /privacy publishes for
+   data-deletion requests and /terms publishes for disputes.
+
+   TWO THINGS THAT WERE KNOWN AND ACCEPTED WHEN THIS NAME WAS CHOSEN.
+   Do not treat either as an open discovery:
+
+     1. `ERGOFLO` is a LIVE federal registration — USPTO Reg. 4286129,
+        Serial 85661701, filed 2012-06-26, registered 2013-02-05,
+        Sections 8 & 15 accepted 2018-11-30 (so it is incontestable).
+        Goods: mop handles, International Class 021. That is a distant
+        class from a backpack accessory (Class 018 / 009), so
+        coexistence is arguable — but it is an EXACT character match,
+        which "ErgoFlow" was not. Registering ERGOFLO federally for this
+        product is not a sure thing.
+     2. `ergofló` is an existing consumer product name (Perfect Fit,
+        an enema/douche system sold on Amazon). It is a Class 010
+        medical device, so not a legal conflict, but it is what shares
+        the name in consumer search results.
+
+   Neither is a blocker for a waitlist page that sells nothing. Both
+   matter before spending money on packaging, a logo, or a federal
+   trademark application. Run a knock-out search at tmsearch.uspto.gov
+   in Class 018 and 009 before filing anything.
+   ============================================================ */
+
+/** On ergoflo.tech, the domain the deploy stack in ./Caddyfile serves. */
+export const CONTACT_EMAIL = "hello@ergoflo.tech";
+
+/** No trailing slash. Must match the site block in ./Caddyfile exactly —
+    OG/Twitter cards, the sitemap and robots.txt all derive from it. */
+export const SITE_URL = "https://ergoflo.tech";
 
 /* ---------------- identity ---------------- */
 
@@ -41,7 +81,7 @@ export const SITE_URL = "https://ergoflow.com";
    NO BUSINESS ENTITY IS CLAIMED. Changed 2026-07-29.
 
    This block previously declared "Lucas Nam, sole proprietor, doing
-   business as ErgoFlow". That was removed once it became clear that
+   business as ErgoFlo". That was removed once it became clear that
    BOTH people building this are under 18.
 
    Why the site now asserts no structure at all:
@@ -105,7 +145,7 @@ export const TAGLINE = "Active cooling for the pack you already own.";
       US 11,779,097 (granted 2023, expires ~2042) covering a modular
       spacer device that creates airflow between a user and a wearable
       bag, attaching via extension loops that a strap passes through.
-      ErgoFlow has NOT had a freedom-to-operate opinion. Until it does,
+      ErgoFlo has NOT had a freedom-to-operate opinion. Until it does,
       publishing a definite product at a definite price is itself the
       risky act.
 
@@ -113,7 +153,7 @@ export const TAGLINE = "Active cooling for the pack you already own.";
    Under the all-elements rule, practising every element of a claim
    infringes regardless of what else you add. The likely distinction is
    that claim 1 requires the panel gap to be ADJUSTABLE via modular
-   supports, and ErgoFlow's 5mm spacer-mesh loft is fixed. That is a
+   supports, and ErgoFlo's 5mm spacer-mesh loft is fixed. That is a
    question for a patent attorney, not for this file.
 
    DO NOT reintroduce STRIPE_LINK, a price, a deposit, a unit cap, or a
@@ -272,7 +312,7 @@ export const LEGAL_NAV = [
 
 /* ---------------- team ---------------- */
 
-/** The people who build ErgoFlow.
+/** The people who build ErgoFlo.
 
     NO ROLES, NO TITLES, NO OWNERSHIP — deliberate, 2026-07-29.
     Both are minors and no business entity exists, so the site names who
@@ -304,5 +344,9 @@ export const NO_PARTNERSHIP_NOTICE = `${BRAND} is a student project, not a compa
     Vaucluse is listed because they are a direct competitor with a granted
     patent — see the commerce note at the top of this file. Say only what
     their own product page says: that their frame is passive. */
+/* Interpolates BRAND rather than hardcoding it — this string used to spell the
+   brand name out, which meant the 2026-07-30 rename could have left the
+   trademark disclaimer disclaiming affiliation on behalf of a name the site no
+   longer uses. Keep it a template literal. */
 export const TRADEMARK_NOTICE =
-  "Osprey, AntiGravity, Deuter, Aircomfort, Gregory, FreeFloat, Vaucluse and Kuchofuku are trademarks of their respective owners. ErgoFlow is not affiliated with, endorsed by, or sponsored by any of them. They are named only to describe the current state of the category, and all statements about their products reflect those companies' own published descriptions.";
+  `Osprey, AntiGravity, Deuter, Aircomfort, Gregory, FreeFloat, Vaucluse and Kuchofuku are trademarks of their respective owners. ${BRAND} is not affiliated with, endorsed by, or sponsored by any of them. They are named only to describe the current state of the category, and all statements about their products reflect those companies' own published descriptions.`;

@@ -1,0 +1,65 @@
+# ============================================================
+# ErgoFlo landing — production stack on EC2.
+#
+#   caddy  :80 :443  — public edge, automatic Let's Encrypt TLS
+#   web    :3000     — Next.js standalone server, internal only
+#
+# Bring up with ./deploy.sh, not by hand. Runtime secrets come from
+# .env.production on the server, which is gitignored and must exist
+# before the first deploy.
+# ============================================================
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ergoflo-web:latest
+    restart: unless-stopped
+    # SUPABASE_URL, SUPABASE_SECRET_KEY, ACME_EMAIL.
+    # Not `environment:` — that would put secrets in this committed file.
+    env_file:
+      - .env.production
+    # `expose`, NOT `ports`. Publishing 3000 to the host would let anyone
+    # hit the app directly on http://<ec2-ip>:3000, bypassing TLS and the
+    # proxy entirely. The only public listener is Caddy.
+    expose:
+      - "3000"
+    networks:
+      - edge
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # THE IMPORTANT ONE. Issued certificates and the ACME account key
+      # live here. If this volume is lost, Caddy re-requests every cert
+      # from scratch — Let's Encrypt allows 5 duplicates per week and
+      # then hard-fails the domain for the remainder of the window.
+      # Never `docker compose down -v` on this server.
+      - caddy_data:/data
+      - caddy_config:/config
+    env_file:
+      - .env.production
+    depends_on:
+      # `service_started`, deliberately NOT `service_healthy`. Caddy
+      # serves the ACME HTTP-01 challenge itself and does not need the
+      # app to be up. Gating on health would mean a crash-looping app
+      # takes TLS down with it — including certificate renewal — turning
+      # a 502 into a dead domain.
+      - web
+    networks:
+      - edge
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+    driver: bridge
