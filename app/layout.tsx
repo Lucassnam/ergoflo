@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   /* Targets, flagged as targets — this string is quoted verbatim in search
      results, which makes it exactly the wrong place for an unqualified claim. */
-  description: `${TAGLINE} A single brushless fan and a tensioned spacer mesh panel, in development. Design targets: 9–12 hour runtime, 26 dB, 168 g. Not yet built, tested, or for sale.`,
+  description: `${TAGLINE} Two blower fans and a tensioned spacer mesh panel, in development. Design targets: 4-6 hour runtime, 26 dB, 168 g. Not yet built or tested. Preorder ships in about 120 days.`,
   applicationName: BRAND,
   openGraph: {
     title: `${BRAND}: Active cooling backpack panel`,

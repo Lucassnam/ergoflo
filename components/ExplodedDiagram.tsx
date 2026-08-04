@@ -119,7 +119,7 @@ function Intake() {
 }
 
 /**
- * The brushless fan, drawn as the square-frame axial unit the product
+ * The blower fans, drawn as the square-frame unit the product
  * actually uses: rounded frame, four corner mounting holes, swept impeller,
  * and the two-wire DC lead running off one corner.
  */
@@ -352,9 +352,9 @@ const LAYERS: readonly LayerSpec[] = [
   },
   {
     key: "fan",
-    label: "Brushless fan",
-    detail: "PWM · 26 dB · 9–12 hr",
-    specs: ["Single brushless, PWM speed control", "2000 mAh Li-ion, USB-C", "26 dB at the shoulder"],
+    label: "Blower fans",
+    detail: "PWM · 26 dB · 4-6 hr",
+    specs: ["Two blowers, PWM speed control", "Runs on AA cells, not included", "26 dB at the shoulder"],
     gradId: "exp-g1",
     from: "#f0f0f2",
     to: "#d2d2d9",
@@ -376,7 +376,7 @@ const LAYERS: readonly LayerSpec[] = [
     key: "mesh",
     label: "3D spacer mesh",
     detail: "5 mm loft · touches you",
-    specs: ["5 mm spacer loft", "Tensioned on TPU rails", "168 g added, all in"],
+    specs: ["5 mm spacer loft", "Tensioned on a PETG frame", "168 g added, all in"],
     gradId: "exp-g3",
     from: "#ffffff",
     to: "#e9e9ef",
@@ -570,10 +570,10 @@ export default function ExplodedDiagram() {
             Exploded view
           </p>
           <h2 className="headline mt-3 text-center text-[clamp(1.7rem,4vw,2.75rem)] text-black">
-            Four layers. Nothing decorative.
+            Four layers, and none are decorative.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-center text-[15px] leading-relaxed text-neutral-600">
-            Air enters at the pack, gets moved by a single brushless fan, is
+            Air enters at the pack, gets moved by two blower fans, is
             split four ways by the distributor, and leaves through the mesh
             against your back.
           </p>
@@ -583,7 +583,7 @@ export default function ExplodedDiagram() {
             className="mx-auto mt-1 block h-auto w-full max-w-3xl"
             style={{ maxHeight: "48vh" }}
             role="img"
-            aria-label="Exploded diagram of the panel, following the airflow from the bag outward: intake grille, single brushless fan, air distributor, and 3D spacer mesh against your back."
+            aria-label="Exploded diagram of the panel, following the airflow from the bag outward: intake grille, two blower fans, air distributor, and 3D spacer mesh against your back."
           >
             <defs>
               {LAYERS.map((l) => (

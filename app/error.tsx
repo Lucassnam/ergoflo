@@ -26,8 +26,8 @@ export default function Error({
           Something broke on our end.
         </h1>
         <p className="mt-5 text-[16px] leading-relaxed text-neutral-600">
-          That&rsquo;s our fault, not yours. Try again — and if it keeps
-          happening, we&rsquo;d genuinely like to know.
+          That&rsquo;s our fault, not yours. Try again, and if it keeps
+          happening we&rsquo;d genuinely like to know.
         </p>
         <button
           onClick={reset}

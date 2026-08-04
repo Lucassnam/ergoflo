@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BRAND, NAV } from "@/lib/site";
-import WaitlistButton from "./WaitlistButton";
+import PreorderButton from "./PreorderButton";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -63,7 +63,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <WaitlistButton size="sm" className="hidden sm:inline-flex" />
+          <PreorderButton size="sm" className="hidden sm:inline-flex" />
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -96,7 +96,7 @@ export default function Header() {
                 {n.label}
               </Link>
             ))}
-            <WaitlistButton size="md" className="mt-3 w-full sm:hidden" />
+            <PreorderButton size="md" className="mt-3 w-full sm:hidden" />
           </div>
         </div>
       )}

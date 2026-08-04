@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, useTransform, useSpring, useMotionValue } from "motion/react";
-import WaitlistButton from "@/components/WaitlistButton";
+import PreorderButton from "@/components/PreorderButton";
 
 export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
 
@@ -370,16 +370,14 @@ export default function ScrollMorphHero() {
           className="absolute top-[7%] z-20 flex flex-col items-center justify-center px-4 text-center"
         >
           <h2 className="headline mb-4 text-3xl text-neutral-900 md:text-5xl">
-            Every climate. Every climb.
+            For the commute and the climb.
           </h2>
           <p className="mb-8 max-w-md text-sm leading-relaxed text-neutral-600 md:text-base">
-            A single brushless fan keeps air moving against your back on the
-            commute, on the trail, and everywhere in between.
+            Two blower fans move air through the gap between your back and the
+            pack, instead of waiting for you to walk fast enough.
           </p>
           <div className="pointer-events-auto">
-            <WaitlistButton size="lg">
-              Join the waitlist
-            </WaitlistButton>
+            <PreorderButton size="lg" />
           </div>
         </motion.div>
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
-import WaitlistButton from "@/components/WaitlistButton";
+import PreorderButton from "@/components/PreorderButton";
 import {
   BRAND,
   NO_PARTNERSHIP_NOTICE,
@@ -15,11 +15,19 @@ export const metadata: Metadata = {
 };
 
 /* NOTE FOR THE FOUNDER
-   The fan count here is ONE, matching PARTS and SPECS in lib/site.ts.
-   An earlier draft of this page said "two fans" — if you ever change
-   the design, this file and lib/site.ts have to move together. A
-   visitor who reads the pricing table and then /about is exactly the
-   visitor you cannot afford to confuse.
+   The fan count here is TWO BLOWERS, matching PARTS and SPECS in
+   lib/site.ts as of 2026-08-04. It has now changed twice — two, then
+   one, then two again — and each time this file had to be edited by
+   hand, because the design narrative is prose and cannot read from
+   lib/site.ts. If you change it a third time, grep the whole repo for
+   "blower", "axial", "4-6" and "PETG" before you ship. A visitor who
+   reads the pricing table and then /about is exactly the visitor you
+   cannot afford to confuse.
+
+   THE 26 dB TARGET IS THE WEAK POINT NOW. It was set against a single
+   axial fan. Two blowers at equal airflow are louder, and principle 02
+   on this page makes quietness a gate the product must clear. Measure
+   it before that claim is ever firmed up.
 
    CLAIMS NOTE 2026-07-29: this page previously narrated battery
    certification work (UN38.3, IEC 62133) as though it were underway,
@@ -32,44 +40,44 @@ const PRINCIPLES = [
   {
     num: "01",
     title: "Retrofit, don’t replace",
-    body: "You already own a pack you like, that fits you, that has your things in it. Asking you to throw it away to get cooler is a worse product with a bigger price tag. The cooling is the part you add.",
+    body: "You already own a pack that fits you and has your things in it. Asking you to throw it away to get cooler means a worse product at a bigger price. The cooling should be the part you add.",
   },
   {
     num: "02",
     title: "Quiet or it doesn’t ship",
-    body: "A fan you can hear is a fan you switch off, and a fan switched off is a foam pad you overpaid for. 26 dB is the gate the design has to clear, and two prototypes were abandoned because you could plainly hear them across a room.",
+    body: "If you can hear the fan you turn it off, and then you have paid extra for a foam pad. 26 dB is the gate the design has to clear. Two prototypes were abandoned because you could plainly hear them across a room.",
   },
   {
     num: "03",
     title: "Targets labelled as targets",
-    body: "26 dB. 168 g. 9–12 hours. Every one of those is a design target we have not yet measured, and we label it that way everywhere it appears. An unlabelled estimate is just marketing wearing a lab coat, and we would rather you trusted the number we publish after we have taken it.",
+    body: "26 dB, 168 g, 4-6 hours: every one of those is a design target we have not measured, and we label it that way everywhere it appears. We would rather you trusted the number we publish after we have actually taken it.",
   },
 ];
 
 const TIMELINE = [
   [
     "The category is passive, and nobody says so",
-    "Osprey AntiGravity, Deuter Aircomfort, Gregory FreeFloat — the celebrated back-panel systems are all described by their makers as tensioned mesh over a frame. Vaucluse even sells a dedicated retrofit ventilation frame, and it works the same way. Every one of them builds an air gap and leaves the moving of air to you. Once you notice it, you can’t stop noticing it.",
+    "Osprey AntiGravity, Deuter Aircomfort, Gregory FreeFloat: the best-known back-panel systems are all described by their own makers as tensioned mesh over a frame. Vaucluse even sells a dedicated retrofit ventilation frame, and it works the same way. Every one of them builds an air gap and leaves the moving of air to you.",
   ],
   [
     "The first one was terrible",
-    "Two 80mm computer fans zip-tied to a cut-down laptop stand, run off a power bank in the water-bottle pocket. Loud enough to get looks on a train, heavy enough to feel dishonest — and unmistakably, obviously cooler. That was the whole signal.",
+    "Two 80mm computer fans zip-tied to a cut-down laptop stand, run off a power bank in the water-bottle pocket. Loud enough to get looks on a train, heavy enough to feel dishonest. It was also, obviously, cooler, and that was enough to keep going.",
   ],
   [
-    "One fan beat two",
-    "Two fans meant two noise sources, two failure points, and a battery that died before lunch. A single brushless fan under PWM control, mounted on a rigid deck so vibration never reaches your back, is the design we settled on — with 26 dB as the target it has to hit. Subtraction, not addition.",
+    "We tried one fan and went back to two",
+    "We moved to a single axial fan to kill two noise sources and two failure points, and for a while that was the design. It could not move enough air through a 5 mm channel to be worth carrying. So we went back to two PWM blowers, mounted on a rigid deck so vibration never reaches your back. Blowers push against resistance in a way axial fans do not, and a 5 mm channel is mostly resistance. That reversal cost us runtime, 4-6 hours per set of batteries instead of 9-12, and it made the 26 dB target harder than it was.",
   ],
   [
     "Rigid backing was the wrong instinct",
-    "A stiff plate holds an air channel open beautifully until a spine moves. Swapping it for tensioned 3D spacer mesh — 5mm loft, held under load by TPU rails — fixed the airflow and the way the panel sits on a back, in one change.",
+    "A stiff plate holds an air channel open right up until a spine moves. Swapping it for tensioned 3D spacer mesh, 5mm loft held under load by the PETG frame itself, fixed the airflow and the way the panel sits on a back in one change.",
   ],
   [
-    "The battery is still the open question",
-    "A 2000mAh cell isn’t hard to buy. It’s hard to ship: UN38.3 transport testing, IEC 62133, air-freight rules. We haven’t selected a cell yet, and we’re deliberately looking for one whose supplier already holds those reports rather than trying to certify a product ourselves. That decision is ahead of us, not behind us.",
+    "We gave up on the rechargeable battery, and it made the product better",
+    "A 2000mAh lithium cell is easy to buy and hard to ship: UN38.3 transport testing, IEC 62133, air-freight rules, and a cell that can vent or catch fire strapped to somebody’s back. We were going to do it anyway. Then we asked what the product loses if it just takes AA batteries out of an empty compartment, and the answer was a nicer spec sheet and nothing else. You buy the batteries, you swap them at a gas station, and there is no charging cable to forget. It’s a worse line on paper and a much better thing to actually put in the world.",
   ],
   [
-    "A waitlist, not a pre-order",
-    "168 g, 9–12 hours, 26 dB — all targets, none of them measured, on a design with no cell chosen and no test report to its name. We could take deposits at this stage. Plenty of projects do. We’d rather find out whether anyone wants this by asking, and come back for money when there’s a product to sell. What’s left isn’t a manufacturing question. It’s most of the engineering.",
+    "A preorder, and what that costs you",
+    "168 g, 4-6 hours, 26 dB: all targets, none of them measured, on a design with no cell chosen and no test report to its name. We spent a while refusing to take money at this stage, and the argument against it hasn’t gone away, because what is left is most of the engineering rather than a manufacturing run. We’re taking preorders anyway, because the build needs funding to happen at all. Be clear-eyed about the deal. Preorders are final, so if you change your mind we can’t give the money back, because by then it will already be spent on the build. What we do guarantee is that if we’re late you can walk away with a full refund, and if we abandon it you get every cent back. If that isn’t a bet you want to make, the notify list costs nothing.",
   ],
 ];
 
@@ -90,15 +98,15 @@ export default function About() {
               About
             </p>
             <h1 className="mt-4 headline text-[clamp(2.2rem,6vw,4rem)]">
-              The back panel is the{" "}
-              <span className="accent-text">last unsolved part</span> of a
-              backpack.
+              Every part of a backpack improved{" "}
+              <span className="accent-text">except the one touching your
+              back</span>.
             </h1>
             <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-fg-dim sm:text-[19px]">
-              Straps got adjustable. Fabrics got waterproof. Frames got light.
-              The one surface actually pressed against your spine — the one
-              that decides whether you arrive comfortable — is still a slab of
-              foam, doing nothing at all.
+              Straps became adjustable, fabrics became waterproof, frames got
+              lighter. The surface actually pressed against your spine, the one
+              that decides whether you arrive comfortable, is still a slab of
+              closed-cell foam. It does nothing.
             </p>
           </Reveal>
         </div>
@@ -111,23 +119,23 @@ export default function About() {
               <p className="text-[16px] leading-relaxed text-fg-dim">
                 {BRAND} started as a commute problem. Twenty minutes on foot
                 from a train, a laptop in the pack, and a shirt that had to be
-                changed on arrival — every day, all summer. The physics aren’t
-                subtle: a warm machine and a warm back, sealed either side of a
-                closed-cell foam pad, with nowhere for any of it to go.
+                changed on arrival, every day, all summer. A warm machine and a
+                warm back, sealed either side of a closed-cell foam pad, with
+                nowhere for the heat to go.
               </p>
               <p className="mt-5 text-[16px] leading-relaxed text-fg-dim">
-                Everything sold as a fix moved the foam around. Channels cut
-                into it. Mesh suspended over it. Clever shapes that widen the
-                gap and then rely on you walking fast enough to flush it. All
-                of it is a bet that convection will show up. On a still August
-                platform, it doesn’t.
+                Everything sold as a fix moves the foam around: channels cut
+                into it, mesh suspended over it, shapes that widen the gap and
+                then rely on you walking fast enough to flush it. All of that
+                is a bet that convection will show up, and on a still August
+                platform it doesn’t.
               </p>
               <p className="mt-5 text-[16px] leading-relaxed text-fg-dim">
-                So we built the boring version instead: put one quiet fan and a
-                tensioned mesh window between your back and the bag, run it off
-                a cell small enough that you forget it’s there, and make the
-                whole thing fit the pack you already carry. No new backpack. No
-                app. A fan, where a fan should have been for twenty years.
+                So we went after the boring version instead: two quiet blowers
+                and a tensioned mesh window between your back and the bag,
+                running off a cell small enough to forget about, sized to fit
+                the pack you already carry. You keep your backpack, and there
+                is no app.
               </p>
             </div>
           </Reveal>
@@ -218,9 +226,9 @@ export default function About() {
               <p className="mt-6 text-center text-[16px] leading-relaxed text-fg-dim">
                 {BRAND} is a student business project by{" "}
                 {TEAM.slice(0, -1).join(", ")} and {TEAM[TEAM.length - 1]}. It
-                is not a company, and it isn&rsquo;t selling anything &mdash;
-                we&rsquo;re two students trying to find out whether this is
-                worth building.
+                is not a company and no business entity stands behind it.
+                We&rsquo;re two students taking preorders for something we
+                haven&rsquo;t built yet.
               </p>
               <p className="mt-8 text-[12px] leading-relaxed text-neutral-500">
                 {NO_PARTNERSHIP_NOTICE}
@@ -231,14 +239,15 @@ export default function About() {
             </div>
 
             <h2 className="headline text-[clamp(1.9rem,4.6vw,3rem)]">
-              Hear about it when it’s real.
+              Back the first run.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-[16px] leading-relaxed text-fg-dim">
-              We’re not taking money for something that doesn’t exist. Leave an
-              email and we’ll tell you if it ever does. That’s the whole pitch.
+              You’d be paying for a design rather than a finished product, and
+              preorders are final. If you’d rather wait, the notify list costs
+              nothing.
             </p>
             <div className="mt-8 flex justify-center">
-              <WaitlistButton size="lg">Join the waitlist</WaitlistButton>
+              <PreorderButton size="lg" />
             </div>
           </Reveal>
         </div>

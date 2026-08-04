@@ -2,11 +2,19 @@ import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
 import StatCard from "@/components/StatCard";
 import ExplodedDiagram from "@/components/ExplodedDiagram";
 import ProductRender from "@/components/ProductRender";
+import StudentCarry from "@/components/StudentCarry";
 import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
-import WaitlistButton from "@/components/WaitlistButton";
+import PreorderButton from "@/components/PreorderButton";
 import PricingSection from "@/components/PricingSection";
-import { DEV_STAGE, FAQ, HERO_STATS, NOT_AN_OFFER_NOTICE } from "@/lib/site";
+import {
+  DEV_STAGE,
+  FAQ,
+  HERO_STATS,
+  LEAD_TIME_DAYS,
+  PREORDER_NOTICE,
+  formatPrice,
+} from "@/lib/site";
 
 /* JSON-LD so the FAQ is machine-readable.
 
@@ -55,16 +63,16 @@ export default function Home() {
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <p className="text-center font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
-              The performance
+              The targets
             </p>
             <h2 className="mx-auto mt-4 max-w-2xl text-center headline text-[clamp(1.9rem,4.2vw,3rem)] text-black">
-              Engineered for active cooling.
+              Three numbers we design against.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-center text-[17px] leading-relaxed text-neutral-600">
               {/* Deliberately not a swipe at passive panels — a competitor
                   sells a good one, and the FAQ says so. States what the active
                   design is meant to do, full stop. */}
-              One PWM-controlled brushless fan and a 2000&nbsp;mAh cell, meant
+              Two PWM-controlled blower fans running on AA batteries, meant
               to move air across your back for the whole commute.
             </p>
           </Reveal>
@@ -87,6 +95,13 @@ export default function Home() {
       {/* ============ WHAT IT IS ============ */}
       <ProductRender />
 
+      {/* ============ WHO IT'S FOR ============
+          Sits AFTER ProductRender deliberately. The reader meets the actual
+          part, and its "no unit has been built" disclosure, before they meet
+          a photorealistic person on a campus — which is the image most
+          likely to be read as proof the product ships today. */}
+      <StudentCarry />
+
       {/* ============ WHAT WE'RE BUILDING ============ */}
       <PricingSection />
 
@@ -102,33 +117,43 @@ export default function Home() {
         <div className="relative z-10 mx-auto max-w-xl">
           <Reveal>
             <p className="text-center font-mono text-[11px] tracking-[0.2em] text-neutral-400 uppercase">
-              Waitlist
+              Preorder
             </p>
             <h2 className="mt-4 text-center headline text-[clamp(1.9rem,4.2vw,3rem)] text-black">
-              No money. Just tell us you want one.
+              {formatPrice()}. Fund the first run.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-center text-[16px] leading-relaxed text-neutral-600">
-              {DEV_STAGE}. Leave an email and we&rsquo;ll write to you once
-              &mdash; if and when there&rsquo;s something real to sell.
+              {DEV_STAGE}. Shipping included. Preorders are final, and
+              refundable in full only if we miss the window.
             </p>
           </Reveal>
 
           <Reveal delay={0.1}>
             <div className="relative mt-12 rounded-3xl border border-neutral-200 bg-white p-8 sm:p-10 shadow-sm">
+              {/* The badge says what the product IS, not what the offer is.
+                  "Not for sale yet" was true of a waitlist and is now false —
+                  a stale badge contradicting a live price is exactly the kind
+                  of internal inconsistency a deception claim is built on. */}
               <span className="absolute -top-3 left-8 rounded-full bg-black px-3.5 py-1 font-mono text-[10px] font-bold tracking-[0.12em] text-white uppercase">
-                Not for sale yet
+                Not built yet
               </span>
 
               <p className="font-mono text-[11px] tracking-[0.16em] text-neutral-500 uppercase">
-                What joining actually does
+                What preordering actually does
               </p>
 
               <ul className="mt-6 mb-8 list-none space-y-0 p-0">
                 {[
-                  "We store your email address. Nothing else.",
-                  "One email if it becomes a real product.",
-                  "No price, no queue position, no obligation either way.",
-                  "Reply to that email to be removed at any time.",
+                  `You are charged ${formatPrice()} today, shipping included.`,
+                  `We aim to ship in about ${LEAD_TIME_DAYS} days.`,
+                  "No unit exists yet. You are funding the build.",
+                  /* This bullet used to promise cancellation any time before
+                     shipment. Narrowed 2026-08-04 with the policy. It sits
+                     ABOVE the buy button on purpose: a final-sale term the
+                     buyer cannot see before paying is the kind a court
+                     declines to enforce. Do not move it below the CTA. */
+                  "Preorders are final, with no change-of-mind refunds.",
+                  `Full refund if we miss the ${LEAD_TIME_DAYS}-day window.`,
                 ].map((line) => (
                   <li key={line} className="py-3.5 text-[14.5px] text-neutral-600">
                     <div className="mb-3.5 h-px w-full bg-neutral-200" />
@@ -137,12 +162,10 @@ export default function Home() {
                 ))}
               </ul>
 
-              <WaitlistButton size="lg" className="w-full">
-                Join the waitlist
-              </WaitlistButton>
+              <PreorderButton size="lg" className="w-full" />
 
               <p className="mt-5 text-[12.5px] leading-relaxed text-neutral-400">
-                {NOT_AN_OFFER_NOTICE}
+                {PREORDER_NOTICE}
               </p>
             </div>
           </Reveal>
@@ -157,7 +180,7 @@ export default function Home() {
               FAQ
             </p>
             <h2 className="mt-4 mb-12 text-center headline text-[clamp(1.9rem,4.2vw,3rem)] text-black">
-              Before you sign up.
+              Before you pay.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
@@ -171,13 +194,13 @@ export default function Home() {
         <div className="relative z-10 mx-auto max-w-2xl">
           <Reveal>
             <h2 className="headline text-[clamp(2rem,5vw,3.4rem)] text-black">
-              Walk in. Still dry.
+              Preorder, or wait and see.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-[17px] text-neutral-500">
-              {DEV_STAGE}. If we get there, you&rsquo;ll be the first to know.
+              {DEV_STAGE}. Refundable in full until the day it ships.
             </p>
             <div className="mt-9 flex justify-center">
-              <WaitlistButton size="lg">Join the waitlist</WaitlistButton>
+              <PreorderButton size="lg" />
             </div>
           </Reveal>
         </div>
