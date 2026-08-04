@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: `What ${BRAND} collects, why, who processes it, and how to have it deleted.`,
 };
 
-const LAST_UPDATED = "29 July 2026";
+const LAST_UPDATED = "4 August 2026";
 
 /* ============================================================
    PRIVACY POLICY — drafted 2026-07-29.
@@ -59,13 +59,26 @@ export default function Privacy() {
           arrived from a specific link, and the date and time you signed up.
           That is all.
         </p>
+        {/* REWROTE "There is no checkout" ON 2026-08-03. The old text said
+            "No payment processor is involved and no card data touches this
+            site at any point." The first clause became false when Stripe was
+            added; the second is still true and is worth keeping, because it
+            is the substantive protection here. A privacy policy that denies a
+            processor it actually uses is a CalOPPA problem, not a typo. */}
+        <p>
+          <strong className="font-semibold text-black">If you preorder:</strong>{" "}
+          your email address, your name, and the shipping address you enter at
+          checkout, plus the amount and date of the order. We keep those because
+          we cannot ship or refund an order without them.
+        </p>
         <p>
           <strong className="font-semibold text-black">
-            There is no checkout:
+            We never see your card:
           </strong>{" "}
-          nothing on this site is for sale, so we never collect payment details,
-          billing details, or a shipping address. No payment processor is
-          involved and no card data touches this site at any point.
+          card details are entered on Stripe&rsquo;s own checkout page, not
+          ours. No card number, expiry, or security code touches this site or
+          our database at any point, and we could not charge your card
+          ourselves even if we wanted to.
         </p>
         <p>
           <strong className="font-semibold text-black">What we do not do:</strong>{" "}
@@ -77,9 +90,9 @@ export default function Privacy() {
 
       <LegalSection heading="Why we collect it">
         <p>
-          To email you if {BRAND} ever becomes a product you can buy. Nothing
-          else. There are no reservations and no orders to support, because
-          nothing is for sale.
+          To email you if {BRAND} ever becomes a product you can buy and, if
+          you preorder, to fulfil, refund, and keep you updated about that
+          order. Nothing else.
         </p>
         <p>
           If you join the waitlist, expect one email at launch. We are not
@@ -91,7 +104,18 @@ export default function Privacy() {
       <LegalSection heading="Who else processes it">
         <p>
           <strong className="font-semibold text-black">Supabase</strong> hosts
-          the database that stores waitlist email addresses, as our processor.
+          the database that stores waitlist email addresses and preorder
+          records, as our processor.
+        </p>
+        <p>
+          <strong className="font-semibold text-black">Stripe</strong> processes
+          payments. If you preorder, Stripe receives your card details directly
+          from your browser and shares your email, name and shipping address
+          back with us so we can fulfil the order. Stripe is an independent
+          controller of the payment data it holds and applies its own privacy
+          policy to it. If you never preorder, Stripe receives nothing about
+          you. No Stripe script loads on this site, so simply visiting
+          it tells them nothing.
         </p>
         <p>
           <strong className="font-semibold text-black">Vercel</strong> hosts this
@@ -103,7 +127,7 @@ export default function Privacy() {
               Those are third-party requests made by your browser, so Unsplash
               receives the visitor's IP and user-agent. It is not tracking, but
               it IS a third-party recipient, and this policy claims to list all
-              of them — so it has to be named. If the hero images are ever
+              of them, so it has to be named. If the hero images are ever
               self-hosted, delete this paragraph. */}
           <strong className="font-semibold text-black">Unsplash</strong> hosts
           the photographs on our homepage. Because your browser fetches them
@@ -121,7 +145,7 @@ export default function Privacy() {
         <p>
           Waitlist emails are kept until you ask us to remove you, or until the
           launch they were collected for has happened and the list is no longer
-          needed — whichever comes first. If the product is abandoned, the list
+          needed, whichever comes first. If the product is abandoned, the list
           is deleted.
         </p>
       </LegalSection>
@@ -148,7 +172,7 @@ export default function Privacy() {
           opt out of the sale or sharing of your personal information, and the
           right not to be discriminated against for exercising them. We do not
           sell or share personal information as those terms are defined, so
-          there is no opt-out to offer — but the other rights are exercised the
+          there is no opt-out to offer, but the other rights are exercised the
           same way, by emailing the address above.
         </p>
       </LegalSection>
@@ -163,7 +187,7 @@ export default function Privacy() {
           No system is perfectly secure, and {BRAND} is a student project run by
           two people. We are not going to claim a level of protection we cannot
           guarantee. Please do not send us information you would not want
-          disclosed, and never send payment details by email — we will never ask
+          disclosed, and never send payment details by email. We will never ask
           for them that way.
         </p>
       </LegalSection>
@@ -180,7 +204,7 @@ export default function Privacy() {
       <LegalSection heading="Changes">
         <p>
           If this policy changes, the date at the top of the page changes with
-          it. If we ever start collecting something new — analytics included —
+          it. If we ever start collecting something new, analytics included,
           this page will say so before it happens. {LEGAL_NAME} are responsible
           for this policy.
         </p>

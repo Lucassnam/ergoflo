@@ -7,7 +7,7 @@ import {
   LEGAL_ENTITY,
   LEGAL_NAV,
   NAV,
-  NOT_AN_OFFER_NOTICE,
+  PREORDER_NOTICE,
   TARGETS_DISCLAIMER,
 } from "@/lib/site";
 
@@ -62,13 +62,19 @@ export default function Footer() {
             (nothing was ever bench-tested) and stated a refund rule that
             contradicted two other pages. Both sentences now come from
             lib/site.ts so the footer, the FAQ and /terms cannot drift apart
-            again. The "not an offer" sentence is legally load-bearing —
-            see the commerce note in lib/site.ts before removing it. */}
+            again.
+
+            NOT_AN_OFFER_NOTICE used to close this paragraph. It was deleted
+            site-wide on 2026-08-03 when checkout shipped — it read "nothing
+            here is for sale", which a footer cannot say on a page carrying a
+            $49.99 buy button. PREORDER_NOTICE replaces it and is equally
+            load-bearing: it is the site-wide disclosure that the thing being
+            sold does not exist yet. Do not drop it to tidy the footer. */}
         <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
           <p className="max-w-3xl text-[11.5px] leading-relaxed text-neutral-400">
             © {new Date().getFullYear()} {LEGAL_ENTITY}. {BRAND} is a design in
-            development — no finished unit exists, and nothing has been tested
-            or certified. {TARGETS_DISCLAIMER} {NOT_AN_OFFER_NOTICE}
+            development. No finished unit exists, and nothing has been tested
+            or certified. {TARGETS_DISCLAIMER} {PREORDER_NOTICE}
           </p>
         </div>
       </div>

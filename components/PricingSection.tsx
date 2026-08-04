@@ -2,7 +2,13 @@
 
 import Link from "next/link"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { NOT_AN_OFFER_NOTICE, TARGETS_DISCLAIMER } from "@/lib/site"
+import {
+  LEAD_TIME_DAYS,
+  PREORDERS_ENABLED,
+  PREORDER_NOTICE,
+  TARGETS_DISCLAIMER,
+  formatPrice,
+} from "@/lib/site"
 import { motion } from "motion/react"
 import Reveal from "./Reveal"
 
@@ -32,42 +38,58 @@ import Reveal from "./Reveal"
    here. Concepts described without price or availability are not.
    ============================================================ */
 
+/* `price` is set on exactly ONE concept, deliberately. Passive Panel and
+   Complete Backpack are still ideas with no design behind them, and
+   pricing an idea is how you end up owing someone a product you never
+   started. Only the thing being actively built is for sale. */
 const CONCEPTS = [
   {
     name: "Passive Panel",
-    stage: "Concept",
+    /* "Launching Q2 2027" per the owner, 2026-08-04. Note what this is:
+       a DATE on a product with no design work started. It is softer than
+       a ship promise (nothing is for sale, so no Mail Order Rule clock
+       runs against it) but it is still a public availability claim, and
+       an availability claim is the easiest kind of FTC deception case to
+       prove because it is specific and checkable. If Q2 2027 arrives and
+       this has not launched, change the date or remove it — do not let it
+       sit stale. Same for the Complete Backpack below. */
+    stage: "Launching Q2 2027",
     notifySlug: "passive-panel",
-    description: "A static spacer panel — no fan, no battery.",
+    price: null,
+    description: "A static spacer panel with no fan and no battery.",
     features: [
       "3D spacer mesh, 5mm loft",
-      "Tensioned TPU rails",
-      "PETG frame",
-      "Intended for packs 15–45L",
+      "One-piece PETG frame",
+      "No battery, no charging",
+      "Intended for packs 15-45L",
     ],
   },
   {
-    name: "Active Fan",
+    name: "FlowPack V1",
     stage: "What we're building first",
     focus: true,
     notifySlug: null,
+    price: formatPrice(),
     description:
-      "One brushless fan moving air through the gap, instead of waiting for you to walk fast enough.",
+      "Two blowers move air through the gap, instead of waiting for you to walk fast enough.",
     features: [
       "Everything in Passive, plus:",
-      "One brushless PWM fan",
-      "9–12 hours runtime per charge (target)",
-      "USB-C charging",
+      "Two PWM blower fans",
+      "4-6 hours per set of AA batteries (target)",
+      "Batteries NOT included: you supply AA cells",
       "26 dB (target)",
-      "Splash-resistant design goal — no IP rating claimed",
+      "Free shipping, United States only",
+      "Splash-resistant design goal, no IP rating claimed",
     ],
   },
   {
     name: "Complete Backpack",
-    stage: "Idea only",
+    stage: "Launching Q2 2027",
     notifySlug: "complete-backpack",
+    price: null,
     description: "A whole pack built around the cooling system.",
     features: [
-      "Everything in Active Fan, plus:",
+      "Everything in FlowPack V1, plus:",
       "Integrated cable management",
       "Laptop compartment",
       "Weather-resistant exterior",
@@ -88,14 +110,15 @@ export default function PricingSection() {
 
         <Reveal delay={0.1}>
           <h2 className="headline mb-6 text-4xl text-black sm:text-5xl">
-            Three ideas. One of them is real work.
+            Three ideas, and only one is being built.
           </h2>
         </Reveal>
 
         <Reveal delay={0.2}>
           <p className="mx-auto max-w-2xl text-lg text-neutral-600">
-            None of these is for sale, and we&rsquo;re not quoting a price on
-            something we haven&rsquo;t built. Here&rsquo;s what each one is.
+            One of these you can preorder. The other two are ideas we
+            haven&rsquo;t started, so they carry no price and won&rsquo;t
+            until we do.
           </p>
         </Reveal>
       </div>
@@ -135,25 +158,40 @@ export default function PricingSection() {
                     </p>
                   </div>
 
-                  {/* Stage, where the price used to be. */}
+                  {/* Price returned here on 2026-08-03, on the ONE concept
+                      that is actually for sale. The other two keep the
+                      "no price set" line — an unpriced idea sitting beside a
+                      priced product is fine; three prices for two things that
+                      do not exist is not. */}
                   <div className="mb-6">
-                    <span
-                      className={`text-sm font-semibold ${
-                        concept.focus ? "text-neutral-900" : "text-neutral-400"
-                      }`}
-                    >
-                      {concept.stage}
-                    </span>
-                    <p className="mt-1 font-mono text-[11px] tracking-[0.1em] text-neutral-400 uppercase">
-                      Not for sale · no price set
-                    </p>
+                    {concept.price ? (
+                      <>
+                        <span className="headline text-2xl text-neutral-900">
+                          {concept.price}
+                        </span>
+                        <p className="mt-1 font-mono text-[11px] tracking-[0.1em] text-neutral-400 uppercase">
+                          Preorder · free shipping · ~{LEAD_TIME_DAYS} days
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-sm font-semibold text-neutral-400">
+                          {concept.stage}
+                        </span>
+                        <p className="mt-1 font-mono text-[11px] tracking-[0.1em] text-neutral-400 uppercase">
+                          Not for sale · no price set
+                        </p>
+                      </>
+                    )}
                   </div>
 
                   <Link
                     href={
-                      concept.notifySlug
-                        ? `/notify?product=${concept.notifySlug}`
-                        : "/notify"
+                      concept.price && PREORDERS_ENABLED
+                        ? "/preorder"
+                        : concept.notifySlug
+                          ? `/notify?product=${concept.notifySlug}`
+                          : "/notify"
                     }
                     className={`mb-2 block w-full rounded-full px-4 py-3.5 text-center text-[15px] font-medium transition-colors ${
                       concept.focus
@@ -161,7 +199,9 @@ export default function PricingSection() {
                         : "border border-neutral-900 text-neutral-900 hover:bg-neutral-50"
                     }`}
                   >
-                    Join the waitlist
+                    {concept.price && PREORDERS_ENABLED
+                      ? `Preorder · ${concept.price}`
+                      : "Notify me"}
                   </Link>
                 </CardHeader>
 
@@ -195,7 +235,7 @@ export default function PricingSection() {
       <div className="max-w-4xl mx-auto text-center mt-16">
         <Reveal delay={0.4}>
           <p className="mx-auto max-w-2xl text-sm leading-relaxed text-neutral-500">
-            {NOT_AN_OFFER_NOTICE} {TARGETS_DISCLAIMER}
+            {PREORDER_NOTICE} {TARGETS_DISCLAIMER}
           </p>
           <p className="mt-3 text-sm text-neutral-500">
             <Link href="/terms" className="text-neutral-900 underline underline-offset-4">

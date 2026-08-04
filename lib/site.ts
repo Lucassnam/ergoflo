@@ -14,8 +14,10 @@
    No postal address is published on purpose — see the identity note.
    Nothing else in the codebase hardcodes these two values.
 
-   There is deliberately NO STRIPE_LINK. It was removed on 2026-07-29 —
-   see the commerce note below before adding one back.
+   COMMERCE IS LIVE-ish AGAIN as of 2026-08-03: $49.99, free shipping,
+   120-day lead time. It is gated behind PREORDERS_ENABLED and Stripe
+   TEST keys, so no real money moves yet. Read the commerce block below
+   and docs/plans/2026-08-03-preorder-commerce.md before flipping it.
 
    BRAND is settled: one word, capital E, capital F — "ErgoFlo".
    Renamed from "ErgoFlow" on 2026-07-30. Read the brand note below the
@@ -62,10 +64,12 @@ export const BRAND = "ErgoFlo";
         medical device, so not a legal conflict, but it is what shares
         the name in consumer search results.
 
-   Neither is a blocker for a waitlist page that sells nothing. Both
-   matter before spending money on packaging, a logo, or a federal
-   trademark application. Run a knock-out search at tmsearch.uspto.gov
-   in Class 018 and 009 before filing anything.
+   These WERE tolerable while this was a waitlist page that sold
+   nothing. As of 2026-08-03 the site takes orders, which raises the
+   stakes on both: an exact-character match to a live incontestable mark
+   matters more once you are using the name in commerce on goods. Run a
+   knock-out search at tmsearch.uspto.gov in Class 018 and 009 before
+   filing anything, and before any packaging or logo spend.
    ============================================================ */
 
 /** On ergoflo.tech, the domain the deploy stack in ./Caddyfile serves. */
@@ -113,8 +117,16 @@ export const LEGAL_NAME = "Lucas Nam and Edison Hsu";
 /** Used wherever the site has to say who is behind it. */
 export const LEGAL_ENTITY = `${BRAND}, a student project by ${LEGAL_NAME}`;
 
-/** Rendered in the legal pages so a reader knows exactly what this is. */
-export const NOT_A_COMPANY_NOTICE = `${BRAND} is a student business project, not a company. No business entity has been formed, nothing is sold here, and no money is collected. It is run by students and the only information it collects is an email address.`;
+/** Rendered in the legal pages so a reader knows exactly what this is.
+
+    REWRITTEN 2026-08-03. The previous text ended "...nothing is sold here,
+    and no money is collected. ...the only information it collects is an
+    email address." Every clause of that became false the moment checkout
+    shipped. A legal page that misdescribes what the site does is worse
+    than no legal page — it is the document a regulator or a customer
+    quotes back at you. If commerce is ever removed again, restore the
+    old wording; do not leave this version standing over a waitlist. */
+export const NOT_A_COMPANY_NOTICE = `${BRAND} is a student business project, not a company. No business entity has been formed. Preorders placed here are taken by the students named on this site, personally, for a product that has not been built yet. We collect your email address and, if you preorder, your name and shipping address. Card details go directly to Stripe and never touch our servers.`;
 
 export const GOVERNING_LAW = "the State of California, United States";
 
@@ -130,49 +142,220 @@ export const isSiteUrlLive = !SITE_URL.includes("REPLACE_WITH");
 export const TAGLINE = "Active cooling for the pack you already own.";
 
 /* ============================================================
-   WAITLIST ONLY — NO COMMERCE. Changed 2026-07-29.
+   PREORDER COMMERCE. Changed 2026-08-03, at the owner's explicit and
+   repeated instruction. This REVERSES the 2026-07-29 removal.
 
-   This site previously took a $15 deposit against a $40 product with a
-   Q4 2026 ship window. All of it was removed. Two independent reasons,
-   and the second is the one that must not be undone casually:
+   The block that stood here said "DO NOT reintroduce a price, a
+   deposit, a unit cap, or a ship date without a freedom-to-operate
+   opinion in hand." That opinion still does not exist. The decision was
+   overridden, not resolved. Preserving the reasoning verbatim, because
+   the next person to read this file deserves to know what was traded:
 
-   1. Consumer law. No payment means no FTC Mail Order Rule ship
-      obligation, no refund policy, no chargebacks, and no consumer
-      contract for a product that does not exist.
+   1. Consumer law. Taking payment triggers the FTC Mail Order Rule
+      (16 CFR 435): a stated ship window, a revised-date notice with an
+      unconditional refund offer if it slips, refund handling, and
+      chargeback exposure. All of that is now implemented — see
+      /refunds, /terms and REFUND_POLICY below. It is real work that a
+      waitlist did not owe.
 
    2. Patent law. 35 U.S.C. §271(a) makes "offers to sell" an act of
       infringement on its own — nothing has to ship. Vaucluse Gear holds
       US 11,779,097 (granted 2023, expires ~2042) covering a modular
       spacer device that creates airflow between a user and a wearable
       bag, attaching via extension loops that a strap passes through.
-      ErgoFlo has NOT had a freedom-to-operate opinion. Until it does,
-      publishing a definite product at a definite price is itself the
-      risky act.
+      ErgoFlo has NOT had a freedom-to-operate opinion. Publishing a
+      definite product at a definite price is the exact act §271(a)
+      reaches. THIS RISK IS NOW LIVE ON THE SITE.
 
-   Note for whoever revisits this: adding a fan is NOT a design-around.
-   Under the all-elements rule, practising every element of a claim
-   infringes regardless of what else you add. The likely distinction is
-   that claim 1 requires the panel gap to be ADJUSTABLE via modular
-   supports, and ErgoFlo's 5mm spacer-mesh loft is fixed. That is a
-   question for a patent attorney, not for this file.
+   Adding a fan is NOT a design-around. Under the all-elements rule,
+   practising every element of a claim infringes regardless of what else
+   you add. The likely distinction is that claim 1 requires the panel gap
+   to be ADJUSTABLE via modular supports, and ErgoFlo's 5mm spacer-mesh
+   loft is fixed. That is a question for a patent attorney, not this file.
 
-   DO NOT reintroduce STRIPE_LINK, a price, a deposit, a unit cap, or a
-   ship date without that opinion in hand.
+   WHAT KEEPS THIS SAFE TODAY: PREORDERS_ENABLED is false and the
+   Cloudflare env holds a Stripe TEST key, so the flow is complete but
+   takes no real money. The gate exists because no adult 18+ has been
+   named as Stripe account holder, and both operators are minors whose
+   contracts are voidable (Cal. Family Code §6710) — meaning a paying
+   customer would today have no enforceable counterparty.
+
+   Before flipping PREORDERS_ENABLED, work through the checklist in
+   docs/plans/2026-08-03-preorder-commerce.md. It is five items and none
+   of them are optional.
    ============================================================ */
 
-/** Deliberately vague. A definite date is a promise; this is a status. */
-export const DEV_STAGE = "In development — no unit exists yet";
+/* ============================================================
+   TWO WAYS TO TAKE A PAYMENT. Only one of them needs to be set up.
+
+   A. STRIPE PAYMENT LINK (below). A URL you create in the Stripe
+      dashboard — Product catalogue -> add product -> create payment
+      link. Paste it here and preorders are live. No API key, no
+      secret in the repo, no webhook, no Pages Function. Stripe hosts
+      the whole checkout and emails the receipt. The trade-off is that
+      nothing gets written to the `preorders` table, so the Stripe
+      dashboard becomes the only order list — which is completely
+      workable for the first hundred orders.
+
+   B. CHECKOUT SESSION API (functions/api/checkout.ts, already built).
+      Needs STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET set as
+      Cloudflare Pages environment variables, plus a webhook endpoint
+      registered in the dashboard. Gives you orders in your own
+      database, custom metadata, and the ability to query them.
+
+   STRIPE_LINK WINS IF BOTH ARE SET. That is deliberate: the link is
+   the simpler, harder-to-get-wrong path, and if someone has bothered
+   to paste one in, that is the intent.
+   ============================================================ */
+
+/** Paste a Stripe Payment Link here (https://buy.stripe.com/...) to go
+    live via route A. Empty string means "not configured".
+
+    WHAT MUST BE TRUE OF THE LINK ITSELF — the code cannot check any of
+    this, so check it by hand in the Stripe dashboard:
+      - Price is exactly $49.99 USD. A link priced differently silently
+        contradicts every page on this site.
+      - Shipping address collection is ON, limited to the US.
+      - Shipping is free (no shipping rate, or a $0 rate).
+      - The confirmation page is set to redirect to /preorder/success.
+      - Terms-of-service acceptance is required, pointing at /terms.
+    A live key link starts `https://buy.stripe.com/`; a test one starts
+    `https://buy.stripe.com/test_`. Both work here — the test one is the
+    right thing to paste first. */
+/* The `: string` annotation is REQUIRED, not stylistic. Without it TS
+   infers the literal type of whatever is pasted here, and then
+   `STRIPE_LINK !== ""` below is comparing two non-overlapping literal
+   types — a hard TS2367 build error. It failed exactly that way the
+   first time a real link was pasted in. Keep the annotation. */
+export const STRIPE_LINK: string = "https://buy.stripe.com/fZu4gz3vleiGfcIdDM43S00";
+
+/** Master switch. While false, every buy control renders as a waitlist
+    CTA and /api/checkout refuses to create a session.
+
+    It flips to true ON ITS OWN as soon as STRIPE_LINK is set, because a
+    pasted payment link is an unambiguous statement of intent and having
+    to flip a second flag is just a way to be confused for an afternoon.
+    Set it to `true` manually only when going live via route B. */
+export const PREORDERS_ENABLED = STRIPE_LINK !== "";
+
+/** Cents, not dollars — this is the number handed to Stripe, and float
+    arithmetic on money is how you ship a $49.98 charge. Format for
+    display with formatPrice() below; never hand-write "$49.99". */
+export const PRICE_CENTS = 4999;
+
+export const CURRENCY = "usd";
+
+/** Free shipping is a promise made in the price. Kept as an explicit
+    constant so no page can quietly start charging for it. */
+export const SHIPPING_CENTS = 0;
+
+/** FTC Mail Order Rule (16 CFR 435.2) requires a shipping estimate at the
+    time of order. Absent one, the Rule imposes a 30-day default — which
+    this product cannot possibly meet. 120 days is the stated window and
+    it must appear at checkout, on /terms and on /refunds. If it slips,
+    the Rule requires a revised-date notice offering a full refund with
+    NO conditions attached. Do not lower this number to look faster. */
+export const LEAD_TIME_DAYS = 120;
+
+/** Cancel-any-time-before-shipment is stricter than the law requires and
+    is deliberate: it is the honest policy for an unbuilt product, and it
+    is far cheaper than the chargebacks that follow from a stingy one. */
+/* ============================================================
+   ALL SALES FINAL, EXCEPT ON DELAY. Narrowed 2026-08-04 at the
+   owner's explicit instruction, reaffirmed after the trade-off was
+   put to them.
+
+   WHAT THIS REPLACED: "Cancel any time before your order ships and we
+   refund the full $49.99, no questions asked and no restocking fee."
+   That was deliberately more generous than the law required, on the
+   reasoning that it is the honest policy for an unbuilt product and
+   cheaper than the chargebacks a stingy policy produces.
+
+   THE THREE CARVE-OUTS BELOW ARE NOT OPTIONAL AND MUST NOT BE
+   NARROWED FURTHER:
+
+     1. DELAY. The FTC Mail Order Rule (16 CFR 435.2) requires that a
+        seller who cannot ship within the stated window offer a revised
+        date AND an unconditional right to cancel for a full refund.
+        This is federal and cannot be contracted around. It is now the
+        ONLY general refund path a buyer has.
+     2. ABANDONMENT. If the product is never built, keeping the money
+        is not "all sales final" — it is taking payment for goods you
+        know will never ship, which is conversion and potentially wire
+        fraud. Not a policy choice.
+     3. DAMAGED OR NON-DELIVERY. A buyer who paid and received nothing,
+        or received a broken unit, is owed a remedy regardless of any
+        final-sale term.
+
+   CONSPICUOUSNESS IS WHAT MAKES THIS ENFORCEABLE. A no-refund term
+   that a buyer cannot see before paying is routinely unenforceable —
+   Cal. Civ. Code §1723 is the sharpest version: a retail seller whose
+   refund policy is not conspicuously posted must accept returns for 30
+   days regardless of what the policy says. So this string renders at
+   the point of sale, above the buy button, not only on /refunds.
+   Never move it below the fold to lift conversion.
+
+   THE RISK THIS TRADES FOR: chargebacks. A buyer who cannot get a
+   refund from you goes to their card issuer instead, and with no adult
+   named as seller of record that dispute is lost by default — costing
+   the money AND the dispute fee. This was raised before the change and
+   accepted.
+   ============================================================ */
+export const REFUND_POLICY =
+  `All preorders are final. Because you are funding a build rather than buying from stock, ` +
+  `we do not offer change-of-mind cancellations once an order is placed. ` +
+  `If we cannot ship within ${LEAD_TIME_DAYS} days we will email you a revised date, ` +
+  `and you can accept it or take a full refund. That choice is always yours. ` +
+  `If we abandon the project, or your order arrives damaged or never arrives, you are refunded in full.`;
+
+/** Single formatter so a price can never drift between two pages. */
+export function formatPrice(cents: number = PRICE_CENTS): string {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+/** Named seller. EMPTY UNTIL AN ADULT 18+ HOLDS THE STRIPE ACCOUNT —
+    a sale needs a party with capacity to be bound by it, and neither
+    operator has that. /terms renders a blocking notice while this is
+    empty. Do not fill it in with a minor's name to silence the notice. */
+export const SELLER_OF_RECORD = "";
+
+/** Status line. Now that orders are taken, this has to describe a thing
+    someone is paying for, without implying a unit exists. */
+export const DEV_STAGE = "In development. Preorder now, ships in about 120 days";
 
 /** One sentence, used verbatim wherever a target figure is displayed.
     Single constant so the disclosure can never drift between pages. */
 export const TARGETS_DISCLAIMER =
   "Figures are engineering targets for a design that has not been built, not measured results. Nothing has been bench-tested or certified, and the final product may differ or may never ship.";
 
-/** Rendered near every waitlist CTA. Both halves are load-bearing: the
-    first defeats the consumer expectation of a purchase, the second is
-    the §271(a) "offer to sell" disclaimer. */
-export const NOT_AN_OFFER_NOTICE =
-  "This is a waitlist, not a shop. Nothing here is for sale, no price is being quoted, and joining does not create an order or any obligation on either side. Nothing on this site is an offer to sell.";
+/* ============================================================
+   NOT_AN_OFFER_NOTICE WAS DELETED HERE ON 2026-08-03. Do not restore
+   it alongside a checkout button.
+
+   It read: "This is a waitlist, not a shop. Nothing here is for sale,
+   no price is being quoted, and joining does not create an order or any
+   obligation on either side. Nothing on this site is an offer to sell."
+
+   Every clause of that is now contradicted by a $49.99 buy button three
+   inches away. A disclaimer that the page itself falsifies does not
+   reduce liability — it evidences that the operator knew the risk and
+   papered over it. Softening it ("this is a preorder, not a sale") would
+   be the same mistake in a quieter voice.
+
+   PREORDER_NOTICE below replaces it. It does the one job the old notice
+   did that is still honest and still necessary: making unmistakably
+   clear that the buyer is paying for something that does not exist yet.
+   ============================================================ */
+
+/** Rendered next to every buy control. The specifics are the point — a
+    vague "preorders are risky" line does not inform anyone. Name the
+    price, the window, and the refund right in the same breath. */
+export const PREORDER_NOTICE =
+  `This is a preorder for a product that has not been built yet. No unit exists, ` +
+  `no fan or frame has been produced, and nothing has been bench-tested or certified. ` +
+  `You are charged ${formatPrice()} today and we aim to ship in about ${LEAD_TIME_DAYS} days. ` +
+  `All preorders are final, with no change-of-mind refunds. If we miss the ` +
+  `${LEAD_TIME_DAYS}-day window you can take a full refund instead of waiting.`;
 
 /** Hero stats. `value` is numeric so it can be counted up; `suffix` is rendered after.
     `accent` drives the glow color each stat card lights up with on scroll.
@@ -187,15 +370,19 @@ export const HERO_STATS = [
     prefix: "",
     suffix: "°F",
     label: "Target: feels 25°F cooler",
-    note: "Perceived drop at the panel surface — design target, not measured",
+    note: "Perceived drop at the panel surface. A design target, not a measurement",
     accent: "blue",
   },
   {
-    value: 12,
-    prefix: "9–",
+    /* Was 9–12 hrs. Cut to 4–6 on 2026-08-04 when the design moved to TWO
+       blower fans — two blowers draw far more than the single axial fan
+       the old figure was calculated against. If the fan count changes
+       again, this number moves with it. */
+    value: 6,
+    prefix: "4-",
     suffix: " hrs",
-    label: "Target runtime per charge",
-    note: "Calculated from cell capacity and fan draw — not yet bench-tested",
+    label: "Target runtime per set of AA cells",
+    note: "Calculated from cell capacity and fan draw. Not yet bench-tested",
     accent: "red",
   },
   {
@@ -203,31 +390,39 @@ export const HERO_STATS = [
     prefix: "",
     suffix: " dB",
     label: "Target noise at the shoulder",
-    note: "The design goal the fan is selected against — not measured",
+    note: "The design goal the fan is selected against. Not measured",
     accent: "cyan",
   },
 ] as const;
 
+/* Rewritten 2026-08-04: two blower fans replace the single axial fan, and
+   the TPU tension rails are gone — the frame is PETG throughout. Part 03
+   used to be "Twin tension rails / TPU rails spread load…". There is no
+   TPU in the design any more, so that part was replaced rather than
+   reworded. Do not reintroduce TPU anywhere on the site without changing
+   it back here first; SPECS below and /preorder both read from this file,
+   but app/about/page.tsx tells the design story in prose and has to be
+   edited by hand whenever this list changes. */
 export const PARTS = [
   {
     num: "01",
-    title: "Single brushless fan",
-    body: "One PWM-controlled fan sits on a rigid mount behind the distributor, so vibration never reaches you.",
+    title: "Two blower fans",
+    body: "A pair of PWM-controlled blowers sit on a rigid mount behind the distributor. They push air along the channel instead of straight at your back.",
   },
   {
     num: "02",
     title: "Open mesh window",
-    body: "No rigid backing in the lumbar zone, just tensioned 3D spacer mesh, 5mm loft, that flexes with your spine.",
+    body: "The lumbar zone has no rigid backing. Tensioned 3D spacer mesh with a 5mm loft flexes with your spine instead.",
   },
   {
     num: "03",
-    title: "Twin tension rails",
-    body: "TPU rails spread load across the panel instead of concentrating it down a single line. The straps become the suspension.",
+    title: "One-piece PETG frame",
+    body: "A single rigid perimeter carries the load and keeps the mesh under tension. There is no separate rail material and no bonded joint that can fail.",
   },
   {
     num: "04",
-    title: "Rigid PETG perimeter",
-    body: "A structural frame around the outside holds shape and keeps the mesh under consistent tension, charge after charge.",
+    title: "Runs on AA batteries",
+    body: "An empty compartment takes standard AA cells, which you supply. No rechargeable pack, no charging cable, and nothing that can vent or catch fire against your back. Swap the batteries and keep walking.",
   },
 ] as const;
 
@@ -240,14 +435,52 @@ export const PARTS = [
     described in prose as a goal, with no rating attached. Do not reintroduce a
     rating here without a test report to point at. */
 export const SPECS = [
-  ["Frame material", "PETG perimeter, TPU rails (target)"],
+  ["Frame material", "PETG throughout (target)"],
   ["Panel material", "3D spacer mesh, 5mm loft (target)"],
-  ["Fan", "Single brushless, PWM speed control (target)"],
-  ["Battery", "Not yet selected — approx. 2000mAh Li-ion, USB-C"],
-  ["Runtime", "9–12 hrs per charge (target)"],
+  ["Fan", "Two blowers, PWM speed control (target)"],
+  /* ============================================================
+     NO LITHIUM CELL. Changed 2026-08-04. This entry used to read
+     "Not yet selected. Approx. 2000mAh Li-ion, USB-C".
+
+     The design now ships an EMPTY battery compartment that takes
+     standard AA cells, which the customer supplies. This is the
+     single largest risk reduction in the whole project and it should
+     not be quietly reversed:
+
+       - No UN38.3 transport testing, no IEC 62133 cell certification.
+       - No lithium air-freight or ground-shipping restrictions.
+       - No thermal runaway. Alkaline AA cells do not vent or ignite
+         the way a Li-ion pouch does, and this product is worn
+         against a person's back.
+       - Shipping an empty compartment means no battery ships at all,
+         which removes the remaining transport questions entirely.
+
+     "BATTERIES NOT INCLUDED" MUST STAY CONSPICUOUS at the point of
+     sale, not just here. Failing to disclose that a required
+     component is absent is a straightforward FTC deception problem,
+     and it is also just how you generate angry email on day one.
+
+     If a rechargeable cell is ever reintroduced, every item in the
+     bullet list above comes back with it, plus /terms §6 has to be
+     rewritten and product liability insurance stops being optional.
+     ============================================================ */
+  ["Battery", "Takes AA cells, not included, you supply them"],
+  /* ⚠ THIS NUMBER NEEDS RECALCULATING. 4-6 hrs was derived against a
+     2000mAh Li-ion pack, not against AA cells driving two blowers.
+     It is carried over unchanged and is labelled a target, which
+     keeps it honest, but it is now the least-grounded figure on the
+     site. Work it out from the actual cell chemistry and fan draw
+     before this is ever presented as anything firmer than a goal. */
+  ["Runtime", "4-6 hrs per set of batteries (target)"],
+  /* 26 dB is retained but is the least defensible figure on this list: it
+     was set against ONE axial fan and two blowers are materially louder at
+     equal airflow. It stays only because everything here is labelled a
+     target and nothing has been measured. Measure it before it is ever
+     presented as anything firmer. */
   ["Noise", "26 dB (target)"],
   ["Weight added", "168 g (target)"],
-  ["Fits", "Intended for packs 15–45L with a suspended back panel"],
+  ["Shipping", "Free, United States only"],
+  ["Fits", "Intended for packs 15-45L with a suspended back panel"],
 ] as const;
 
 /* Answers here are load-bearing legal disclosure, not just copy. The first
@@ -256,15 +489,23 @@ export const SPECS = [
 export const FAQ = [
   {
     q: "Can I buy this today?",
-    a: `No. ${BRAND} is a design, not a product. No unit exists, no battery cell has been selected, nothing has been tested or certified, and nothing is for sale. This site collects email addresses from people who want to hear about it — that is all it does.`,
+    a: `You can preorder it today for ${formatPrice()}, shipping included. Be clear about what that means: ${BRAND} is still a design. No unit exists, nothing has been bench-tested, and nothing is certified. It takes AA batteries, which are not included. You are funding the build, not buying from stock.`,
   },
   {
-    q: "What happens when I join the waitlist?",
-    a: "We store your email address and nothing else. If the product reaches a point where it can actually be sold, we email you once to say so. There is no queue position, no reservation, no price held, and no obligation on either side. Reply to that email to be removed at any time.",
+    q: "What exactly am I paying for, and when does it ship?",
+    a: `${formatPrice()} charged today, free shipping, and we aim to ship in about ${LEAD_TIME_DAYS} days. If we can't make that window we'll email you a revised date, and you can accept it or take a full refund. That's your right under the FTC Mail Order Rule, and we'd honour it regardless.`,
   },
   {
-    q: "When will it be available? What will it cost?",
-    a: "We genuinely don't know, and we would rather say that than invent a date. There is engineering left to finish, a battery cell to select and certify, and open questions about whether we can build it at a price worth paying. Publishing a date and a price we cannot stand behind is how pre-orders turn into disappointed people.",
+    q: "Can I cancel and get my money back?",
+    a: `Not for a change of mind — preorders are final once placed, because the money goes straight into building the thing. There are three exceptions, and they are the ones that matter: if we miss the ${LEAD_TIME_DAYS}-day window you can take a full refund instead of waiting; if we abandon the project you are refunded in full; and if your order arrives damaged or never arrives, we replace or refund it. Read the refund policy before you order rather than after.`,
+  },
+  {
+    q: "What if you never build it?",
+    a: "Then you get your money back in full. We're students and this is our first hardware project, so it might not work out. Keeping money for something we have decided will never ship is not a policy we get to choose — every order would be refunded.",
+  },
+  {
+    q: "Who am I actually buying from?",
+    a: `${BRAND} is a student project, not a company. No business entity has been formed, and preorders are taken by the students named on this site personally. That is unusual and you should know it before paying. Your card details go to Stripe directly and are never stored by us.`,
   },
   {
     q: "Are the numbers on this site measured?",
@@ -276,15 +517,15 @@ export const FAQ = [
   },
   {
     q: "What happens if it rains?",
-    a: "The design goal is to shrug off rain and sweat — splash resistance, not immersion. We are deliberately not publishing an IP rating, because the product has never been through IP testing, and quoting a rating we have not earned would be a claim we cannot back up.",
+    a: "The design goal is to shrug off rain and sweat: splash resistance, not immersion. We are deliberately not publishing an IP rating, because the product has never been through IP testing, and quoting a rating we have not earned would be a claim we cannot back up.",
   },
   {
     q: "Isn't someone already doing this?",
-    a: "Passive versions, yes — and one of them, Vaucluse, is a well-made retrofit ventilation frame you can buy today. It has no fan: it holds a gap open and waits for you to move. That gap is the whole difference. We are trying to build the version that moves air on a still day, when a passive gap does nothing.",
+    a: "Passive versions, yes. One of them, Vaucluse, is a well-made retrofit ventilation frame you can buy today. It has no fan, so it holds a gap open and waits for you to move. We are trying to build the version that moves air on a still day, when a passive gap does nothing.",
   },
   {
     q: "Where would you ship?",
-    a: `${SHIPS_TO.charAt(0).toUpperCase() + SHIPS_TO.slice(1)}, if it ever ships. A lithium cell crossing a border brings transport certification and per-country rules we are not equipped to handle at this size.`,
+    a: `${SHIPS_TO.charAt(0).toUpperCase() + SHIPS_TO.slice(1)}, if it ever ships. Shipping abroad brings customs, per-country product rules and returns logistics we are not equipped to handle at this size.`,
   },
 ] as const;
 
@@ -308,6 +549,11 @@ export const NAV = [
 export const LEGAL_NAV = [
   { href: "/terms", label: "Terms" },
   { href: "/privacy", label: "Privacy" },
+  /* /refunds came back on 2026-08-03. The note above says it "was removed
+     because there is nothing to refund" — there is now. A site that takes
+     payment and hides its cancellation terms is the single most common
+     way a preorder turns into a chargeback. */
+  { href: "/refunds", label: "Refunds" },
 ] as const;
 
 /* ---------------- team ---------------- */

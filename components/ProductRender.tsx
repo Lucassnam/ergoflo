@@ -28,31 +28,45 @@ export default function ProductRender() {
         <Reveal className="order-1">
           <figure className="m-0">
             <div className="relative">
+              {/* 1024x1024, replacing the previous 968x1624 asset on
+                  2026-08-04. The aspect ratio changed from tall-portrait to
+                  square — if you swap this image again, update BOTH numbers.
+                  Next uses them to reserve layout space, and a stale pair
+                  causes a visible reflow on load. */}
               <Image
                 src="/product-render.webp"
-                alt={`${BRAND} active cooling panel, shown at an angle: rigid ventilated frame on one side, 3D spacer mesh back pad and shoulder straps on the other`}
-                width={968}
-                height={1624}
+                alt={`${BRAND} cooling panel, shown at an angle: a curved black ventilated frame with a grid of rectangular cutouts, strap loops along the top edge and an open air channel down the side`}
+                width={1024}
+                height={1024}
                 sizes="(max-width: 1024px) 90vw, 520px"
                 priority
-                /* The render's plate is #FDFDFD, which shows as a faint grey
-                   rectangle against the page's #FFF. A 2% brightness lift
-                   clips it to pure white so it blends into the section; the
-                   product itself is near-black and is unaffected. */
+                /* The plate behind the part is off-white, which shows as a
+                   faint grey rectangle against the page's #FFF. A 2%
+                   brightness lift clips it to pure white so it blends into
+                   the section; the part itself is near-black and unaffected. */
                 className="mx-auto h-auto w-full max-w-[420px] select-none brightness-[1.02] lg:max-w-[520px]"
               />
               <span className="absolute top-0 left-0 rounded-full border border-neutral-300 bg-white/90 px-3 py-1 font-mono text-[10px] font-bold tracking-[0.14em] text-neutral-600 uppercase backdrop-blur-sm">
-                Rendering
+                Concept image
               </span>
             </div>
 
+            {/* Badge says "Concept image", NOT "Rendering" — 2026-08-04.
+                The asset supplied is an AI-generated visualisation, not
+                output from the CAD model and not a photo of a part. On a page
+                that now takes $49.99, the label has to be true at the
+                strictest reading: "rendering" implies a render OF something
+                modelled, and there is no model behind this picture. If a real
+                CAD render or a photo of a printed part ever replaces it,
+                change this label with the image. */}
             <figcaption className="mx-auto mt-6 max-w-md border-t border-neutral-200 pt-4 text-[13px] leading-relaxed text-neutral-500">
               <strong className="font-semibold text-neutral-700">
-                This is a rendering, not a photo.
+                This is a concept image, not a photo.
               </strong>{" "}
-              It shows the current design of the panel, not a finished unit.
-              Colour, finish, hardware and proportions are still being worked
-              on, and the product you receive will not look exactly like this.
+              No unit has been built, so nothing like this has been
+              photographed. It illustrates the shape we are working toward.
+              Colour, finish, hardware and proportions are all still changing,
+              and the product you receive will not look exactly like this.
             </figcaption>
           </figure>
         </Reveal>
@@ -80,13 +94,14 @@ export default function ProductRender() {
               whole way down your spine.
             </p>
             <p className="mt-4 text-[17px] leading-relaxed text-neutral-600">
-              One PWM-controlled brushless fan sits behind the lumbar mount and
-              pushes air through that channel, running off a 2000&nbsp;mAh
-              USB-C cell. The straps thread through the twin TPU rails, which
-              spread the load across the panel rather than down a single line.
-              The targets are 168&nbsp;g added, and a fit across most
-              15&ndash;45&nbsp;L packs with a suspended back panel &mdash;
-              neither has been measured against a real pack yet.
+              Two PWM-controlled blower fans sit behind the lumbar mount and
+              push air through that channel, running off standard AA cells you
+              supply yourself. The straps thread through the PETG frame itself,
+              which spreads the load across the panel rather than down a
+              single line. The targets are 168&nbsp;g added, 4-6 hours per
+              charge, and a fit across most 15-45&nbsp;L packs with a
+              suspended back panel. None of that has been measured against a
+              real pack yet.
             </p>
           </Reveal>
 

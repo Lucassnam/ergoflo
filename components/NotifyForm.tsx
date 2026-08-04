@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { PREORDERS_ENABLED } from "@/lib/site";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -120,11 +121,20 @@ export default function NotifyForm() {
           browsewrap, which would take the arbitration clause and class-action
           waiver down with it. Those are the strongest protections on the site;
           this sentence is what gives them a chance of holding. */}
+      {/* The "nothing is for sale" clause is CONDITIONAL on purpose. It was
+          unconditional until 2026-08-04, which was fine while the site sold
+          nothing — but the moment STRIPE_LINK is set, /notify would be
+          telling visitors nothing is for sale on a site with a $49.99 buy
+          button one click away. Tying it to the same flag that opens
+          checkout means the two can never contradict each other. */}
       <p className="mt-4 text-left text-[12.5px] leading-relaxed text-neutral-500">
         We store your email address and nothing else, and we&rsquo;ll use it to
         send you one message if this becomes a real product. Reply to be
-        removed at any time. This is a waitlist, not an order &mdash; nothing
-        is for sale. By joining, you agree to our{" "}
+        removed at any time.{" "}
+        {PREORDERS_ENABLED
+          ? "Joining the list is free and is not an order. It doesn't hold a unit, a price, or a place in the queue."
+          : "This is a waitlist, not an order, and nothing is for sale."}{" "}
+        By joining, you agree to our{" "}
         <Link href="/terms" className="underline underline-offset-4 hover:text-black">
           Terms
         </Link>{" "}

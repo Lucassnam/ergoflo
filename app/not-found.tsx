@@ -1,5 +1,5 @@
 import Link from "next/link";
-import WaitlistButton from "@/components/WaitlistButton";
+import PreorderButton from "@/components/PreorderButton";
 
 /* /specs, /investors and /refunds were removed on 2026-07-29. Anyone holding
    an old link lands here, so this page points somewhere useful rather than
@@ -19,7 +19,7 @@ export default function NotFound() {
           while the product is still in development.
         </p>
         <div className="mt-9 flex flex-col items-center gap-4">
-          <WaitlistButton size="lg" />
+          <PreorderButton size="lg" />
           <Link
             href="/"
             className="text-[14px] text-neutral-500 underline underline-offset-4 transition-colors hover:text-black"
