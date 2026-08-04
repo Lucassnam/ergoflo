@@ -14,10 +14,22 @@
    No postal address is published on purpose — see the identity note.
    Nothing else in the codebase hardcodes these two values.
 
-   COMMERCE IS LIVE-ish AGAIN as of 2026-08-03: $49.99, free shipping,
-   120-day lead time. It is gated behind PREORDERS_ENABLED and Stripe
-   TEST keys, so no real money moves yet. Read the commerce block below
-   and docs/plans/2026-08-03-preorder-commerce.md before flipping it.
+   ─── COMMERCE IS LIVE. REAL MONEY. ───
+   $49.99, free shipping, 120-day lead time, preorders final except on
+   delay. STRIPE_LINK below holds a LIVE Stripe payment link (no
+   `test_` prefix), so a visitor can complete a real card payment right
+   now. PREORDERS_ENABLED derives from it automatically.
+
+   This block previously said commerce was "gated behind TEST keys, so
+   no real money moves yet". That stopped being true on 2026-08-04 when
+   the live link was pasted in, and the stale comment survived long
+   enough to make the owner believe checkout was still closed. If you
+   empty STRIPE_LINK or swap it for a test link, UPDATE THIS PARAGRAPH
+   IN THE SAME EDIT — a comment about whether the site takes money is
+   not documentation, it is the thing people check before trusting it.
+
+   Read the commerce block below and
+   docs/plans/2026-08-03-preorder-commerce.md before changing any of it.
 
    BRAND is settled: one word, capital E, capital F — "ErgoFlo".
    Renamed from "ErgoFlow" on 2026-07-30. Read the brand note below the
@@ -228,26 +240,32 @@ export const TAGLINE = "Active cooling for the pack you already own.";
    types — a hard TS2367 build error. It failed exactly that way the
    first time a real link was pasted in. Keep the annotation. */
 /* ============================================================
-   EMPTIED 2026-08-04 BEFORE MERGING TO main.
+   THIS IS A LIVE PAYMENT LINK. No `test_` prefix, real cards.
 
-   This held a LIVE payment link (no `test_` prefix). Because
-   PREORDERS_ENABLED below derives from this constant, a non-empty value
-   here means the deployed site charges real cards. main is the branch
-   Cloudflare Pages builds production from, so merging with the link in
-   place would have taken real money.
+   It was emptied earlier on 2026-08-04 to keep the merge to main from
+   deploying a paying checkout, then deliberately restored. Because
+   PREORDERS_ENABLED derives from this constant, a non-empty value here
+   means every buy control is live and main deploys a site that charges
+   money. Empty it and they all fall back to a waitlist CTA at /notify.
 
-   The link itself is not lost: it is in git history at commit df48982.
-   Restore it by pasting it back here, but only after the five items in
-   the "Blocking before this can take real money" section of
-   docs/plans/2026-08-03-preorder-commerce.md are actually done. At the
-   time this was emptied, at least three were open: no adult 18+ named as
-   Stripe account holder, no freedom-to-operate opinion on US 11,779,097,
-   and SELLER_OF_RECORD still an empty string.
+   KNOWN-OPEN ITEMS AT THE TIME THIS WAS RESTORED. These are from the
+   "Blocking before this can take real money" section of
+   docs/plans/2026-08-03-preorder-commerce.md, and none were closed:
 
-   While this is "", every buy control renders as a waitlist CTA pointing
-   at /notify, which works. Nothing else needs changing to ship.
+     1. No adult 18+ named as Stripe account holder.
+     2. No freedom-to-operate opinion on US 11,779,097 (Vaucluse Gear),
+        which matters because 35 U.S.C. §271(a) makes an offer to sell
+        an act of infringement on its own.
+     3. SELLER_OF_RECORD is still "". /terms therefore renders its
+        "No adult is currently named as the seller of record" notice
+        alongside a working buy button. That pairing is deliberate and
+        honest, but it is not a finished state: fill SELLER_OF_RECORD in
+        as soon as an adult holds the Stripe account, and the notice
+        swaps itself out.
+
+   Whoever closes those, update this block in the same edit.
    ============================================================ */
-export const STRIPE_LINK: string = "";
+export const STRIPE_LINK: string = "https://buy.stripe.com/fZu4gz3vleiGfcIdDM43S00";
 
 /** Master switch. While false, every buy control renders as a waitlist
     CTA and /api/checkout refuses to create a session.
