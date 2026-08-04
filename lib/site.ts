@@ -227,7 +227,27 @@ export const TAGLINE = "Active cooling for the pack you already own.";
    `STRIPE_LINK !== ""` below is comparing two non-overlapping literal
    types — a hard TS2367 build error. It failed exactly that way the
    first time a real link was pasted in. Keep the annotation. */
-export const STRIPE_LINK: string = "https://buy.stripe.com/fZu4gz3vleiGfcIdDM43S00";
+/* ============================================================
+   EMPTIED 2026-08-04 BEFORE MERGING TO main.
+
+   This held a LIVE payment link (no `test_` prefix). Because
+   PREORDERS_ENABLED below derives from this constant, a non-empty value
+   here means the deployed site charges real cards. main is the branch
+   Cloudflare Pages builds production from, so merging with the link in
+   place would have taken real money.
+
+   The link itself is not lost: it is in git history at commit df48982.
+   Restore it by pasting it back here, but only after the five items in
+   the "Blocking before this can take real money" section of
+   docs/plans/2026-08-03-preorder-commerce.md are actually done. At the
+   time this was emptied, at least three were open: no adult 18+ named as
+   Stripe account holder, no freedom-to-operate opinion on US 11,779,097,
+   and SELLER_OF_RECORD still an empty string.
+
+   While this is "", every buy control renders as a waitlist CTA pointing
+   at /notify, which works. Nothing else needs changing to ship.
+   ============================================================ */
+export const STRIPE_LINK: string = "";
 
 /** Master switch. While false, every buy control renders as a waitlist
     CTA and /api/checkout refuses to create a session.
