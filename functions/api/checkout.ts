@@ -35,13 +35,34 @@ interface Env {
 
 /* ---- Mirrored from lib/site.ts. -------------------------------------
    Pages Functions are bundled separately from the Next app and cannot
-   import from @/lib. These four MUST be kept in step with lib/site.ts by
+   import from @/lib. These MUST be kept in step with lib/site.ts by
    hand. If you change a price or the lead time there, change it here in
    the same commit — a mismatch means the page advertises one thing and
    Stripe charges another, which is the exact fact pattern behind a
-   deceptive-pricing complaint. */
+   deceptive-pricing complaint.
+
+   PREORDERS_ENABLED is the exception: lib/site.ts DERIVES it from
+   STRIPE_LINK, while this is a deliberate second kill switch that is
+   hardcoded false. It is not a mirror and is not meant to agree. */
 const PREORDERS_ENABLED = false;
-const PRICE_CENTS = 4999;
+
+/* Two-tier pricing, mirroring lib/site.ts as of 2026-08-06.
+
+   UNLIKE the Next app, this file runs on a real server at request time,
+   so it can pick the tier from the actual clock instead of from build
+   time. If route B is ever switched on, this is the authoritative price
+   and it is correct on both sides of the deadline without a redeploy.
+
+   The framing rule travels with the numbers: this is a price INCREASE,
+   never a discount off $70. See the long block in lib/site.ts. */
+const PRICE_CENTS = 7000;
+const EARLY_BIRD_PRICE_CENTS = 4999;
+const EARLY_BIRD_ENDS = "2026-08-11T06:59:59Z";
+
+function currentPriceCents(now: number = Date.now()): number {
+  return now < Date.parse(EARLY_BIRD_ENDS) ? EARLY_BIRD_PRICE_CENTS : PRICE_CENTS;
+}
+
 const CURRENCY = "usd";
 const LEAD_TIME_DAYS = 120;
 
@@ -49,9 +70,21 @@ const PRODUCT_NAME = "ErgoFlo Active Fan panel — preorder";
 /* Shown on the Stripe Checkout page and on the card statement descriptor
    suffix. The buyer sees this at the moment of payment, so the unbuilt
    status and the ship window belong here, not only on our own page. */
+/* The final clause used to read "Cancel any time before shipment for a
+   full refund." That stopped being true on 2026-08-04 when the policy
+   narrowed to all-sales-final-except-on-delay, and this string was
+   missed — it is in the route-B path, which is switched off, so it has
+   never been shown to a buyer. Corrected 2026-08-06.
+
+   It has to match REFUND_POLICY in lib/site.ts, because this is the
+   text Stripe shows at the moment of payment. A refund promise made on
+   the checkout page is the one a buyer would reasonably rely on, and it
+   would override anything narrower on our own site. */
 const PRODUCT_DESCRIPTION =
   `Preorder for a product that has not been built yet. Ships in about ${LEAD_TIME_DAYS} days. ` +
-  `Free US shipping. Cancel any time before shipment for a full refund.`;
+  `Free US shipping. Batteries not included — takes AA cells you supply. ` +
+  `Preorders are final, with no change-of-mind refunds; full refund if we miss the ` +
+  `${LEAD_TIME_DAYS}-day window, abandon the project, or your order arrives damaged.`;
 
 /** 5 attempts per IP per 10 minutes, matching /api/notify. */
 const RATE_LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 };
@@ -173,7 +206,10 @@ export async function onRequestPost(context: {
 
   form.set("line_items[0][quantity]", "1");
   form.set("line_items[0][price_data][currency]", CURRENCY);
-  form.set("line_items[0][price_data][unit_amount]", String(PRICE_CENTS));
+  /* currentPriceCents(), not PRICE_CENTS — this runs per request, so it
+     resolves the tier against the real clock. Still server-side only:
+     the amount is never accepted from the client. */
+  form.set("line_items[0][price_data][unit_amount]", String(currentPriceCents()));
   form.set("line_items[0][price_data][product_data][name]", PRODUCT_NAME);
   form.set(
     "line_items[0][price_data][product_data][description]",

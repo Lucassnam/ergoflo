@@ -7,12 +7,13 @@ import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import PreorderButton from "@/components/PreorderButton";
 import PricingSection from "@/components/PricingSection";
+import EarlyBirdBadge from "@/components/EarlyBirdBadge";
+import Link from "next/link";
 import {
   DEV_STAGE,
   FAQ,
   HERO_STATS,
   LEAD_TIME_DAYS,
-  PREORDER_NOTICE,
   formatPrice,
 } from "@/lib/site";
 
@@ -126,6 +127,8 @@ export default function Home() {
               {DEV_STAGE}. Shipping included. Preorders are final, and
               refundable in full only if we miss the window.
             </p>
+            {/* Increase framing only — see components/EarlyBirdBadge.tsx. */}
+            <EarlyBirdBadge className="mx-auto mt-4 max-w-md text-center" />
           </Reveal>
 
           <Reveal delay={0.1}>
@@ -164,8 +167,29 @@ export default function Home() {
 
               <PreorderButton size="lg" className="w-full" />
 
+              {/* This used to render PREORDER_NOTICE in full, which restated
+                  all five bullets directly above it in smaller grey type —
+                  the single worst piece of duplication on the site. The
+                  bullets are the conspicuous disclosure here, and they sit
+                  ABOVE the button where they belong.
+
+                  Nothing legally load-bearing was lost. This button is a
+                  LINK to /preorder, not a payment control (see
+                  PreorderButton.tsx:51-60) — no money can move from this
+                  page. The point-of-sale disclosure that Cal. Civ. Code
+                  §1723 and the FTC Mail Order Rule actually attach to is
+                  Disclosure() in PreorderCheckout.tsx, rendered on
+                  /preorder beneath the real buy control, and it is intact.
+                  If this button is ever pointed at Stripe directly, the
+                  full notice has to come back here first. */}
               <p className="mt-5 text-[12.5px] leading-relaxed text-neutral-400">
-                {PREORDER_NOTICE}
+                Every figure on this site is a design target, not a
+                measurement. The{" "}
+                <Link href="/preorder" className="underline underline-offset-4 hover:text-black">
+                  full terms
+                </Link>{" "}
+                are on the preorder page, and you should read them before
+                you pay.
               </p>
             </div>
           </Reveal>
@@ -196,8 +220,16 @@ export default function Home() {
             <h2 className="headline text-[clamp(2rem,5vw,3.4rem)] text-black">
               Preorder, or wait and see.
             </h2>
+            {/* CORRECTED 2026-08-06. This read "Refundable in full until the
+                day it ships" — the pre-2026-08-04 policy, left behind when
+                REFUND_POLICY narrowed to all-sales-final-except-on-delay.
+                It was live on the home page, and it promised something more
+                generous than the policy it sat next to, which is the version
+                of a contradiction a buyer would reasonably rely on. Keep
+                this line in step with REFUND_POLICY in lib/site.ts. */}
             <p className="mx-auto mt-5 max-w-md text-[17px] text-neutral-500">
-              {DEV_STAGE}. Refundable in full until the day it ships.
+              {DEV_STAGE}. Preorders are final, with a full refund if we miss
+              the window.
             </p>
             <div className="mt-9 flex justify-center">
               <PreorderButton size="lg" />

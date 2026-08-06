@@ -56,7 +56,32 @@ or previews will 503 on every signup:
 |---|---|
 | `SUPABASE_URL` | from Supabase → Settings → API |
 | `SUPABASE_SECRET_KEY` | the **service-role** key |
-| `NODE_VERSION` | `22` |
+| `NODE_VERSION` | `22` — belt and braces; `.nvmrc` now pins this too, see below |
+| `STRIPE_SECRET_KEY` | **route B only.** Omit entirely if you went live via `STRIPE_LINK` |
+| `STRIPE_WEBHOOK_SECRET` | **route B only.** `whsec_...`, from Developers → Webhooks |
+
+The two Stripe rows were missing from this table until 2026-08-05, while
+`functions/api/checkout.ts` and `functions/api/stripe-webhook.ts` had already
+shipped. Both functions return 5xx without them — `/api/checkout` a 503,
+`/api/stripe-webhook` a 500 — and the webhook failure is **silent**: the card is
+charged and no order row is ever written. They are genuinely not needed on the
+payment-link path (route A); see the two-routes block in `lib/site.ts`.
+
+### The Node version is now pinned in the repo
+
+`.nvmrc` (`22`) and `engines.node` (`>=20.9.0`) in `package.json` were added
+2026-08-05. Before that the version lived **only** in the `NODE_VERSION`
+dashboard variable, with nothing in the repo — so a Pages project whose build
+image defaults to Node 18, or one where `NODE_VERSION` was set for Preview but
+not Production, failed the build with:
+
+```
+You are using Node.js 18.20.8. For Next.js, Node.js version ">=20.9.0" is required.
+```
+
+That error names Node, not the thing you changed most recently, which makes it
+easy to misattribute to whatever was in the last commit. Keep `.nvmrc` and the
+`NODE_VERSION` variable in agreement if you change either.
 
 `SUPABASE_SECRET_KEY` bypasses row-level security. It is read only by the Pages
 Function, server-side. **Never** give it a `NEXT_PUBLIC_` prefix — that ships it to
@@ -144,6 +169,8 @@ good means deleting the stray `~/node_modules`.
 | Signup returns 429 unexpectedly | rate limit: 5 per IP per 10 min | expected; wait it out |
 | `/notify` renders blank before JS | a `useSearchParams` + `Suspense` regression | `grep -c "Be first to know" out/notify.html` must be 1 |
 | Build fails on `/robots.txt` | missing `export const dynamic = "force-static"` | `app/robots.ts`, `app/sitemap.ts` |
+| Cloudflare build fails, `"You are using Node.js 18…"` | build image on Node 18; `.nvmrc`/`NODE_VERSION` not picked up | Pages → Settings → check `NODE_VERSION` is set on **Production**, not just Preview |
+| A deploy fails right after a commerce change | **usually not the commerce change.** Read the build log's first error line before attributing it | the Stripe payment link cannot fail a build — nothing in the repo gates on it |
 | Images look soft/large | `images.unoptimized` is on by necessity | keep source images small |
 
 ## Still outstanding

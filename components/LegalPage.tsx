@@ -19,11 +19,26 @@ export default function LegalPage({
   lastUpdated,
   intro,
   children,
+  entityNotice = true,
 }: {
   title: string;
   lastUpdated: string;
   intro?: ReactNode;
   children: ReactNode;
+  /**
+   * Whether to print NOT_A_COMPANY_NOTICE in the contact block.
+   *
+   * Defaults to true, because on most legal pages this footer is the only
+   * place a reader is told there is no company behind the site — and that
+   * is a fact they need before relying on anything else on the page.
+   *
+   * /terms passes false: it states the same notice in its own §1, and
+   * before 2026-08-06 both fired, printing the identical paragraph twice
+   * on one page. Nothing required the repeat; it was an artefact of a
+   * shared component and a page-specific section both including it.
+   * Set this false ONLY when the page states the notice itself.
+   */
+  entityNotice?: boolean;
 }) {
   return (
     <article className="px-5 py-20 sm:px-8 sm:py-24">
@@ -71,9 +86,11 @@ export default function LegalPage({
           <p className="mt-3 text-[15px] leading-relaxed text-neutral-700">
             {LEGAL_ENTITY}
           </p>
-          <p className="mt-3 text-[14px] leading-relaxed text-neutral-500">
-            {NOT_A_COMPANY_NOTICE}
-          </p>
+          {entityNotice && (
+            <p className="mt-3 text-[14px] leading-relaxed text-neutral-500">
+              {NOT_A_COMPANY_NOTICE}
+            </p>
+          )}
           <p className="mt-6 text-[13.5px] text-neutral-500">
             <Link href="/terms" className="underline underline-offset-4">
               Terms
