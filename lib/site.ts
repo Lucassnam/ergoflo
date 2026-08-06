@@ -15,10 +15,17 @@
    Nothing else in the codebase hardcodes these two values.
 
    ─── COMMERCE IS LIVE. REAL MONEY. ───
-   $49.99, free shipping, 120-day lead time, preorders final except on
-   delay. STRIPE_LINK below holds a LIVE Stripe payment link (no
-   `test_` prefix), so a visitor can complete a real card payment right
-   now. PREORDERS_ENABLED derives from it automatically.
+   Free shipping, 120-day lead time, preorders final except on delay.
+   STRIPE_LINK below holds a LIVE Stripe payment link (no `test_`
+   prefix), so a visitor can complete a real card payment right now.
+   PREORDERS_ENABLED derives from it automatically.
+
+   THE PRICE IS TWO-TIER AS OF 2026-08-06: an early-bird tier that ends
+   at EARLY_BIRD_ENDS, then a higher regular tier. Read the pricing
+   block above PRICE_CENTS before touching any of it, and read
+   docs/plans/2026-08-06-pricing-and-disclosure-restructure.md before
+   changing how the tiers are selected. The single Stripe payment link
+   is repriced BY HAND in the dashboard — this file cannot do it.
 
    This block previously said commerce was "gated behind TEST keys, so
    no real money moves yet". That stopped being true on 2026-08-04 when
@@ -185,16 +192,28 @@ export const TAGLINE = "Active cooling for the pack you already own.";
    to be ADJUSTABLE via modular supports, and ErgoFlo's 5mm spacer-mesh
    loft is fixed. That is a question for a patent attorney, not this file.
 
-   WHAT KEEPS THIS SAFE TODAY: PREORDERS_ENABLED is false and the
-   Cloudflare env holds a Stripe TEST key, so the flow is complete but
-   takes no real money. The gate exists because no adult 18+ has been
-   named as Stripe account holder, and both operators are minors whose
-   contracts are voidable (Cal. Family Code §6710) — meaning a paying
-   customer would today have no enforceable counterparty.
+   NOTHING KEEPS THIS SAFE TODAY. This paragraph used to read "WHAT KEEPS
+   THIS SAFE TODAY: PREORDERS_ENABLED is false and the Cloudflare env
+   holds a Stripe TEST key, so the flow is complete but takes no real
+   money." Both clauses stopped being true on 2026-08-04 when the live
+   payment link went into STRIPE_LINK below, and this block was missed
+   while the one at the top of the file was updated — so the file
+   contradicted itself for a day, in the two places someone checks to
+   answer "does this site take money".
 
-   Before flipping PREORDERS_ENABLED, work through the checklist in
-   docs/plans/2026-08-03-preorder-commerce.md. It is five items and none
-   of them are optional.
+   It does. PREORDERS_ENABLED derives to true, every buy control is a
+   live link, and a visitor can be charged the current tier price right
+   now — whatever the Stripe dashboard has that link set to. The gate
+   that used to hold this closed is simply not there any more, and the
+   reason it existed has not gone away: no adult 18+ has been named as
+   Stripe account holder, and both operators are minors whose contracts
+   are voidable (Cal. Family Code §6710) — meaning a paying customer
+   today has no enforceable counterparty.
+
+   The checklist in docs/plans/2026-08-03-preorder-commerce.md was meant
+   to be worked through BEFORE this went live. It is five items, none of
+   them optional, and at least three were open when the link was pasted
+   back in. See the block above STRIPE_LINK for which.
    ============================================================ */
 
 /* ============================================================
@@ -225,8 +244,13 @@ export const TAGLINE = "Active cooling for the pack you already own.";
 
     WHAT MUST BE TRUE OF THE LINK ITSELF — the code cannot check any of
     this, so check it by hand in the Stripe dashboard:
-      - Price is exactly $49.99 USD. A link priced differently silently
-        contradicts every page on this site.
+      - Price matches the tier the site is currently SHOWING. There is
+        ONE link serving both tiers, so it has to be repriced by hand:
+        $49.99 now (which it already is — no edit needed today), and
+        $70.00 on 2026-08-10 when the early bird ends.
+        A link priced differently silently contradicts every page on
+        this site. See the pricing block above PRICE_CENTS for why the
+        drift is survivable in one direction and not the other.
       - Shipping address collection is ON, limited to the US.
       - Shipping is free (no shipping rate, or a $0 rate).
       - The confirmation page is set to redirect to /preorder/success.
@@ -276,10 +300,112 @@ export const STRIPE_LINK: string = "https://buy.stripe.com/fZu4gz3vleiGfcIdDM43S
     Set it to `true` manually only when going live via route B. */
 export const PREORDERS_ENABLED = STRIPE_LINK !== "";
 
+/* ============================================================
+   TWO-TIER PRICING. Added 2026-08-06. Was a flat $49.99.
+
+   $49.99 until EARLY_BIRD_ENDS, then $70.00. Read all of this before
+   changing a number, because the framing is a legal choice as much as
+   a commercial one.
+
+   ─── IT IS A PRICE INCREASE, NOT A DISCOUNT. ───
+   The site must say "$49.99, going up to $70 on <date>". It must NEVER
+   say "was $70, now $49.99", show $70 struck through, or claim a saving.
+
+   This product has only ever sold at $49.99. Under the FTC's pricing
+   guides (16 CFR 233.1) a former-price comparison is deceptive unless
+   the higher price was one the item was actually and openly offered at
+   for a reasonable period. $70 has never been charged, so presenting
+   $49.99 as a saving against it would be a fabricated reference price —
+   and it would be the only claim of that kind on a site that has
+   otherwise been careful to say nothing it cannot back.
+
+   A stated FUTURE increase is a promise about your own conduct. It
+   carries the same urgency and is simply true. Keep it that way.
+
+   ─── THE DEADLINE MUST BE REAL. ───
+   EARLY_BIRD_ENDS is one fixed instant. It is not a rolling window, it
+   does not reset per visitor, and it does not restart on reload. A
+   countdown that never actually ends is a textbook FTC dark pattern
+   and is worth far less than the honesty it costs.
+
+   ─── ONE STRIPE LINK, REPRICED BY HAND. ───
+   There is no second payment link. STRIPE_LINK serves both tiers and
+   the owner changes its price in the Stripe dashboard. Nothing here can
+   verify or enforce that.
+
+   The early-bird tier was deliberately set to $49.99 — the price the
+   link ALREADY carries — so there is exactly ONE dashboard edit left in
+   this whole scheme: raising it to $70.00 on 2026-08-10. Today the site
+   and Stripe agree with no action at all. Do not "tidy" the early-bird
+   price up to $50.00; that would buy nothing and would reopen a window
+   in which the two can disagree.
+
+   The one remaining drift is deliberately one-directional and benign:
+
+     - After the deadline, if the reprice is missed: site says $70,
+       Stripe charges $49.99. The customer pays LESS than advertised.
+       Lost margin, no deception, no harm to anyone but us.
+
+   The dangerous direction — advertising $49.99 and charging $70 —
+   cannot happen here, because the site's price only rises AFTER the
+   dashboard price would have been raised. DO NOT "fix" this by
+   inverting the defaults so the build renders the regular tier first.
+   That swap is what would make overcharging possible.
+
+   ─── WHAT RENDERS WHICH PRICE. ───
+   This is a static export: every page is prerendered once by
+   `next build` and served unchanged. So every price in prose — FAQ,
+   PREORDER_NOTICE, /terms, /refunds, metadata — is the tier that was
+   current AT BUILD TIME, frozen. Only EarlyBirdBadge is live, and its
+   one job after the deadline is to stop claiming an active promo.
+
+   That means the site does not raise its own price. A REDEPLOY on
+   2026-08-11 is what moves the site to $70, and it is listed as a step
+   in the plan doc for exactly that reason. Until it happens the site
+   shows $49.99 and Stripe charges $49.99 — consistent and honest, just
+   not yet increased.
+   ============================================================ */
+
 /** Cents, not dollars — this is the number handed to Stripe, and float
-    arithmetic on money is how you ship a $49.98 charge. Format for
-    display with formatPrice() below; never hand-write "$49.99". */
-export const PRICE_CENTS = 4999;
+    arithmetic on money is how you ship a $69.98 charge. Format for
+    display with formatPrice(); never hand-write a price string.
+
+    This is the REGULAR tier. It is not what the site charges today —
+    call currentPriceCents() rather than reading this directly. */
+export const PRICE_CENTS = 7000;
+
+/** The early-bird tier, live until EARLY_BIRD_ENDS.
+
+    $49.99, not $50.00, and the odd number is doing a job: it is the
+    price the Stripe payment link has been set to all along. Keeping the
+    early-bird tier at the price already in the dashboard means the site
+    and Stripe agree from the moment this ships, with no dashboard edit
+    and therefore no window in which they can disagree. The only manual
+    reprice left is the rise to $70 on 2026-08-10. */
+export const EARLY_BIRD_PRICE_CENTS = 4999;
+
+/** One fixed instant, UTC. 2026-08-10 23:59:59 Pacific, which is the
+    timezone GOVERNING_LAW points at and the one the owners live in.
+    Stored as UTC so it cannot shift with a server or browser locale.
+
+    Moving this later to extend the promo is a decision to make openly,
+    not a quiet edit — anyone who saw the old date was told something
+    that stopped being true. */
+export const EARLY_BIRD_ENDS = "2026-08-11T06:59:59Z";
+
+/** True while the early-bird tier is live.
+
+    Takes `now` as an argument so it is pure and can be reasoned about
+    at a specific instant instead of only "whenever this ran". */
+export function isEarlyBirdActive(now: Date = new Date()): boolean {
+  return now.getTime() < Date.parse(EARLY_BIRD_ENDS);
+}
+
+/** The price the site is actually asking for. Every display surface
+    goes through this — never read PRICE_CENTS directly for display. */
+export function currentPriceCents(now: Date = new Date()): number {
+  return isEarlyBirdActive(now) ? EARLY_BIRD_PRICE_CENTS : PRICE_CENTS;
+}
 
 export const CURRENCY = "usd";
 
@@ -346,9 +472,24 @@ export const REFUND_POLICY =
   `and you can accept it or take a full refund. That choice is always yours. ` +
   `If we abandon the project, or your order arrives damaged or never arrives, you are refunded in full.`;
 
-/** Single formatter so a price can never drift between two pages. */
-export function formatPrice(cents: number = PRICE_CENTS): string {
+/** Single formatter so a price can never drift between two pages.
+
+    Defaults to the CURRENT tier, not the regular one — every caller
+    that writes formatPrice() means "the price we are asking today".
+    Pass PRICE_CENTS explicitly to render the post-deadline price. */
+export function formatPrice(cents: number = currentPriceCents()): string {
   return `$${(cents / 100).toFixed(2)}`;
+}
+
+/** The date a reader sees next to the countdown. Long form, Pacific,
+    so "Aug 10" cannot be read as a different day in another timezone. */
+export function formatEarlyBirdEnd(): string {
+  return new Date(EARLY_BIRD_ENDS).toLocaleDateString("en-US", {
+    timeZone: "America/Los_Angeles",
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 /** Named seller. EMPTY UNTIL AN ADULT 18+ HOLDS THE STRIPE ACCOUNT —
@@ -374,7 +515,7 @@ export const TARGETS_DISCLAIMER =
    no price is being quoted, and joining does not create an order or any
    obligation on either side. Nothing on this site is an offer to sell."
 
-   Every clause of that is now contradicted by a $49.99 buy button three
+   Every clause of that is now contradicted by a priced buy button three
    inches away. A disclaimer that the page itself falsifies does not
    reduce liability — it evidences that the operator knew the risk and
    papered over it. Softening it ("this is a preorder, not a sale") would
