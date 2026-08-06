@@ -75,6 +75,7 @@ create table if not exists public.email_outbox (
   -- Constrained so a typo cannot invent a silent new category that no
   -- template handles and nothing ever sends.
   kind text not null check (kind in (
+    'receipt',
     'confirmation',
     'update_30', 'update_60', 'update_90',
     'address_check',

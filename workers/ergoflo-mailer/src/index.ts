@@ -24,6 +24,7 @@
 import { fetchDueEmails, claimEmail, markSent, markFailed, type Db } from "./db";
 import { sendEmail } from "./resend";
 import { renderConfirmation } from "./templates/confirmation";
+import { renderReceipt } from "./templates/receipt";
 import type { OutboxRow, RenderedEmail } from "./types";
 
 interface Env {
@@ -68,6 +69,8 @@ function render(row: OutboxRow): RenderedEmail | null {
   if (!order) return null;
 
   switch (row.kind) {
+    case "receipt":
+      return renderReceipt(order);
     case "confirmation":
       return renderConfirmation(order);
     /* update_30/60/90, address_check, shipped, delayed and
