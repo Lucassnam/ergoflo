@@ -37,6 +37,7 @@ export interface PreorderRow {
 }
 
 export type EmailKind =
+  | "receipt"
   | "confirmation"
   | "update_30"
   | "update_60"

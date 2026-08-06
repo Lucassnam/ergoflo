@@ -74,6 +74,27 @@ This is what makes any of it fire. Dashboard → Developers → Webhooks → add
 The live checkout is the hosted Payment Link (Route A). Payment Links emit
 `checkout.session.completed` too, so this works without enabling Route B.
 
+## Previewing templates
+
+`src/preview.ts` renders every template to HTML and plaintext and **fails if any
+rendered copy contains an em or en dash** — the house rule from commit `df48982`
+(`github.com/blader/humanizer`). It checks output, not source, because a dash can arrive
+through an imported constant that a source grep never sees.
+
+```sh
+# from the repo root
+node node_modules/typescript/bin/tsc --strict --target ES2022 --module commonjs \
+  --moduleResolution node --lib ES2022,DOM --types node --skipLibCheck \
+  --outDir /tmp/prev workers/ergoflo-mailer/src/preview.ts
+node /tmp/prev/workers/ergoflo-mailer/src/preview.js ./email-preview
+```
+
+Exits non-zero on failure, so it works as a pre-commit hook. Sample data is in
+`src/fixtures.ts` — a name with an apostrophe (proves HTML escaping) and a null
+`line2` (proves the blank-line filter). Keep it awkward.
+
+`preview.ts` runs on load. Never import from it; import fixtures from `fixtures.ts`.
+
 ## Testing
 
 `next dev` cannot run Pages Functions at all. The webhook is only testable under Wrangler:
