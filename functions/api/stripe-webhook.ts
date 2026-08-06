@@ -382,6 +382,11 @@ export async function onRequestPost(context: {
      confirmation is recoverable by hand from the outbox, whereas a lost
      order is not recoverable at all. */
   if (orderId) {
+    /* Two messages, one insert. They answer different questions — the
+       receipt is what was charged, the confirmation is what happens next
+       — and a buyer hunting for one should not have to read past the
+       other. Both rows go in together so a partial write cannot leave an
+       order with a receipt and no shipping date. */
     const enqueue = await fetch(`${env.SUPABASE_URL}/rest/v1/email_outbox`, {
       method: "POST",
       headers: {
@@ -390,7 +395,10 @@ export async function onRequestPost(context: {
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
-      body: JSON.stringify({ order_id: orderId, kind: "confirmation" }),
+      body: JSON.stringify([
+        { order_id: orderId, kind: "receipt" },
+        { order_id: orderId, kind: "confirmation" },
+      ]),
     });
 
     if (!enqueue.ok) {

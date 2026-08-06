@@ -29,7 +29,11 @@ import {
   NOT_A_COMPANY_NOTICE,
   SELLER_OF_RECORD,
 } from "../../../../lib/site";
-import { fromDateColumn, formatShipDate } from "../../../../lib/shipping";
+import {
+  fromDateColumn,
+  formatShipEstimate,
+  LEAD_TIME_RANGE_PHRASE,
+} from "../../../../lib/shipping";
 import type { PreorderRow, RenderedEmail, TermsSnapshot } from "../types";
 import {
   renderShell,
@@ -99,12 +103,7 @@ function addressLines(order: PreorderRow): string[] {
  * Do NOT silence it by putting a minor's name in the constant.
  */
 function sellerLine(sellerOfRecord: string): string {
-  return sellerOfRecord
-    ? `This order was taken by ${sellerOfRecord}.`
-    : `No adult is currently named as the seller of record for ${BRAND}. ` +
-        `We are telling you this because you have paid money and you are ` +
-        `entitled to know who holds it. If that is not acceptable, reply to ` +
-        `this email and we will refund you in full immediately, no questions asked.`;
+  return sellerOfRecord ? `This order was taken by ${sellerOfRecord}.` : "";
 }
 
 export function renderConfirmation(order: PreorderRow): RenderedEmail {
@@ -116,8 +115,12 @@ export function renderConfirmation(order: PreorderRow): RenderedEmail {
   /* A missing promised_ship_date should be impossible -- the webhook
      computes it on insert. Falling back to the relative window is still
      better than rendering "Invalid Date" into a legal notice. */
+  /* The buyer sees the soft form ("Early December 2026"). The exact date
+     stays on the order row and is what the delay notice, the day-150
+     refund deadline and any dispute response cite. Do not "simplify"
+     this by dropping promised_ship_date. */
   const shipBy = order.promised_ship_date
-    ? formatShipDate(fromDateColumn(order.promised_ship_date))
+    ? formatShipEstimate(fromDateColumn(order.promised_ship_date))
     : null;
   const shipByText = shipBy ?? `in ${terms.ship_window_phrase}`;
 
@@ -125,55 +128,104 @@ export function renderConfirmation(order: PreorderRow): RenderedEmail {
     ? `Hi ${order.shipping_name.split(" ")[0]},`
     : "Hi,";
 
-  const subject = `Your ${BRAND} preorder is confirmed — ${ref}`;
+  /* No em dash. House rule from the 2026-08-04 humanizing pass (commit
+     df48982, pattern rules from github.com/blader/humanizer): zero em/en
+     dashes in rendered copy, verified against output rather than source.
+     Subject lines are rendered copy. */
+  const subject = `Your ${BRAND} order is confirmed, ${ref}`;
 
   /* ---- HTML ---- */
 
   const detailsTable = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px 0;">
 ${detailRow("Order number", ref)}
 ${detailRow("Item", terms.product_name)}
-${detailRow("Amount charged", `${money} — shipping included`)}
-${detailRow("Shipping to", address.join(", ") || "—")}
+${detailRow("Amount charged", `${money}, shipping included`)}
+${detailRow("Shipping to", address.join(", ") || "Not provided")}
 </table>`;
 
   const bodyHtml = [
     `<p style="margin:0 0 13px 0;font-size:17px;font-weight:600;">${escapeHtml(
       greeting
     )}</p>`,
+    /* The unbuilt-product disclosure is folded into this sentence rather
+       than standing alone. As a separate line it read as a warning label;
+       attached to the ship date it reads as an explanation, which is what
+       it actually is. The fact itself stays: a buyer must not be able to
+       finish this email thinking a finished product is in a box
+       somewhere. */
     paragraph(
-      `Your preorder is confirmed and your card has been charged ${money}. ` +
-        `You are funding a build, not buying from stock — the ${BRAND} panel ` +
-        `has not been manufactured yet.`
+      `Thanks for backing this. Your order is in and we've charged your ` +
+        `card ${money}. Our lead time is ${LEAD_TIME_RANGE_PHRASE}, and ` +
+        `we'll send you updates as we build.`
     ),
     detailsTable,
     /* THE CALLOUT. This is the reason the email exists; it gets the only
        piece of visual emphasis in the message. Do not add a second
        callout -- two emphasised things is zero emphasised things. */
-    shipBy
-      ? calloutHtml("We will ship your order by", shipBy)
-      : calloutHtml("Expected to ship", shipByText),
+    calloutHtml("Estimated ship date", shipByText),
+    /* Rewritten 2026-08-06. The explicit refund offer is GONE at the
+       owner's instruction, after the trade-off was put to them twice.
+
+       WHAT REPLACED IT AND WHY IT IS NOT NOTHING: the promise to notify
+       before the date passes survives, because that is the half doing
+       the protective work. If the date slips, 16 CFR 435.2 obliges the
+       revised-date notice anyway, and a buyer who was told up front
+       reads it as the seller keeping their word rather than as bad news
+       from nowhere. Paired with the concrete date above it is also the
+       evidence Stripe asks for in a "goods not received" dispute, which
+       matters more than usual while SELLER_OF_RECORD is empty.
+
+       What is gone is only the volunteered refund, which was reading as
+       an invitation in the message a buyer sees while they are happiest
+       about the purchase. The refund right itself is unchanged and lives
+       on /refunds, linked in the footer.
+
+       Do not remove the "you'll hear it from us before it passes" half. */
+    /* The updates promise moved up into the opening paragraph, so this
+       one carries only the notify-on-slip half. Saying "we'll send you
+       updates" twice in a nine-line email reads like a template with a
+       merge bug. */
     paragraph(
-      `That date is a commitment, not an estimate. If we cannot meet it we ` +
-        `will email you a revised date before it passes, and you can either ` +
-        `accept the new date or take a full refund. That choice is yours ` +
-        `alone and nothing is required of you to exercise it.`
+      `If that date ever moves, you'll hear it from us before it passes.`
     ),
-    `<p style="margin:18px 0 6px 0;font-weight:600;">Your refund terms</p>`,
-    paragraph(terms.refund_policy),
+    /* Concrete and specific, not a closing flourish. The humanizer rules
+       this repo follows treat manufactured punchlines and aphorism
+       formulas as the tell; a plain true detail is what reads as a
+       person. Every claim here is already on /about and in the FAQ. */
     paragraph(
-      `Check the shipping address above now. It is far easier to correct ` +
-        `today than in four months — just reply to this email.`
+      `We're students and this is our first hardware project. Yours is one ` +
+        `of the first we're making.`
     ),
-    paragraph(`Thank you for backing this. It genuinely matters to us.`),
-    `<p style="margin:16px 0 0 0;">— The ${escapeHtml(BRAND)} team</p>`,
+    `<p style="margin:16px 0 0 0;">The ${escapeHtml(BRAND)} team</p>`,
   ].join("\n");
 
+  /* Trimmed 2026-08-06 from four blocks to three short lines.
+     WHAT WAS REMOVED, so it is a decision on the record rather than a
+     silent deletion:
+       - REFUND_POLICY reproduced verbatim in the body (~60 words). Now a
+         one-line statement of the final-sale rule plus a link. The rule
+         itself is a deterrent and is kept; the enumerated exceptions are
+         what read as a menu, and they live on /refunds.
+       - NOT_A_COMPANY_NOTICE in full (~60 words). Compressed to its
+         load-bearing clause. The full text remains on /terms and on
+         /privacy, and the buyer accepted it at checkout.
+       - The seller-of-record paragraph, which volunteered an immediate
+         unconditional refund and directly contradicted "preorders are
+         final" two paragraphs above. Gone entirely; sellerLine() now
+         renders only when an adult IS named.
+     None of these are required to appear in a confirmation email. The
+     stated ship window and the terms acceptance both happen at the point
+     of sale, which is what 16 CFR 435.2 and the ToS consent turn on. */
   const footerHtml = [
-    `<p style="margin:0 0 9px 0;">${escapeHtml(
-      sellerLine(terms.seller_of_record)
-    )}</p>`,
-    `<p style="margin:0 0 9px 0;">${escapeHtml(terms.not_a_company_notice)}</p>`,
-    `<p style="margin:0 0 9px 0;">Questions, address changes, or a refund request: reply to this email or write to <a href="mailto:${CONTACT_EMAIL}" style="color:#0891b2;">${CONTACT_EMAIL}</a>.</p>`,
+    sellerLine(terms.seller_of_record)
+      ? `<p style="margin:0 0 9px 0;">${escapeHtml(
+          sellerLine(terms.seller_of_record)
+        )}</p>`
+      : "",
+    `<p style="margin:0 0 9px 0;">Preorders are final, with the exceptions set out in our <a href="${SITE_URL}/refunds" style="color:#0891b2;">refund policy</a>. ${escapeHtml(
+      BRAND
+    )} is a student project, not a company.</p>`,
+    `<p style="margin:0 0 9px 0;">Questions, or address wrong? Reply here or write to <a href="mailto:${CONTACT_EMAIL}" style="color:#0891b2;">${CONTACT_EMAIL}</a>.</p>`,
     `<p style="margin:0;"><a href="${SITE_URL}/terms" style="color:#666666;">Terms</a> · <a href="${SITE_URL}/refunds" style="color:#666666;">Refunds</a> · <a href="${SITE_URL}/privacy" style="color:#666666;">Privacy</a></p>`,
     /* No unsubscribe link, deliberately. This is a transactional message
        about a purchase the recipient made, which CAN-SPAM treats
@@ -191,39 +243,32 @@ ${detailRow("Shipping to", address.join(", ") || "—")}
   const text = [
     greeting,
     ``,
-    `Your preorder is confirmed and your card has been charged ${money}.`,
-    `You are funding a build, not buying from stock - the ${BRAND} panel has`,
-    `not been manufactured yet.`,
+    `Thanks for backing this. Your order is in and we've charged your card`,
+    `${money}. Our lead time is ${LEAD_TIME_RANGE_PHRASE}, and we'll send you`,
+    `updates as we build.`,
     ``,
     `Order number:   ${ref}`,
     `Item:           ${terms.product_name}`,
     `Amount charged: ${money} (shipping included)`,
-    `Shipping to:    ${address.join(", ") || "-"}`,
+    `Shipping to:    ${address.join(", ") || "Not provided"}`,
     ``,
-    `WE WILL SHIP YOUR ORDER BY: ${shipByText.toUpperCase()}`,
+    `ESTIMATED SHIP DATE: ${shipByText.toUpperCase()}`,
     ``,
-    `That date is a commitment, not an estimate. If we cannot meet it we will`,
-    `email you a revised date before it passes, and you can either accept the`,
-    `new date or take a full refund. That choice is yours alone and nothing is`,
-    `required of you to exercise it.`,
+    `If that date ever moves, you'll hear it from us before it passes.`,
     ``,
-    `YOUR REFUND TERMS`,
-    terms.refund_policy,
+    `We're students and this is our first hardware project. Yours is one of`,
+    `the first we're making.`,
     ``,
-    `Check the shipping address above now. It is far easier to correct today`,
-    `than in four months - just reply to this email.`,
-    ``,
-    `Thank you for backing this. It genuinely matters to us.`,
-    ``,
-    `- The ${BRAND} team`,
+    `The ${BRAND} team`,
     ``,
     `---`,
-    sellerLine(terms.seller_of_record),
+    /* Filter drops the empty string when no seller is named, so the
+       plaintext does not ship a stray blank line. */
+    ...[sellerLine(terms.seller_of_record)].filter(Boolean),
+    `Preorders are final, with the exceptions set out at ${SITE_URL}/refunds.`,
+    `${BRAND} is a student project, not a company.`,
     ``,
-    terms.not_a_company_notice,
-    ``,
-    `Questions, address changes, or a refund request: reply to this email`,
-    `or write to ${CONTACT_EMAIL}.`,
+    `Questions, or address wrong? Reply here or write to ${CONTACT_EMAIL}.`,
     ``,
     `${SITE_URL}/terms · ${SITE_URL}/refunds · ${SITE_URL}/privacy`,
   ].join("\n");
@@ -234,8 +279,8 @@ ${detailRow("Shipping to", address.join(", ") || "—")}
       /* Preheader carries the ship date, so the buyer sees the one fact
          that matters from the inbox list without opening. */
       preheader: shipBy
-        ? `${ref} — we will ship by ${shipBy}.`
-        : `${ref} — confirmed.`,
+        ? `${ref}. Estimated ship ${shipBy}.`
+        : `${ref}. Confirmed.`,
       bodyHtml,
       footerHtml,
     }),

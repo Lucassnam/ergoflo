@@ -33,20 +33,36 @@ supabase db push
 Adds `order_number`, `promised_ship_date`, `address_confirmed_at` and `terms_snapshot` to
 `preorders`, plus the `email_outbox` and `production_updates` tables.
 
-### 2. Resend + DNS
+### 2. Resend + DNS — ALREADY DONE
 
-Verify a **subdomain** sender, `send.ergoflo.tech`.
+Verified 2026-08-06 by sending from it. `ergoflo.tech` (the **apex**) is the verified domain,
+so any address on it can send. Records in place:
 
-> Do **not** put Resend's DKIM on the apex. `ergoflo.tech` already carries MX for Namecheap
-> Private Email (`mx1-3-hosting.jellyfish.systems`) and an SPF record scoped to that host.
-> Editing that SPF risks receipt of mail at `hello@ergoflo.tech`, which `/privacy` publishes
-> as the data-deletion address.
+| Record | Value |
+|---|---|
+| `resend._domainkey.ergoflo.tech` TXT | DKIM public key |
+| `send.ergoflo.tech` TXT | `v=spf1 include:amazonses.com ~all` |
+| `send.ergoflo.tech` MX | `feedback-smtp.us-east-1.amazonses.com` |
+| `_dmarc.ergoflo.tech` TXT | `v=DMARC1; p=none;` |
 
-1. Resend dashboard → Domains → add `send.ergoflo.tech`.
-2. Add the DKIM + SPF records it gives you, on that subdomain only.
-3. Add a DMARC record at `_dmarc.ergoflo.tech`, starting at
-   `v=DMARC1; p=none; rua=mailto:hello@ergoflo.tech`. There is none today, and Gmail and
-   Yahoo both expect one.
+**`send.ergoflo.tech` is not a second domain.** It is the return-path subdomain Resend
+creates as part of apex verification. Sending *from* an address on it returns 403. An
+earlier version of `wrangler.jsonc` had `orders@send.ergoflo.tech` as `MAIL_FROM` and would
+have failed on the first real order.
+
+Two things to leave alone:
+
+- **The apex SPF.** It still reads `v=spf1 +a +mx +ip4:... include:spf.web-hosting.com ~all`,
+  serving the Namecheap mailbox. Resend did not touch it because its own SPF lives on the
+  return-path subdomain. Never add a second `v=spf1` record to the apex — one per domain, or
+  SPF permerrors and deliverability drops for the mailbox too.
+- **`MAIL_FROM = hello@ergoflo.tech`.** Not `orders@`. `hello@` demonstrably receives mail
+  (`/privacy` publishes it as the deletion address); whether `orders@` has a mailbox behind
+  the Namecheap MX is unknown, and these emails tell the buyer to "just reply".
+
+Worth improving: the DMARC record has no `rua=`, so nobody receives aggregate reports.
+`v=DMARC1; p=none; rua=mailto:hello@ergoflo.tech` costs nothing and shows who is sending as
+you.
 
 ### 3. Deploy the Worker
 
@@ -73,6 +89,27 @@ This is what makes any of it fire. Dashboard → Developers → Webhooks → add
 
 The live checkout is the hosted Payment Link (Route A). Payment Links emit
 `checkout.session.completed` too, so this works without enabling Route B.
+
+## Previewing templates
+
+`src/preview.ts` renders every template to HTML and plaintext and **fails if any
+rendered copy contains an em or en dash** — the house rule from commit `df48982`
+(`github.com/blader/humanizer`). It checks output, not source, because a dash can arrive
+through an imported constant that a source grep never sees.
+
+```sh
+# from the repo root
+node node_modules/typescript/bin/tsc --strict --target ES2022 --module commonjs \
+  --moduleResolution node --lib ES2022,DOM --types node --skipLibCheck \
+  --outDir /tmp/prev workers/ergoflo-mailer/src/preview.ts
+node /tmp/prev/workers/ergoflo-mailer/src/preview.js ./email-preview
+```
+
+Exits non-zero on failure, so it works as a pre-commit hook. Sample data is in
+`src/fixtures.ts` — a name with an apostrophe (proves HTML escaping) and a null
+`line2` (proves the blank-line filter). Keep it awkward.
+
+`preview.ts` runs on load. Never import from it; import fixtures from `fixtures.ts`.
 
 ## Testing
 
