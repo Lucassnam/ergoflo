@@ -285,7 +285,7 @@ export async function onRequestPost(context: {
       not_a_company_notice: NOT_A_COMPANY_NOTICE,
       ship_window_phrase: SHIP_WINDOW_PHRASE,
       seller_of_record: SELLER_OF_RECORD,
-      product_name: `${BRAND} FlowPack V1 panel`,
+      product_name: `${BRAND} Flopack V1 panel`,
     },
     status: "paid",
   };

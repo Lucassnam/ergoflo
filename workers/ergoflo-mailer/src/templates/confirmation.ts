@@ -57,7 +57,7 @@ function orderTerms(order: PreorderRow): Required<TermsSnapshot> {
     ship_window_phrase:
       s.ship_window_phrase ?? `about ${order.promised_ship_days} days`,
     seller_of_record: s.seller_of_record ?? SELLER_OF_RECORD,
-    product_name: s.product_name ?? `${BRAND} FlowPack V1 panel`,
+    product_name: s.product_name ?? `${BRAND} Flopack V1 panel`,
   };
 }
 

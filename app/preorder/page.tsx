@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import PreorderCheckout from "@/components/PreorderCheckout";
-import EarlyBirdBadge from "@/components/EarlyBirdBadge";
 import {
   BRAND,
   LEAD_TIME_DAYS,
@@ -15,7 +14,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Preorder",
-  description: `Preorder the ${BRAND} FlowPack V1 panel for ${formatPrice()}, shipping included. A product that has not been built yet. Ships in about ${LEAD_TIME_DAYS} days, and preorders are final.`,
+  description: `Preorder the ${BRAND} Flopack V1 panel for ${formatPrice()}, shipping included. A product that has not been built yet. Ships in about ${LEAD_TIME_DAYS} days, and preorders are final.`,
 };
 
 /* ============================================================
@@ -47,18 +46,32 @@ export default function Preorder() {
             Fund the first run.
           </h1>
           <p className="mt-5 text-[16px] leading-relaxed text-neutral-600">
-            {formatPrice()}, shipping included, {SHIPS_TO}. You are paying for
-            something that does not exist yet. Here is what that means.
+            {formatPrice()}, shipping included, {SHIPS_TO}. This is a preorder
+            for a product that has not been built yet — here is what that
+            means.
           </p>
         </Reveal>
 
         {/* The disclosure block. Deliberately the most prominent thing on the
-            page after the headline, and deliberately above the price. */}
+            page after the headline, and deliberately above the price.
+
+            COLLAPSED BY DEFAULT as of 2026-08-06, at the owner's request, to
+            make the page feel less daunting on open. This trades away some
+            of the "seen before paying" strength documented above — the
+            <summary> label ("Disclaimer") and its position above the price
+            are what's left carrying that weight, so do not shrink the label
+            further or move this block below the checkout. */}
         <Reveal delay={0.1}>
-          <div className="mt-10 rounded-2xl border border-neutral-900 bg-neutral-50 p-6 sm:p-7">
-            <h2 className="headline text-[18px] text-black">
-              Read this before you pay
-            </h2>
+          <details className="group mt-10 rounded-2xl border border-neutral-900 bg-neutral-50 p-6 sm:p-7">
+            <summary className="headline flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] text-black [&::-webkit-details-marker]:hidden">
+              Disclaimer
+              <span
+                aria-hidden="true"
+                className="text-neutral-400 transition-transform duration-200 group-open:rotate-180"
+              >
+                ▾
+              </span>
+            </summary>
             <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-neutral-700">
               <li className="flex gap-3">
                 <span className="mt-2 h-px w-3 flex-shrink-0 bg-neutral-400" />
@@ -77,7 +90,9 @@ export default function Preorder() {
                     No unit exists.
                   </strong>{" "}
                   The design is not finished, so there is no prototype to buy a
-                  copy of. It takes AA batteries, which are not included.
+                  copy of. Every unit is made to order after you pay, not
+                  pulled from stock. It takes AA batteries, which are not
+                  included.
                 </span>
               </li>
               <li className="flex gap-3">
@@ -146,7 +161,7 @@ export default function Preorder() {
                 </span>
               </li>
             </ul>
-          </div>
+          </details>
         </Reveal>
 
         {/* Price, then payment. */}
@@ -155,7 +170,7 @@ export default function Preorder() {
             <div className="flex items-baseline justify-between gap-4">
               <div>
                 <p className="headline text-[19px] text-black">
-                  FlowPack V1 panel
+                  Flopack V1 panel
                 </p>
                 <p className="mt-1 text-[14px] text-neutral-500">
                   Preorder · ships in about {LEAD_TIME_DAYS} days
@@ -173,11 +188,6 @@ export default function Preorder() {
                 <p className="text-[13px] text-neutral-500">Free US shipping</p>
               </div>
             </div>
-
-            {/* Increase framing only — never a struck-through regular price.
-                Sits BELOW the price and ABOVE the checkout, so it cannot
-                push the disclosure block further from the buy control. */}
-            <EarlyBirdBadge className="mt-4" />
 
             <div className="mt-6 border-t border-neutral-200 pt-6">
               <PreorderCheckout />
