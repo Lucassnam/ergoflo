@@ -193,8 +193,8 @@ ${detailRow("Shipping to", address.join(", ") || "Not provided")}
        formulas as the tell; a plain true detail is what reads as a
        person. Every claim here is already on /about and in the FAQ. */
     paragraph(
-      `We're students, this is our first hardware project, and we're making ` +
-        `these at home. Yours is one of the first.`
+      `We're students and this is our first hardware project. Yours is one ` +
+        `of the first we're making.`
     ),
     `<p style="margin:16px 0 0 0;">The ${escapeHtml(BRAND)} team</p>`,
   ].join("\n");
@@ -256,8 +256,8 @@ ${detailRow("Shipping to", address.join(", ") || "Not provided")}
     ``,
     `If that date ever moves, you'll hear it from us before it passes.`,
     ``,
-    `We're students, this is our first hardware project, and we're making`,
-    `these at home. Yours is one of the first.`,
+    `We're students and this is our first hardware project. Yours is one of`,
+    `the first we're making.`,
     ``,
     `The ${BRAND} team`,
     ``,
