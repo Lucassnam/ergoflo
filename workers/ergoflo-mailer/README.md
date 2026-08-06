@@ -64,6 +64,28 @@ Worth improving: the DMARC record has no `rua=`, so nobody receives aggregate re
 `v=DMARC1; p=none; rua=mailto:hello@ergoflo.tech` costs nothing and shows who is sending as
 you.
 
+### How a live order becomes an email
+
+```
+buyer pays on buy.stripe.com
+   │
+   ├─ checkout.session.completed ──► /api/stripe-webhook   (Pages Function)
+   │                                   verify signature
+   │                                   insert preorders row
+   │                                   queue receipt + confirmation
+   │                                   ping the mailer  ← seconds, not hours
+   │                                   return 200
+   │
+   └─ mailer POST /run  ──────────► drain outbox ──► Resend ──► inbox
+                                         ▲
+        cron */15 ───────────────────────┘  safety net only
+```
+
+The ping is fire-and-forget behind `waitUntil`. If it fails, the cron sends the same rows
+within 15 minutes. **Never make the ping blocking or required** — Stripe wants a fast 2xx and
+retries anything else, and an order record must never be at risk because an email service is
+slow.
+
 ### 3. Deploy the Worker
 
 ```sh
@@ -89,6 +111,36 @@ This is what makes any of it fire. Dashboard → Developers → Webhooks → add
 
 The live checkout is the hosted Payment Link (Route A). Payment Links emit
 `checkout.session.completed` too, so this works without enabling Route B.
+
+### 5. Point the webhook at the mailer
+
+On the **Pages** project (not the Worker), add two more environment variables:
+
+| Name | Value |
+|---|---|
+| `MAILER_URL` | `https://ergoflo-mailer.<your-subdomain>.workers.dev` |
+| `MAILER_SHARED_SECRET` | the same value you set as a Worker secret in step 3 |
+
+Both optional. Without them orders are still recorded and still emailed — just on the cron's
+schedule (up to 15 minutes) rather than in seconds.
+
+**Do this step last.** `MAILER_URL` is printed by `wrangler deploy`, so the Worker has to
+exist first.
+
+### Verifying it end to end
+
+After all five steps, in Stripe: Developers → Webhooks → your endpoint → **Send test event**
+→ `checkout.session.completed`. Then:
+
+```sql
+-- a row should appear, and its outbox rows should be 'sent' within seconds
+select p.order_number, p.email, e.kind, e.status, e.sent_at
+from preorders p join email_outbox e on e.order_id = p.id
+order by p.created_at desc limit 10;
+```
+
+A test event carries fake data, so delete the row afterwards:
+`delete from preorders where stripe_session_id = 'cs_test_...';` — the outbox rows cascade.
 
 ## Previewing templates
 
