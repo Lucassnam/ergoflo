@@ -7,8 +7,6 @@ import {
   LEGAL_ENTITY,
   LEGAL_NAV,
   NAV,
-  PREORDER_NOTICE,
-  TARGETS_DISCLAIMER,
 } from "@/lib/site";
 
 export default function Footer() {
@@ -60,21 +58,40 @@ export default function Footer() {
 
         {/* This block previously claimed figures came "from bench testing"
             (nothing was ever bench-tested) and stated a refund rule that
-            contradicted two other pages. Both sentences now come from
+            contradicted two other pages. The remaining sentence comes from
             lib/site.ts so the footer, the FAQ and /terms cannot drift apart
             again.
 
             NOT_AN_OFFER_NOTICE used to close this paragraph. It was deleted
             site-wide on 2026-08-03 when checkout shipped — it read "nothing
             here is for sale", which a footer cannot say on a page carrying a
-            $49.99 buy button. PREORDER_NOTICE replaces it and is equally
-            load-bearing: it is the site-wide disclosure that the thing being
-            sold does not exist yet. Do not drop it to tidy the footer. */}
+            priced buy button.
+
+            SHORTENED 2026-08-06. It carried TARGETS_DISCLAIMER *and* the
+            full PREORDER_NOTICE on top of the sentence below, which meant
+            every page ended with three overlapping legal sentences and said
+            "no unit exists" twice inside one paragraph — on /privacy and
+            /terms as much as on the pages that sell anything.
+
+            What was dropped and why it is safe:
+              - PREORDER_NOTICE is a POINT-OF-SALE notice. It still renders
+                in full where a buyer can actually pay: Disclosure() in
+                PreorderCheckout.tsx, beneath the buy control on /preorder,
+                and in /terms §2. A site-wide footer is not the point of
+                sale and nothing requires it there.
+              - TARGETS_DISCLAIMER is redundant with the sentence kept
+                below, and every individual figure already carries "(target)"
+                inline — which lib/site.ts:409-414 is explicit is the
+                placement that matters, the qualifier travelling with the
+                number rather than living in a footnote.
+
+            The sentence that remains is the one genuinely site-wide fact:
+            this is a design, not a finished product. Do not drop that. */}
         <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
           <p className="max-w-3xl text-[11.5px] leading-relaxed text-neutral-400">
             © {new Date().getFullYear()} {LEGAL_ENTITY}. {BRAND} is a design in
-            development. No finished unit exists, and nothing has been tested
-            or certified. {TARGETS_DISCLAIMER} {PREORDER_NOTICE}
+            development: no finished unit exists, and nothing has been tested
+            or certified.
           </p>
         </div>
       </div>
