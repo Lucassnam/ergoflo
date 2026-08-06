@@ -1,0 +1,23 @@
+{
+  /* Standalone. The root tsconfig excludes `workers/` because this code
+     targets the Workers runtime, not Next's. */
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  /* `../../lib/*` is included on purpose: templates and the date helpers
+     import from the site's single source of truth rather than mirroring
+     its constants by hand. See the import comment in
+     functions/api/stripe-webhook.ts for why relative imports work here
+     when the `@/` alias does not. */
+  "include": ["src/**/*.ts", "../../lib/site.ts", "../../lib/shipping.ts"]
+}

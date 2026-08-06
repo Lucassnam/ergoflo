@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import PreorderCheckout from "@/components/PreorderCheckout";
+import EarlyBirdBadge from "@/components/EarlyBirdBadge";
 import {
   BRAND,
   LEAD_TIME_DAYS,
@@ -61,13 +62,22 @@ export default function Preorder() {
             <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-neutral-700">
               <li className="flex gap-3">
                 <span className="mt-2 h-px w-3 flex-shrink-0 bg-neutral-400" />
+                {/* "Nothing has been bench-tested or certified" was removed
+                    from this bullet on 2026-08-06 — TARGETS_DISCLAIMER in the
+                    very next bullet states it verbatim, so the reader met the
+                    same clause twice in consecutive sentences.
+
+                    The batteries clause STAYS. It is a point-of-sale
+                    disclosure (lib/site.ts:507-510): failing to disclose that
+                    a required component is absent is an FTC deception
+                    problem, and this block is what a buyer reads before
+                    reaching the button. */}
                 <span>
                   <strong className="font-medium text-black">
                     No unit exists.
                   </strong>{" "}
                   The design is not finished, so there is no prototype to buy a
-                  copy of. Nothing has been bench-tested or certified, and it
-                  takes AA batteries that are not included.
+                  copy of. It takes AA batteries, which are not included.
                 </span>
               </li>
               <li className="flex gap-3">
@@ -155,9 +165,19 @@ export default function Preorder() {
                 <p className="headline text-[28px] text-black">
                   {formatPrice()}
                 </p>
-                <p className="text-[13px] text-neutral-500">Free shipping</p>
+                {/* "Free US shipping", not "Free shipping" — SHIPS_TO is
+                    deliberately US-only (it keeps GDPR, EU GPSR and
+                    per-destination lithium freight rules out of scope), and
+                    the limit belongs next to the price rather than only in
+                    the spec table further down. */}
+                <p className="text-[13px] text-neutral-500">Free US shipping</p>
               </div>
             </div>
+
+            {/* Increase framing only — never a struck-through regular price.
+                Sits BELOW the price and ABOVE the checkout, so it cannot
+                push the disclosure block further from the buy control. */}
+            <EarlyBirdBadge className="mt-4" />
 
             <div className="mt-6 border-t border-neutral-200 pt-6">
               <PreorderCheckout />

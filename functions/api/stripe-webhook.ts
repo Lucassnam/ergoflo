@@ -26,10 +26,54 @@
         last month is refused.
    ============================================================ */
 
+/* These imports are RELATIVE, not `@/lib`. The path alias is a tsconfig
+   feature that the Pages Functions bundler does not read — that is what
+   the "cannot import from @/lib" note in checkout.ts means. A relative
+   import bundles fine, and lib/site.ts is a pure module with no imports
+   of its own, so nothing React- or Node-shaped comes with it.
+
+   Prefer this over hand-mirroring constants. checkout.ts mirrors four of
+   them because it was written before this was established; that block is
+   a known drift hazard, not a pattern to copy. */
+import {
+  REFUND_POLICY,
+  NOT_A_COMPANY_NOTICE,
+  SELLER_OF_RECORD,
+  BRAND,
+} from "../../lib/site";
+import { shipByDate, toDateColumn, SHIP_WINDOW_PHRASE } from "../../lib/shipping";
+
 interface Env {
   STRIPE_WEBHOOK_SECRET: string;
   SUPABASE_URL: string;
   SUPABASE_SECRET_KEY: string;
+}
+
+/* Crockford base32 without I, L, O, U — removes the character pairs a
+   customer misreads over the phone and the one that produces unfortunate
+   words by accident. */
+const ORDER_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+/**
+ * Human-readable order reference, e.g. `EF-2608-K3M9NQ2T`.
+ *
+ * The uuid primary key is the real identity; this exists because nobody
+ * can read a uuid down the phone or type it into a support reply. The
+ * date segment makes an order's age obvious at a glance, which matters
+ * when the promise is 120 days long.
+ *
+ * 8 random characters over a 32-symbol alphabet is ~1.1e12 values. A
+ * collision would surface as a unique violation on insert, which the
+ * handler below distinguishes from the stripe_session_id case and
+ * retries — see the 23505 branch.
+ */
+function generateOrderNumber(now: Date): string {
+  const yy = String(now.getUTCFullYear()).slice(2);
+  const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const bytes = crypto.getRandomValues(new Uint8Array(8));
+  let suffix = "";
+  for (const b of bytes) suffix += ORDER_ALPHABET[b % 32];
+  return `EF-${yy}${mm}-${suffix}`;
 }
 
 /** Stripe's own default. Rejects replays of captured requests. */
@@ -205,6 +249,14 @@ export async function onRequestPost(context: {
     null;
   const addr = shipping?.address ?? null;
 
+  const now = new Date();
+  /* Falls back to 120 rather than 0 if metadata is somehow absent —
+     recording a zero-day promise against an order would misstate the
+     Mail Order Rule obligation for that customer. Route A (the hosted
+     Payment Link) never sets this metadata, so this fallback is the
+     normal path today, not the exceptional one. */
+  const promisedDays = Number(session.metadata?.promised_ship_days ?? 120);
+
   const row = {
     stripe_session_id: session.id,
     stripe_payment_intent: session.payment_intent ?? null,
@@ -218,10 +270,23 @@ export async function onRequestPost(context: {
     shipping_country: addr?.country ?? null,
     amount_cents: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
-    /* Falls back to 120 rather than 0 if metadata is somehow absent —
-       recording a zero-day promise against an order would misstate the
-       Mail Order Rule obligation for that customer. */
-    promised_ship_days: Number(session.metadata?.promised_ship_days ?? 120),
+    promised_ship_days: promisedDays,
+    order_number: generateOrderNumber(now),
+    /* The concrete date this buyer is promised, computed once here and
+       never recomputed. See lib/shipping.ts. */
+    promised_ship_date: toDateColumn(shipByDate(now, promisedDays)),
+    /* The terms THIS buyer bought under, frozen now. The site's legal
+       copy changes — REFUND_POLICY was already narrowed once on
+       2026-08-04 — and the emails in this sequence go out up to four
+       months later. Quoting today's constant in a day-90 email would
+       state terms the buyer never agreed to. */
+    terms_snapshot: {
+      refund_policy: REFUND_POLICY,
+      not_a_company_notice: NOT_A_COMPANY_NOTICE,
+      ship_window_phrase: SHIP_WINDOW_PHRASE,
+      seller_of_record: SELLER_OF_RECORD,
+      product_name: `${BRAND} FlowPack V1 panel`,
+    },
     status: "paid",
   };
 
@@ -231,28 +296,118 @@ export async function onRequestPost(context: {
       apikey: env.SUPABASE_SECRET_KEY,
       Authorization: `Bearer ${env.SUPABASE_SECRET_KEY}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
+      /* representation, not minimal: we need the new row's id to enqueue
+         the confirmation email without a second round trip. */
+      Prefer: "return=representation",
     },
     body: JSON.stringify(row),
   });
 
-  if (!res.ok) {
-    const detail = (await res.json().catch(() => null)) as { code?: string } | null;
+  let orderId: string | null = null;
 
-    /* 23505 = unique_violation on stripe_session_id. This is the NORMAL
-       path for a retry, not an error — Stripe redelivers until it sees a
-       2xx, so the second delivery of a successfully-handled event lands
-       here. Returning 200 is what makes the handler idempotent. */
-    if (detail?.code === "23505") return new Response("Already recorded", { status: 200 });
+  if (res.ok) {
+    const inserted = (await res.json().catch(() => null)) as
+      | Array<{ id?: string }>
+      | null;
+    orderId = inserted?.[0]?.id ?? null;
+  } else {
+    const detail = (await res.json().catch(() => null)) as {
+      code?: string;
+      details?: string;
+      message?: string;
+    } | null;
 
-    /* Log the code only, never the row: it holds an email and a home
-       address. Same rule as /api/notify. 500 so Stripe retries — a
-       transient Supabase failure must not lose a paid order. */
-    console.error(
-      "[/api/stripe-webhook] insert failed, code:",
-      detail?.code ?? res.status
-    );
-    return new Response("Insert failed", { status: 500 });
+    /* 23505 = unique_violation. TWO different constraints can raise it
+       here and they need opposite responses:
+
+         - stripe_session_id: the NORMAL retry path. Stripe redelivers
+           until it sees a 2xx, so the second delivery of a
+           successfully-handled event lands here. Idempotent, return 200.
+
+         - order_number: a genuine (astronomically unlikely) collision on
+           the random reference. Returning 200 here would silently DROP a
+           paid order. Fall through to the 500 so Stripe retries and a
+           fresh order number is generated.
+
+       Treating every 23505 as "already recorded" is the bug this branch
+       exists to avoid. */
+    const violation = `${detail?.details ?? ""} ${detail?.message ?? ""}`;
+    const isDuplicateSession =
+      detail?.code === "23505" && violation.includes("stripe_session_id");
+
+    if (isDuplicateSession) {
+      /* A redelivery. The order row exists, but we may have died last
+         time BETWEEN the insert and the enqueue — so look the id up and
+         fall through to the enqueue rather than returning here. The
+         outbox's unique (order_id, kind) makes doing it twice a no-op.
+         This is the whole reason this path does not return early. */
+      const params = new URLSearchParams({
+        select: "id",
+        stripe_session_id: `eq.${session.id}`,
+        limit: "1",
+      });
+      const lookup = await fetch(
+        `${env.SUPABASE_URL}/rest/v1/preorders?${params}`,
+        {
+          headers: {
+            apikey: env.SUPABASE_SECRET_KEY,
+            Authorization: `Bearer ${env.SUPABASE_SECRET_KEY}`,
+          },
+        }
+      );
+      const found = (await lookup.json().catch(() => null)) as
+        | Array<{ id?: string }>
+        | null;
+      orderId = found?.[0]?.id ?? null;
+    } else {
+      /* Log the code only, never the row: it holds an email and a home
+         address. Same rule as /api/notify. 500 so Stripe retries — a
+         transient Supabase failure must not lose a paid order. */
+      console.error(
+        "[/api/stripe-webhook] insert failed, code:",
+        detail?.code ?? res.status
+      );
+      return new Response("Insert failed", { status: 500 });
+    }
+  }
+
+  /* ---- Enqueue the confirmation email. -----------------------------
+     NOT a send. This handler must return 2xx or Stripe retries, and a
+     provider outage must not put a paid order at risk. Writing a row
+     here and letting workers/ergoflo-mailer drain it makes the order and
+     the email independently retryable.
+
+     A failure to enqueue does NOT fail the webhook. The order is
+     recorded and that is the fact worth protecting; a missing
+     confirmation is recoverable by hand from the outbox, whereas a lost
+     order is not recoverable at all. */
+  if (orderId) {
+    const enqueue = await fetch(`${env.SUPABASE_URL}/rest/v1/email_outbox`, {
+      method: "POST",
+      headers: {
+        apikey: env.SUPABASE_SECRET_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SECRET_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ order_id: orderId, kind: "confirmation" }),
+    });
+
+    if (!enqueue.ok) {
+      const detail = (await enqueue.json().catch(() => null)) as {
+        code?: string;
+      } | null;
+      /* 23505 on (order_id, kind) is the expected outcome of a
+         redelivery: already queued or already sent. Not an error. */
+      if (detail?.code !== "23505") {
+        console.error(
+          "[/api/stripe-webhook] enqueue failed, code:",
+          detail?.code ?? enqueue.status
+        );
+      }
+    }
+  } else {
+    console.error("[/api/stripe-webhook] no order id, confirmation not queued");
   }
 
   return new Response("OK", { status: 200 });

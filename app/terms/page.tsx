@@ -68,6 +68,9 @@ export default function Terms() {
     <LegalPage
       title="Terms"
       lastUpdated={LAST_UPDATED}
+      /* §1 below states NOT_A_COMPANY_NOTICE in full, so the shared contact
+         block must not print it a second time on this page. */
+      entityNotice={false}
       intro={
         <>
           <strong className="font-semibold text-black">

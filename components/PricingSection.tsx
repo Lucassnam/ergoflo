@@ -6,7 +6,6 @@ import {
   LEAD_TIME_DAYS,
   PREORDERS_ENABLED,
   PREORDER_NOTICE,
-  TARGETS_DISCLAIMER,
   formatPrice,
 } from "@/lib/site"
 import { motion } from "motion/react"
@@ -231,11 +230,19 @@ export default function PricingSection() {
       {/* Footer Note.
           The old version linked "View warranty details" at href="#" — a dead
           link promising warranty terms that did not exist. Replaced with the
-          targets disclosure and real links to the legal pages. */}
+          targets disclosure and real links to the legal pages.
+
+          TARGETS_DISCLAIMER dropped 2026-08-06. It followed PREORDER_NOTICE
+          here and repeated "nothing has been bench-tested or certified" from
+          the sentence immediately before it. Every figure on this page
+          already carries "(target)" inline, which lib/site.ts:409-414 is
+          explicit is the placement that does the work. PREORDER_NOTICE
+          stays: this section carries the one priced card on the home page,
+          so the full preorder disclosure belongs with it. */}
       <div className="max-w-4xl mx-auto text-center mt-16">
         <Reveal delay={0.4}>
           <p className="mx-auto max-w-2xl text-sm leading-relaxed text-neutral-500">
-            {PREORDER_NOTICE} {TARGETS_DISCLAIMER}
+            {PREORDER_NOTICE}
           </p>
           <p className="mt-3 text-sm text-neutral-500">
             <Link href="/terms" className="text-neutral-900 underline underline-offset-4">
