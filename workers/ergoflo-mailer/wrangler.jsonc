@@ -1,0 +1,37 @@
+{
+  // Deployed SEPARATELY from the Pages project. From this directory:
+  //   npx wrangler deploy
+  //
+  // Secrets are NOT set here. Set them with `npx wrangler secret put`:
+  //   SUPABASE_URL, SUPABASE_SECRET_KEY, RESEND_API_KEY,
+  //   MAILER_SHARED_SECRET
+  // Anything in `vars` below is plaintext in the dashboard and in git.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ergoflo-mailer",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-06-20",
+
+  "triggers": {
+    // 15:00 UTC daily — mid-morning US, so a confirmation that misses its
+    // immediate POST /run still arrives at a reasonable hour rather than
+    // at 3am local. Cron Triggers execute on UTC and take up to 15
+    // minutes to propagate after a change.
+    "crons": ["0 15 * * *"]
+  },
+
+  "vars": {
+    // A SUBDOMAIN sender. Do not move this to the apex: ergoflo.tech
+    // already carries MX for Namecheap Private Email and an SPF record
+    // scoped to that host, and hello@ergoflo.tech is the address /privacy
+    // publishes for data deletion. See §5 of
+    // docs/plans/2026-08-06-transactional-email.md.
+    "MAIL_FROM": "ErgoFlo <orders@send.ergoflo.tech>",
+    "MAIL_REPLY_TO": "hello@ergoflo.tech"
+  },
+
+  "observability": {
+    // Without this, a failed send is only visible in a live `wrangler
+    // tail`, which nobody is watching at 15:00 UTC.
+    "enabled": true
+  }
+}
