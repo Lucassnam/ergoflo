@@ -14,10 +14,32 @@
    the exact profile that lands in spam. The plaintext part is also what
    screen readers and watch notifications use.
 
-   No remote images. No tracking pixel. Both trigger "load images?"
-   prompts that hide content, and a tracking pixel on a legal notice is a
-   bad look on a site whose /privacy page promises it does not track.
+   ONE remote image: the logo. NO TRACKING PIXEL, ever. The distinction
+   is not cosmetic. A logo is content the reader may choose to load; a
+   tracking pixel reports back when they opened it, which /privacy
+   promises this site does not do. Adding one here would make that page
+   false.
+
+   THE LOGO MUST BE DECORATIVE ONLY. Gmail, Outlook and Apple Mail all
+   block remote images by default for a sender the recipient has not
+   corresponded with, which is every first-time buyer. So the email has
+   to carry its full meaning with images off: the wordmark stays as live
+   text next to it, and no fact appears only inside an image. Never put
+   the order number, the total, or the ship date in one.
+
+   Data URIs are not an alternative -- Gmail strips them. A hosted URL is
+   the only thing that works broadly.
    ============================================================ */
+
+/** Absolute URL, necessarily -- an email has no origin to resolve a
+    relative path against. Served from public/logo.png by the Pages
+    deploy. If the domain ever moves, this moves with it.
+
+    alt is deliberately EMPTY (alt="") rather than "ErgoFlo": the
+    wordmark sits beside it as live text, so alt text here would make a
+    screen reader announce the brand twice. Empty alt is the correct
+    markup for a decorative image, not an oversight. */
+const LOGO_URL = "https://ergoflo.tech/logo.png";
 
 /** Near-black on white. Mirrors the site's light theme without importing
     Tailwind tokens, which do not exist in an email context. */
@@ -60,8 +82,20 @@ export function renderShell({
     <td align="center" style="padding:32px 12px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background:#ffffff;border:1px solid ${RULE};border-radius:12px;">
         <tr>
-          <td style="padding:28px 28px 0 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-            <div style="font-size:17px;font-weight:700;letter-spacing:-0.01em;color:${FG};">ErgoFlo</div>
+          <td style="padding:28px 28px 0 28px;">
+            <!-- Two cells, not flexbox: Outlook desktop renders through
+                 Word and has no flex. width/height as HTML ATTRIBUTES as
+                 well as CSS, because Outlook ignores CSS sizing on img
+                 and would otherwise draw the source at 512px. -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="left" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.01em;color:${FG};vertical-align:middle;">ErgoFlo</td>
+                <td align="right" style="vertical-align:middle;">
+                  <img src="${LOGO_URL}" width="32" height="32" alt=""
+                       style="display:block;width:32px;height:32px;border:0;outline:none;text-decoration:none;" />
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
         <tr>

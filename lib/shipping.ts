@@ -58,6 +58,30 @@ import { LEAD_TIME_DAYS } from "./site";
     see the block above before changing it. */
 export const SHIP_WINDOW_PHRASE = `about ${LEAD_TIME_DAYS} days`;
 
+/* ============================================================
+   THE RANGE, added 2026-08-06 at the owner's instruction for the
+   confirmation email ("our lead time is 90-120 days").
+
+   LEAD_TIME_DAYS REMAINS THE ONLY PROMISE. The lower bound is an
+   expectation, not a commitment: 16 CFR 435.2 turns on the shipping time
+   stated at the point of sale, and that is the upper bound. Shipping on
+   day 118 is on time; there is no obligation attached to the 90.
+
+   Derived rather than written as a literal pair so the two numbers
+   cannot drift apart. If LEAD_TIME_DAYS moves, the range moves with it
+   and the site and the email keep saying the same thing.
+
+   DO NOT ADVERTISE THE LOWER BOUND ALONE. "Ships in 90 days" on a
+   marketing surface is a stated time of 90 days, and then day 91 owes a
+   revised-date notice. The range belongs next to the upper bound or not
+   at all.
+   ============================================================ */
+export const LEAD_TIME_MIN_DAYS = LEAD_TIME_DAYS - 30;
+
+/** "90 to 120 days". Spelled "to" rather than an en dash: rendered copy
+    in this project carries zero em/en dashes (commit df48982). */
+export const LEAD_TIME_RANGE_PHRASE = `${LEAD_TIME_MIN_DAYS} to ${LEAD_TIME_DAYS} days`;
+
 /** Milliseconds in a day. Named because `86400000` in an expression is
     how off-by-one date bugs get past review. */
 const DAY_MS = 86_400_000;
@@ -99,6 +123,37 @@ export function formatShipDate(date: Date): string {
     year: "numeric",
     timeZone: "UTC",
   }).format(date);
+}
+
+/**
+ * Soft form of a promised date: "Early December 2026".
+ *
+ * Chosen by the owner 2026-08-06 over the exact date, to feel less like
+ * a hard commitment in the confirmation email.
+ *
+ * WHAT THIS COSTS, recorded so it is not re-litigated from scratch: a
+ * month-part is a vaguer stated shipping time than a date, and vaguer
+ * evidence in a "goods not received" dispute. It does NOT reduce the
+ * obligation under 16 CFR 435.2 -- a stated window is still a stated
+ * window, and the exact `promised_ship_date` remains on the order row.
+ * So the seller keeps the duty and gives up some of the proof.
+ *
+ * THE PRECISE DATE MUST STILL BE USED where it does work: internal
+ * queries, the day-150 refund deadline, and the delay notice, which has
+ * to name the original date it is revising.
+ *
+ * Thirds of the month, not "beginning/middle/end" by week, because week
+ * boundaries move against the calendar and readers do not think in them.
+ */
+export function formatShipEstimate(date: Date): string {
+  const day = date.getUTCDate();
+  const part = day <= 10 ? "Early" : day <= 20 ? "Mid" : "Late";
+  const monthYear = new Intl.DateTimeFormat("en-GB", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+  return `${part} ${monthYear}`;
 }
 
 /**
