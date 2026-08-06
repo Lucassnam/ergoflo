@@ -20,12 +20,26 @@
   },
 
   "vars": {
-    // A SUBDOMAIN sender. Do not move this to the apex: ergoflo.tech
-    // already carries MX for Namecheap Private Email and an SPF record
-    // scoped to that host, and hello@ergoflo.tech is the address /privacy
-    // publishes for data deletion. See §5 of
-    // docs/plans/2026-08-06-transactional-email.md.
-    "MAIL_FROM": "ErgoFlo <orders@send.ergoflo.tech>",
+    // The APEX domain ergoflo.tech is what is verified in Resend
+    // (confirmed 2026-08-06 by sending from it). Any address on it works.
+    //
+    // send.ergoflo.tech is NOT a separate verified domain -- it is the
+    // return-path subdomain Resend creates as part of the apex setup, and
+    // sending from it returns 403 "domain is not verified". An earlier
+    // version of this file had orders@send.ergoflo.tech here and would
+    // have failed on the first real order.
+    //
+    // hello@ and not orders@ because hello@ is a mailbox that demonstrably
+    // receives mail -- /privacy publishes it as the data-deletion address.
+    // Whether orders@ has a mailbox or alias behind the Namecheap MX is
+    // unknown, and these emails tell the buyer to "just reply". A From
+    // address whose replies bounce is worse than no reply invitation.
+    //
+    // The apex SPF was NOT touched by the Resend setup: Resend puts its
+    // own SPF on send.ergoflo.tech for the return path, so the Namecheap
+    // record serving the mailbox is intact. Do not add a second v=spf1
+    // record to the apex -- one SPF record per domain, or it permerrors.
+    "MAIL_FROM": "ErgoFlo <hello@ergoflo.tech>",
     "MAIL_REPLY_TO": "hello@ergoflo.tech"
   },
 
