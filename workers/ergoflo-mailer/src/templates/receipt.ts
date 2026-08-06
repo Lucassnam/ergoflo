@@ -73,7 +73,7 @@ export function renderReceipt(order: PreorderRow): RenderedEmail {
   const total = formatMoney(order.amount_cents, order.currency);
   const paidOn = formatPaidDate(order.created_at);
   const productName =
-    order.terms_snapshot?.product_name ?? `${BRAND} FlowPack V1 panel`;
+    order.terms_snapshot?.product_name ?? `${BRAND} Flopack V1 panel`;
 
   /* No em dash, per the house rule from commit df48982. */
   const subject = `Receipt for your ${BRAND} order, ${ref}`;
