@@ -47,6 +47,13 @@ interface Env {
   STRIPE_WEBHOOK_SECRET: string;
   SUPABASE_URL: string;
   SUPABASE_SECRET_KEY: string;
+  /* Optional. When both are set, a paid order pokes the mailer Worker so
+     the confirmation goes out in seconds instead of waiting for the next
+     scheduled drain. Absent, everything still works -- the cron picks the
+     rows up on its next pass. Never make these required: a missing env
+     var must not be able to stop an order being recorded. */
+  MAILER_URL?: string;
+  MAILER_SHARED_SECRET?: string;
 }
 
 /* Crockford base32 without I, L, O, U — removes the character pairs a
@@ -184,6 +191,10 @@ interface StripeShipping {
 export async function onRequestPost(context: {
   request: Request;
   env: Env;
+  /* Pages Functions provide this. Optional in the type because the local
+     wrangler dev shim has been inconsistent about it, and a missing
+     waitUntil must degrade to "ping synchronously" rather than throw. */
+  waitUntil?: (promise: Promise<unknown>) => void;
 }): Promise<Response> {
   const { request, env } = context;
 
@@ -413,6 +424,28 @@ export async function onRequestPost(context: {
           detail?.code ?? enqueue.status
         );
       }
+    }
+    /* ---- Poke the mailer so the buyer gets their email in seconds.
+       WHY THIS IS FIRE-AND-FORGET, AND MUST STAY THAT WAY:
+       Stripe wants a fast 2xx and retries anything else. If this call
+       were awaited and the Worker were slow or down, the webhook would
+       be slow or fail, and Stripe would redeliver an order that was
+       already recorded correctly. The email is not worth risking the
+       order record for.
+
+       waitUntil lets the response return immediately while the request
+       finishes in the background. If the ping never lands, the Worker's
+       scheduled drain sends the same rows on its next pass -- this is a
+       latency optimisation, not a delivery mechanism. */
+    if (env.MAILER_URL && env.MAILER_SHARED_SECRET) {
+      const ping = fetch(`${env.MAILER_URL.replace(/\/$/, "")}/run`, {
+        method: "POST",
+        headers: { "x-mailer-secret": env.MAILER_SHARED_SECRET },
+      }).catch(() => {
+        /* Swallowed on purpose. A failed ping is invisible to the buyer
+           and self-heals on the next drain. */
+      });
+      if (context.waitUntil) context.waitUntil(ping);
     }
   } else {
     console.error("[/api/stripe-webhook] no order id, confirmation not queued");

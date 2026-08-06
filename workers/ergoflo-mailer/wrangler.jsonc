@@ -12,11 +12,20 @@
   "compatibility_date": "2024-06-20",
 
   "triggers": {
-    // 15:00 UTC daily — mid-morning US, so a confirmation that misses its
-    // immediate POST /run still arrives at a reasonable hour rather than
-    // at 3am local. Cron Triggers execute on UTC and take up to 15
-    // minutes to propagate after a change.
-    "crons": ["0 15 * * *"]
+    // Every 15 minutes. This is a SAFETY NET, not the delivery path:
+    // the Stripe webhook pings POST /run the moment an order is recorded,
+    // so a confirmation normally goes out in seconds. This catches
+    // anything that ping missed (Worker cold, deploy in progress, network
+    // blip) and drains retry backoff.
+    //
+    // It was daily at 15:00 UTC, which meant a buyer checking out at
+    // 16:00 waited 23 hours for their confirmation if the ping failed.
+    // Fine for a day-30 update, useless for a checkout email.
+    //
+    // 1440/15 = 96 invocations a day, nowhere near the Workers free
+    // limit. Cron Triggers run on UTC and take up to 15 minutes to
+    // propagate after a change.
+    "crons": ["*/15 * * * *"]
   },
 
   "vars": {
