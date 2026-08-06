@@ -25,9 +25,8 @@ export const metadata: Metadata = {
    cannot afford to confuse.
 
    THE 26 dB TARGET IS THE WEAK POINT NOW. It was set against a single
-   axial fan. Two blowers at equal airflow are louder, and principle 02
-   on this page makes quietness a gate the product must clear. Measure
-   it before that claim is ever firmed up.
+   axial fan. Two blowers at equal airflow are louder. Measure it before
+   that claim is ever firmed up.
 
    CLAIMS NOTE 2026-07-29: this page previously narrated battery
    certification work (UN38.3, IEC 62133) as though it were underway,
@@ -44,11 +43,6 @@ const PRINCIPLES = [
   },
   {
     num: "02",
-    title: "Quiet or it doesn’t ship",
-    body: "If you can hear the fan you turn it off, and then you have paid extra for a foam pad. 26 dB is the gate the design has to clear. Two prototypes were abandoned because you could plainly hear them across a room.",
-  },
-  {
-    num: "03",
     title: "Targets labelled as targets",
     body: "26 dB, 168 g, 4-6 hours: every one of those is a design target we have not measured, and we label it that way everywhere it appears. We would rather you trusted the number we publish after we have actually taken it.",
   },
@@ -103,8 +97,8 @@ export default function About() {
               back</span>.
             </h1>
             <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-fg-dim sm:text-[19px]">
-              Straps became adjustable, fabrics became waterproof, frames got
-              lighter. The surface actually pressed against your spine, the one
+              Straps became adjustable, frames got lighter. The surface
+              actually pressed against your spine, the one
               that decides whether you arrive comfortable, is still a slab of
               closed-cell foam. It does nothing.
             </p>
@@ -149,7 +143,7 @@ export default function About() {
               What we hold to
             </h2>
           </Reveal>
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
+          <div className="mt-12 grid gap-4 md:grid-cols-2">
             {PRINCIPLES.map((p, i) => (
               <Reveal key={p.num} delay={i * 0.08}>
                 <div className="rim h-full rounded-2xl bg-surface-2 p-7">

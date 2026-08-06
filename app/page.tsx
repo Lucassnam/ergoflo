@@ -7,7 +7,6 @@ import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 import PreorderButton from "@/components/PreorderButton";
 import PricingSection from "@/components/PricingSection";
-import EarlyBirdBadge from "@/components/EarlyBirdBadge";
 import Link from "next/link";
 import {
   DEV_STAGE,
@@ -127,8 +126,6 @@ export default function Home() {
               {DEV_STAGE}. Shipping included. Preorders are final, and
               refundable in full only if we miss the window.
             </p>
-            {/* Increase framing only — see components/EarlyBirdBadge.tsx. */}
-            <EarlyBirdBadge className="mx-auto mt-4 max-w-md text-center" />
           </Reveal>
 
           <Reveal delay={0.1}>

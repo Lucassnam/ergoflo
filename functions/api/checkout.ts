@@ -46,22 +46,9 @@ interface Env {
    hardcoded false. It is not a mirror and is not meant to agree. */
 const PREORDERS_ENABLED = false;
 
-/* Two-tier pricing, mirroring lib/site.ts as of 2026-08-06.
-
-   UNLIKE the Next app, this file runs on a real server at request time,
-   so it can pick the tier from the actual clock instead of from build
-   time. If route B is ever switched on, this is the authoritative price
-   and it is correct on both sides of the deadline without a redeploy.
-
-   The framing rule travels with the numbers: this is a price INCREASE,
-   never a discount off $70. See the long block in lib/site.ts. */
-const PRICE_CENTS = 7000;
-const EARLY_BIRD_PRICE_CENTS = 4999;
-const EARLY_BIRD_ENDS = "2026-08-11T06:59:59Z";
-
-function currentPriceCents(now: number = Date.now()): number {
-  return now < Date.parse(EARLY_BIRD_ENDS) ? EARLY_BIRD_PRICE_CENTS : PRICE_CENTS;
-}
+/* Flat price, mirroring lib/site.ts. The two-tier early-bird scheme was
+   removed 2026-08-06; keep this in step by hand if the price changes. */
+const PRICE_CENTS = 4999;
 
 const CURRENCY = "usd";
 const LEAD_TIME_DAYS = 120;
@@ -206,10 +193,8 @@ export async function onRequestPost(context: {
 
   form.set("line_items[0][quantity]", "1");
   form.set("line_items[0][price_data][currency]", CURRENCY);
-  /* currentPriceCents(), not PRICE_CENTS — this runs per request, so it
-     resolves the tier against the real clock. Still server-side only:
-     the amount is never accepted from the client. */
-  form.set("line_items[0][price_data][unit_amount]", String(currentPriceCents()));
+  /* Server-side only: the amount is never accepted from the client. */
+  form.set("line_items[0][price_data][unit_amount]", String(PRICE_CENTS));
   form.set("line_items[0][price_data][product_data][name]", PRODUCT_NAME);
   form.set(
     "line_items[0][price_data][product_data][description]",

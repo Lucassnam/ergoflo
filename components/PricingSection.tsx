@@ -64,7 +64,7 @@ const CONCEPTS = [
     ],
   },
   {
-    name: "FlowPack V1",
+    name: "Flopack V1",
     stage: "What we're building first",
     focus: true,
     notifySlug: null,
@@ -88,7 +88,7 @@ const CONCEPTS = [
     price: null,
     description: "A whole pack built around the cooling system.",
     features: [
-      "Everything in FlowPack V1, plus:",
+      "Everything in Flopack V1, plus:",
       "Integrated cable management",
       "Laptop compartment",
       "Weather-resistant exterior",
