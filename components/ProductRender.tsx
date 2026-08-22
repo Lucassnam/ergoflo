@@ -85,7 +85,7 @@ export default function ProductRender() {
           <Reveal delay={0.08}>
             <p className="mt-5 text-[17px] leading-relaxed text-neutral-600">
               {/* Explicit {" "}: the JSX transform swallows the space after a
-                  leading expression here and renders "ErgoFlois". */}
+                  leading expression here and renders "Gustvaneis". */}
               {BRAND}{" "}
               is a single part that goes between your back and the pack
               you already own. A rigid PETG frame holds a sheet of 3D spacer

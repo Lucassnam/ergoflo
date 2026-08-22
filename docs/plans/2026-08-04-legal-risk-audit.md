@@ -146,7 +146,7 @@ risk today, becomes real at scale.** Turn on Stripe Tax before you promote.
 ### H5. AI-generated imagery
 
 Both homepage images are AI-generated (`Gemini_Generated_Image_*`). The
-"student" image shows a **synthetic person** and a backpack with **no ErgoFlo
+"student" image shows a **synthetic person** and a backpack with **no Gustvane
 panel on it**.
 
 Currently mitigated: both carry a badge and an explicit caption, and the
@@ -164,7 +164,7 @@ straightforward FTC deception case.
 
 | # | Risk | Note |
 | --- | --- | --- |
-| M1 | **Trademark.** `ERGOFLO` is a live, incontestable federal reg. (No. 4286129, Class 021 mop handles). Distant class, but an exact character match — and you are now **using the name in commerce on goods**, which is a different posture from a waitlist. | Knock-out search in Class 018/009 before any packaging, logo, or filing spend. |
+| M1 | **Trademark — UNSEARCHED.** The clearance work recorded in earlier audits was run against this project's previous name and does **not** describe `Gustvane`; it has been removed rather than renamed, so no finding here should be read as a known conflict. `Gustvane` has never been cleared, and the site is now **using the name in commerce on goods**, a different posture from a waitlist. | Knock-out search at `tmsearch.uspto.gov` in Classes 018/009/011, plus common-law and marketplace-seller use, before any packaging, logo, filing, or ad spend. |
 | M2 | **26 dB claim.** Set against one axial fan; the design is now two blowers, which are louder at equal airflow. `/about` principle 02 makes quietness a gate the product must clear. | Labelled a target everywhere, so defensible — but measure before firming. |
 | M3 | **"Launching Q2 2027"** on Passive Panel and Complete Backpack — a specific, checkable availability claim on two products with no design work started. Availability claims are the easiest FTC deception cases to prove. | Nothing is for sale on those, so no Mail Order clock. Update or remove the date if Q2 2027 nears. |
 | M4 | **`/privacy` names "Vercel" as host.** Site moved to Cloudflare Pages (commit 7f92234). Naming the wrong processor in the section whose entire job is naming processors is a CalOPPA accuracy defect. | **Not fixed — my edit was declined earlier.** One-line change; say the word. |
@@ -183,7 +183,7 @@ straightforward FTC deception case.
 - **Build guard:** nothing stops a `buy.stripe.com/test_...` link shipping to
   production, which would render a live-looking buy button that cannot take
   money. Offered, not yet built.
-- **`hello@ergoflo.tech` must actually receive mail.** `/privacy` promises a
+- **`hello@gustvane.com` must actually receive mail.** `/privacy` promises a
   5-business-day answer to deletion requests and `/refunds` promises refunds in
   the same window. A dead mailbox turns both into broken commitments. **Verify
   by sending a real test email today.**
@@ -193,7 +193,7 @@ straightforward FTC deception case.
 ## What I'd actually do, in order
 
 1. **Today, free:** turn on Stripe payment notifications. Send a test email to
-   `hello@ergoflo.tech` and confirm it arrives. Set a day-100 calendar reminder.
+   `hello@gustvane.com` and confirm it arrives. Set a day-100 calendar reminder.
 2. **This week, free:** have a parent/guardian take over the Stripe account and
    set `SELLER_OF_RECORD`. This single action closes C1 and C2 — the two
    highest-probability risks on this list.

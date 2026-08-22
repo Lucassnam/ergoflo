@@ -1,7 +1,7 @@
-# ErgoFlow landing — design & implementation spec
+# Gustvane landing — design & implementation spec
 
 **Date:** 2026-07-24
-**Applies to:** `/Users/coolio_999/Desktop/ergoflowlanding`
+**Applies to:** `/Users/coolio_999/Desktop/gustvanelanding`
 **Stack:** Next.js 16.2.11 (App Router, Turbopack) · React 19.2.4 · Tailwind v4 · Motion 12.42.2
 
 ---
@@ -182,7 +182,7 @@ live in the session scratchpad, not in the repo.
 2. One of the two fans was occluded by the layer above → `GAP > 2·RY`.
 3. Section eyebrow clipped by the sticky header → `pt-16` on the sticky inner.
 4. Dropped space after `{BRAND}` on `/investors` (SSR emitted
-   `ErgoFlow<!-- -->is an…`) → explicit `{" "}`.
+   `Gustvane<!-- -->is an…`) → explicit `{" "}`.
 5. Range input intercepted pointer events, hijacking handle drags.
 6. Drag guard held in state dropped the first `pointermove` of a fast flick.
 7. Straight apostrophes/quotes throughout copy → typographic.

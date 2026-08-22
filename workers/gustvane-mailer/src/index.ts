@@ -1,5 +1,5 @@
 /* ============================================================
-   ergoflo-mailer — a Cloudflare Worker, separate from the Pages project.
+   gustvane-mailer — a Cloudflare Worker, separate from the Pages project.
 
    WHY THIS IS NOT A PAGES FUNCTION. Cron Triggers are a Workers feature:
    they map a cron expression to a `scheduled()` handler
@@ -35,10 +35,10 @@ interface Env {
       drains the outbox, which is a way to make someone else's outage
       into a duplicate-send incident. */
   MAILER_SHARED_SECRET: string;
-  /** e.g. "ErgoFlo <orders@send.ergoflo.tech>". A SUBDOMAIN sender — see
+  /** e.g. "Gustvane <orders@send.gustvane.com>". A SUBDOMAIN sender — see
       the DNS note in docs/plans/2026-08-06-transactional-email.md §5.
       Putting Resend's DKIM on the apex risks the MX that serves
-      hello@ergoflo.tech, which /privacy publishes as the deletion address. */
+      hello@gustvane.com, which /privacy publishes as the deletion address. */
   MAIL_FROM: string;
   MAIL_REPLY_TO: string;
 }

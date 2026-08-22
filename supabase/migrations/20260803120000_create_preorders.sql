@@ -10,7 +10,7 @@
 --
 -- Shipping address IS stored, because you cannot ship without it. It is
 -- personal data: /privacy must keep describing it, and the deletion promise
--- there (5 business days to hello@ergoflo.tech) covers this table too.
+-- there (5 business days to hello@gustvane.com) covers this table too.
 
 create table if not exists public.preorders (
   id uuid primary key default gen_random_uuid(),

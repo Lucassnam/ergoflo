@@ -1,6 +1,6 @@
-# Deploying ErgoFlo — Cloudflare Pages
+# Deploying Gustvane — Cloudflare Pages
 
-**Domain:** `ergoflo.tech` · **Host:** Cloudflare Pages · **TLS:** automatic
+**Domain:** `gustvane.com` · **Host:** Cloudflare Pages · **TLS:** automatic
 
 The site is a **static export**. `next build` writes plain HTML/CSS/JS to `out/`,
 Cloudflare serves it from their CDN, and the one dynamic endpoint runs as a Pages
@@ -91,7 +91,7 @@ every visitor's browser.
 
 Keep the domain registered wherever it is; point it at Cloudflare.
 
-- Pages → Custom domains → add `ergoflo.tech` and `www.ergoflo.tech`.
+- Pages → Custom domains → add `gustvane.com` and `www.gustvane.com`.
 - If the domain is not already on Cloudflare, move its nameservers there (free).
   Cloudflare then issues and renews TLS automatically.
 
@@ -103,7 +103,7 @@ succeeds and silently ships a site with no CSP. The only proof it worked is the
 live response:
 
 ```bash
-curl -sI https://ergoflo.tech | grep -iE 'content-security|strict-transport|x-frame'
+curl -sI https://gustvane.com | grep -iE 'content-security|strict-transport|x-frame'
 ```
 
 If those are missing, `_headers` did not get picked up. It must end up at the root
@@ -175,14 +175,14 @@ good means deleting the stray `~/node_modules`.
 
 ## Still outstanding
 
-- **`hello@ergoflo.tech` does not exist.** It is published on `/privacy` and
+- **`hello@gustvane.com` does not exist.** It is published on `/privacy` and
   `/terms` as the route for data deletion and disputes, and a legal page naming an
   address that bounces is worse than one naming none. Cloudflare Email Routing
   forwards it to an existing inbox for free; sending *as* that address needs an SMTP
   relay configured in Gmail.
 - **HSTS `preload` is asserted** in `public/_headers`. Harmless until you actually
   submit the domain to the browser preload list — but submission is close to
-  irreversible. Don't submit until every `ergoflo.tech` subdomain is HTTPS-only,
+  irreversible. Don't submit until every `gustvane.com` subdomain is HTTPS-only,
   forever.
 - **`public/demo/` is 3.4 MB and unreferenced** by any mounted page — 60% of the
   deployed payload. See the note in the migration summary.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# ErgoFlo landing — deploy / update the EC2 box.
+# Gustvane landing — deploy / update the EC2 box.
 #
 #   ./deploy.sh              pull, rebuild, restart, verify HTTPS
 #   ./deploy.sh bootstrap    one-time: install Docker + clone the repo

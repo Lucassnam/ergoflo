@@ -1,4 +1,4 @@
-# ErgoFlo landing — cPanel deployment re-plan (supersedes the VPS fixes)
+# Gustvane landing — cPanel deployment re-plan (supersedes the VPS fixes)
 
 **Date:** 2026-07-30
 **Supersedes:** the deployment half of `2026-07-30-memory-audit-and-production-hardening.md`
@@ -162,14 +162,14 @@ grep -c "Be first to know" out/notify.html   # expect 1, not 0
 ls -la out/notify.html                       # expect ~21KB, not ~18KB
 
 # 3. Headers actually present once live (the .htaccess check)
-curl -sI https://ergoflo.tech | grep -iE "content-security|strict-transport"
+curl -sI https://gustvane.com | grep -iE "content-security|strict-transport"
 
 # 4. A real signup lands in Supabase
 ```
 
 ## Still outstanding (unchanged, from DEPLOY.md)
 
-- `hello@ergoflo.tech` does not exist. It is published on `/privacy` and `/terms`
+- `hello@gustvane.com` does not exist. It is published on `/privacy` and `/terms`
   as the route for data deletion and disputes.
 - HSTS `preload` is asserted. Do not submit the domain to the preload list until
   every subdomain is permanently HTTPS-only.

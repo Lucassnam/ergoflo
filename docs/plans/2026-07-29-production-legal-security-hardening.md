@@ -1,4 +1,4 @@
-# ErgoFlow — Production, Legal & Security Hardening Plan
+# Gustvane — Production, Legal & Security Hardening Plan
 
 **Date:** 2026-07-29
 **Status:** EXECUTED. Build / lint / typecheck / audit all exit 0.
@@ -24,9 +24,9 @@
 >
 > **The trap to avoid:** adding a fan is NOT a design-around. Under the
 > all-elements rule, practising every element of a claim infringes no matter
-> what else you add. ErgoFlow's likely non-infringement position rests on the
+> what else you add. Gustvane's likely non-infringement position rests on the
 > **adjustable** limitation — its 5 mm spacer-mesh loft is fixed — not on being
-> active. Element 4 is the exposure: ErgoFlow's own copy says "the straps
+> active. Element 4 is the exposure: Gustvane's own copy says "the straps
 > become the suspension."
 >
 > **Why this forced the commerce pivot:** 35 U.S.C. §271(a) makes "offers to
@@ -38,7 +38,7 @@
 > patent, which raises willfulness exposure (§284, up to treble damages; §285
 > fees). A written FTO opinion from a patent attorney is now the highest-value
 > action on this project and the standard defence against willfulness.
-**Repo:** `/Users/coolio_999/Desktop/ergoflowlanding`
+**Repo:** `/Users/coolio_999/Desktop/gustvanelanding`
 **Branch:** `main` @ `bc96253` (22 uncommitted files, incl. the entire `/api/notify` backend)
 
 ---
@@ -191,7 +191,7 @@ a patch bump; see 3.6.
 
 No security headers, no `robots.txt`, no `sitemap.xml`, no `metadataBase` (so OG/Twitter
 URLs resolve relative and break when shared), no OG image, no `not-found.tsx`, no
-`error.tsx`, no `loading` states. `package.json` name is still `ergoflow_scaffold`.
+`error.tsx`, no `loading` states. `package.json` name is still `gustvane_scaffold`.
 
 ---
 
@@ -273,7 +273,7 @@ a working hero, so the plan ships the header set with inline allowed and notes i
 word and I'll do the nonce version instead.
 
 Also add: `metadataBase`, `robots.ts`, `sitemap.ts`, `not-found.tsx`, `error.tsx`,
-`opengraph-image`, and rename `ergoflow_scaffold` → `ergoflow-landing`.
+`opengraph-image`, and rename `gustvane_scaffold` → `gustvane-landing`.
 
 ### 3.6 Dependencies
 
@@ -318,7 +318,7 @@ Also add: `metadataBase`, `robots.ts`, `sitemap.ts`, `not-found.tsx`, `error.tsx
 Node 20 required — `npm run <script>` resolves Node 18 on this machine.
 
 ```bash
-cd /Users/coolio_999/Desktop/ergoflowlanding
+cd /Users/coolio_999/Desktop/gustvanelanding
 node node_modules/next/dist/bin/next build          # echo $? must be 0
 node node_modules/eslint/bin/eslint.js .            # echo $? must be 0
 npx tsc --noEmit                                    # echo $? must be 0
@@ -420,8 +420,8 @@ dead `bloom` class; `next` → 16.2.12; `sharp`/`postcss` pinned via `overrides`
    `PGRST205` five times. The migration in `supabase/migrations/` was never
    applied. **The waitlist — the only function of the site — silently fails
    today.** Apply the migration before anything else.
-2. `CONTACT_EMAIL` is still `hello@ergoflow.com`; `SITE_URL` still
-   `https://ergoflow.com`. Both must be real.
+2. `CONTACT_EMAIL` is still `hello@gustvane.com`; `SITE_URL` still
+   `https://gustvane.com`. Both must be real.
 3. `LEGAL_ADDRESS` is a placeholder. `/terms` and `/privacy` render a visible
    red warning until it is set.
 4. Four `TEAM` roles are `REPLACE_WITH_ROLE`. The `/about` team block is hidden
@@ -442,9 +442,9 @@ dead `bloom` class; `next` → 16.2.12; `sharp`/`postcss` pinned via `overrides`
 4. **Entity timing.** If an LLC is ever formed, form it *before* taking money —
    it does not retroactively cover obligations incurred personally. California
    ~$70 filing + ~$800/yr minimum franchise tax.
-5. ~~**Trademark clearance on "ErgoFlow"** — never searched.~~ **Searched
-   2026-07-30**, and it drove a rename: the brand is now **ErgoFlo** on
-   **ergoflo.tech**, because `ergoflow.com` has been third-party owned since
+5. ~~**Trademark clearance on "Gustvane"** — never searched.~~ **Searched
+   2026-07-30**, and it drove a rename: the brand is now **Gustvane** on
+   **gustvane.com**, because `gustvane.com` has been third-party owned since
    2003. See `docs/plans/2026-07-30-legal-risk-review.md` and the brand note in
    `lib/site.ts`. Still not a clearance search — no Class 018/009 knock-out
    search has been run on the new name.

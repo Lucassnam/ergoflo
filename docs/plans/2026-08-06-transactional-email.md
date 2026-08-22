@@ -97,7 +97,7 @@ Buyer pays on buy.stripe.com  (Route A, unchanged)
           │
           └─► /preorder/success  (URL only, records nothing)
 
-workers/ergoflo-mailer/                              [NEW deployable]
+workers/gustvane-mailer/                              [NEW deployable]
   scheduled()  daily 15:00 UTC
     ├─ drain email_outbox → Resend
     ├─ find orders due a milestone → enqueue
@@ -244,7 +244,7 @@ Required content, all of it:
 | Delay rights, explicit | The 16 CFR 435.2 promise: if we miss that date we email a revised one and you may take a full refund |
 | Who the seller is | `SELLER_OF_RECORD` — **currently `""`**, see §7.2 |
 | Not-a-company notice | `NOT_A_COMPANY_NOTICE`, `lib/site.ts:141` |
-| Reply address | `hello@ergoflo.tech` |
+| Reply address | `hello@gustvane.com` |
 
 The concrete date is the single highest-value element. It is what a buyer checks against in
 four months, and it is the evidence Stripe asks for in a non-receipt dispute.
@@ -276,7 +276,7 @@ immediately rather than waiting for day 120.
 
 Reply-based, not a form. A form means a new public endpoint that mutates shipping addresses,
 which needs a per-order token, rate limiting, and its own abuse surface. At this volume a
-reply to `hello@ergoflo.tech` is better in every respect.
+reply to `hello@gustvane.com` is better in every respect.
 
 ### 3.4 Ship — tracking
 
@@ -356,21 +356,21 @@ damaged before it exists.
 
 Code cannot verify any of this, exactly as `lib/site.ts:237-247` warns about the payment link.
 
-**DNS (`ergoflo.tech`)**
-1. Add Resend's DKIM records on a **subdomain**: `send.ergoflo.tech`. Do not put them on the
+**DNS (`gustvane.com`)**
+1. Add Resend's DKIM records on a **subdomain**: `send.gustvane.com`. Do not put them on the
    apex. The apex already carries MX for Namecheap Private Email
    (`mx1-3-hosting.jellyfish.systems`) and an SPF record scoped to that host
    (`v=spf1 +a +mx +ip4:198.54.114.19 +ip4:198.54.115.145 include:spf.web-hosting.com ~all`).
-   Editing that SPF to add Resend risks breaking receipt of mail at `hello@ergoflo.tech`,
+   Editing that SPF to add Resend risks breaking receipt of mail at `hello@gustvane.com`,
    which `/privacy` publishes as the data-deletion address.
 2. Verify the domain in the Resend dashboard.
-3. Add a DMARC record at `_dmarc.ergoflo.tech` — start `v=DMARC1; p=none; rua=mailto:…`.
+3. Add a DMARC record at `_dmarc.gustvane.com` — start `v=DMARC1; p=none; rua=mailto:…`.
    There is no DMARC record today. Gmail and Yahoo both require one for bulk senders and it
    costs nothing to publish at `p=none`.
-4. Send from `ErgoFlo <orders@send.ergoflo.tech>`, `Reply-To: hello@ergoflo.tech`.
+4. Send from `Gustvane <orders@send.gustvane.com>`, `Reply-To: hello@gustvane.com`.
 
 **Stripe dashboard**
-5. Register the webhook endpoint `https://ergoflo.tech/api/stripe-webhook` for
+5. Register the webhook endpoint `https://gustvane.com/api/stripe-webhook` for
    `checkout.session.completed`. Copy the signing secret (`whsec_…`).
 6. On the Payment Link itself: confirm shipping address collection is on and US-only, that
    terms-of-service acceptance is required and points at `/terms`, and that the price matches
@@ -392,13 +392,13 @@ Code cannot verify any of this, exactly as `lib/site.ts:237-247` warns about the
 | # | Task | Files |
 |---|---|---|
 | 1 | Migration: `preorders` columns, `email_outbox`, `production_updates`, `status` constraint | `supabase/migrations/20260806*.sql` |
-| 2 | Shared email template module — HTML + plaintext, both required | `workers/ergoflo-mailer/src/templates/*.ts` |
-| 3 | Order-number generator | `workers/ergoflo-mailer/src/order-number.ts` |
+| 2 | Shared email template module — HTML + plaintext, both required | `workers/gustvane-mailer/src/templates/*.ts` |
+| 3 | Order-number generator | `workers/gustvane-mailer/src/order-number.ts` |
 | 4 | Extend webhook: order number, promised date, outbox enqueue, 23505 path | `functions/api/stripe-webhook.ts` |
-| 5 | Mailer Worker: `scheduled()` drain + milestone scan + operator nag | `workers/ergoflo-mailer/src/index.ts`, `wrangler.jsonc` |
-| 6 | Resend send function — raw fetch, idempotency key, code-only error logging | `workers/ergoflo-mailer/src/resend.ts` |
-| 7 | Manual trigger endpoint for `shipped` / `delayed` / `cancelled_refunded` | `workers/ergoflo-mailer/src/index.ts` |
-| 8 | Bounce/complaint webhook | `workers/ergoflo-mailer/src/index.ts` |
+| 5 | Mailer Worker: `scheduled()` drain + milestone scan + operator nag | `workers/gustvane-mailer/src/index.ts`, `wrangler.jsonc` |
+| 6 | Resend send function — raw fetch, idempotency key, code-only error logging | `workers/gustvane-mailer/src/resend.ts` |
+| 7 | Manual trigger endpoint for `shipped` / `delayed` / `cancelled_refunded` | `workers/gustvane-mailer/src/index.ts` |
+| 8 | Bounce/complaint webhook | `workers/gustvane-mailer/src/index.ts` |
 | 9 | Operator runbook — how to send a delay notice, write an update, mark shipped | `docs/RUNBOOK-orders.md` |
 | 10 | Test pass under `wrangler` for both deployables | — |
 

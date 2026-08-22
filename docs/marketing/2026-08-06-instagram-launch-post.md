@@ -1,4 +1,4 @@
-# Instagram launch post — ErgoFlo preorder
+# Instagram launch post — Gustvane preorder
 
 **Date:** 2026-08-06
 **Status:** Draft, ready to post pending the three gates in §5.
@@ -19,7 +19,7 @@ file is the source of truth. If a number here disagrees with it, this file is wr
 ## 0. The one decision that shapes the whole post
 
 Every competing product post on Instagram makes a confident performance claim.
-ErgoFlo cannot: nothing has been built, nothing has been bench-tested, and
+Gustvane cannot: nothing has been built, nothing has been bench-tested, and
 `TARGETS_DISCLAIMER` says so on every page. Fighting that constraint produces a
 weak, hedge-filled post.
 
@@ -95,7 +95,7 @@ single cyan accent (`#0891b2`), Baskerville-style serif for headlines.
 - Closing line: *"We'd rather you read this before you order than after."*
 
 **Slide 6 — the ask**
-- Headline: *"Preorder at ergoflo.tech"*
+- Headline: *"Preorder at gustvane.com"*
 - Body:
   - Free shipping, United States only
   - We aim to ship in about 120 days
@@ -116,7 +116,7 @@ Every backpack company solved back sweat by adding more mesh and hoping.
 
 We added a fan.
 
-ErgoFlo is a thin panel that sits between your back and the pack you already
+Gustvane is a thin panel that sits between your back and the pack you already
 own. Two blower fans push air along a channel, so the air actually moves
 instead of sitting there being trapped by a wall of foam.
 
@@ -135,7 +135,7 @@ pack riding against your spine. Preorders are final, with three exceptions:
 we miss the window, we abandon the project, or it shows up damaged. Any of
 those and you get your money back.
 
-ergoflo.tech — link in bio.
+gustvane.com — link in bio.
 ```
 
 **Hashtags** (first comment, not the caption — keeps the caption clean and the
@@ -165,11 +165,11 @@ auto-generated alt text will not describe a render correctly):
 
 ## 4. Conventions this doc establishes
 
-Reuse these in every future ErgoFlo marketing asset.
+Reuse these in every future Gustvane marketing asset.
 
 | Convention | Value | Why |
 |---|---|---|
-| Link | `https://ergoflo.tech/preorder?src=ig` | Attribution. Harmless under `output: "export"` — the param is ignored by the app. **Currently inert:** no analytics is installed, so nothing reads it yet. Keep using it so the data exists when analytics does. |
+| Link | `https://gustvane.com/preorder?src=ig` | Attribution. Harmless under `output: "export"` — the param is ignored by the app. **Currently inert:** no analytics is installed, so nothing reads it yet. Keep using it so the data exists when analytics does. |
 | Every number carries its condition | "25°F — target, panel surface" never bare "25°F" | Matches `HERO_STATS[].note` in `lib/site.ts`. A bare number off-site contradicts the site. |
 | Pre-production imagery carries the render disclaimer | On the asset itself, not just the caption | Same rule as `components/ProductRender.tsx`. |
 | Never name a competitor in social copy | — | The site names Vaucluse under `TRADEMARK_NOTICE`. A social post has no room for that notice, and the unresolved patent question (§5.2) makes a public side-by-side the worst possible place to start. |
@@ -199,7 +199,7 @@ Three outcomes:
 - **Wait until the pricing change ships**, then use the variant in §6.
 
 **Recommendation: remove the price from slide 6, keep it in the caption only.**
-Slide 6 becomes "Preorder at ergoflo.tech · Free shipping, US only · ~120 days".
+Slide 6 becomes "Preorder at gustvane.com · Free shipping, US only · ~120 days".
 
 ### 5.2 Patent exposure widens — **flag, not a blocker**
 
@@ -235,7 +235,7 @@ imagery in the lower right. Before it runs as advertising, confirm which it is:
   paid or promotional social use.
 - **Licensed stock** → check whether the licence covers social advertising.
 
-Either way there is **no ErgoFlo product in that photo**, so the slide must not
+Either way there is **no Gustvane product in that photo**, so the slide must not
 imply the pack is wearing one. The current slide-1 copy doesn't.
 
 ---

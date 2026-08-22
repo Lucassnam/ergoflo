@@ -184,12 +184,12 @@ overridden them. They are not fixed.
    act of infringement on its own; nothing has to ship for liability to attach.
    Vaucluse Gear holds **US 11,779,097** (granted 2023, expires ~2042) covering
    a modular spacer that creates airflow between a user and a wearable bag via
-   extension loops a strap passes through. ErgoFlo has had **no
+   extension loops a strap passes through. Gustvane has had **no
    freedom-to-operate opinion**. Publishing a definite product at a definite
    price is precisely the act §271(a) reaches. Adding a fan is not a
    design-around — under the all-elements rule, practising every element of a
    claim infringes regardless of what is added. The plausible distinction is
-   that claim 1 requires an *adjustable* gap and ErgoFlo's 5 mm spacer-mesh loft
+   that claim 1 requires an *adjustable* gap and Gustvane's 5 mm spacer-mesh loft
    is fixed. That is an attorney's call.
 2. **Capacity.** `lib/site.ts` records both operators as under 18. A minor's
    contracts are voidable (Cal. Family Code §6710), and Stripe's ToS requires
@@ -212,7 +212,7 @@ requires, in order:
 3. `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` set as Cloudflare Pages
    environment variables (never in the repo).
 4. Webhook endpoint registered in the Stripe dashboard against
-   `https://ergoflo.tech/api/stripe-webhook` for `checkout.session.completed`.
+   `https://gustvane.com/api/stripe-webhook` for `checkout.session.completed`.
 5. `SELLER_OF_RECORD` in `lib/site.ts` set to the adult's legal name, and
    `/terms` re-read end to end with that name in place.
 

@@ -13,8 +13,8 @@
      node node_modules/typescript/bin/tsc --strict --target ES2022 \
        --module commonjs --moduleResolution node --lib ES2022,DOM \
        --types node --skipLibCheck --outDir /tmp/prev \
-       workers/ergoflo-mailer/src/preview.ts
-     node /tmp/prev/workers/ergoflo-mailer/src/preview.js ./out-dir
+       workers/gustvane-mailer/src/preview.ts
+     node /tmp/prev/workers/gustvane-mailer/src/preview.js ./out-dir
 
    Exits non-zero if the dash check fails, so it works in a hook.
    ============================================================ */

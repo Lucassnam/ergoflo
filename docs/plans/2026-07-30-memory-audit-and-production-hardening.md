@@ -1,4 +1,4 @@
-# ErgoFlo landing — memory audit & production hardening
+# Gustvane landing — memory audit & production hardening
 
 **Date:** 2026-07-30
 **Trigger:** Site crashed on a Namecheap host with a 1 GB memory limit.
@@ -190,7 +190,7 @@ node scratchpad/load.js 12000    # repeat 5x, print RSS between runs
 for i in $(seq 1 20); do
   curl -s -o /dev/null -w '%{http_code} ' -H 'Content-Type: application/json' \
     -H "X-Forwarded-For: 10.0.0.$i" -d '{"email":"a@b.co"}' \
-    https://ergoflo.tech/api/notify
+    https://gustvane.com/api/notify
 done
 ```
 

@@ -18,8 +18,8 @@ import Reveal from "@/components/Reveal";
         a testimonial is quoted alongside them.
 
      2. THE PRODUCT IS NOT IN IT. The pack in the image is an ordinary
-        backpack with no ErgoFlo panel visible. So this image CANNOT be
-        captioned "a student using ErgoFlo" — that would be a false
+        backpack with no Gustvane panel visible. So this image CANNOT be
+        captioned "a student using Gustvane" — that would be a false
         statement about a product that has never been built, on the same
         page as a buy button.
 
@@ -82,7 +82,7 @@ export default function StudentCarry() {
               </strong>{" "}
               The person is not real and is not a customer. The pack shown is
               an ordinary backpack with no {""}
-              ErgoFlo panel fitted to it, because no unit has been built yet.
+              Gustvane panel fitted to it, because no unit has been built yet.
               This image shows the situation the product is designed for, not
               the product in use.
             </figcaption>

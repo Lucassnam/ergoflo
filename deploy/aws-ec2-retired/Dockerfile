@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ============================================================
-# ErgoFlo landing — production image.
+# Gustvane landing — production image.
 #
 # Three stages so the shipped image contains no source, no dev
 # dependencies and no build toolchain: deps → builder → runner.
