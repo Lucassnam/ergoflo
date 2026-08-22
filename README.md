@@ -8,10 +8,14 @@ sale, no price is published and no payment is taken — see the commerce note in
 > **The brand is `Gustvane`, on `gustvane.com`.** The brand string lives only
 > in `BRAND` (`lib/site.ts`).
 >
-> The GitHub repo is still named `ergoflow-landing` and the clone URL below
-> reflects that — it is the working URL. Renaming the repo on GitHub is the
-> repo owner's call and breaks every collaborator's `origin` until they update
-> it, so it has deliberately not been done as part of the rename.
+> The GitHub repo is currently `Lucassnam/ergoflo` and still carries the old
+> name. Renaming it to `gustvane` is done in GitHub repo settings, not from
+> this codebase — GitHub redirects the old URL afterwards, but every
+> collaborator should still update their `origin`:
+>
+> ```bash
+> git remote set-url origin https://github.com/Lucassnam/gustvane.git
+> ```
 >
 > **Trademark clearance on `Gustvane` has not been run.** See the brand note
 > in `lib/site.ts` before spending anything on the name.
@@ -37,8 +41,8 @@ Don't create a config file — it won't be read.
 Requires **Node 20.9 or newer** (`node -v` to check).
 
 ```bash
-git clone https://github.com/Lucassnam/ergoflow-landing.git
-cd ergoflow-landing
+git clone https://github.com/Lucassnam/ergoflo.git
+cd ergoflo
 npm install
 npm run dev
 ```
