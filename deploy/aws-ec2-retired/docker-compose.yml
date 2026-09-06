@@ -1,5 +1,5 @@
 # ============================================================
-# ErgoFlo landing — production stack on EC2.
+# Gustvane landing — production stack on EC2.
 #
 #   caddy  :80 :443  — public edge, automatic Let's Encrypt TLS
 #   web    :3000     — Next.js standalone server, internal only
@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ergoflo-web:latest
+    image: gustvane-web:latest
     restart: unless-stopped
     # SUPABASE_URL, SUPABASE_SECRET_KEY, ACME_EMAIL.
     # Not `environment:` — that would put secrets in this committed file.

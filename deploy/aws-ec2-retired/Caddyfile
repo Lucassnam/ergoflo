@@ -1,5 +1,5 @@
 # ============================================================
-# ErgoFlo landing — Caddy reverse proxy, ergoflo.tech
+# Gustvane landing — Caddy reverse proxy, gustvane.com
 #
 # TLS IS AUTOMATIC. There is no certificate path in this file and there
 # should never be one. Caddy sees a public hostname in a site block and
@@ -8,7 +8,7 @@
 #
 # The three things that make that work, all of which live outside this
 # file — if HTTPS fails, it is one of these, in this order:
-#   1. DNS: A records for BOTH ergoflo.tech and www.ergoflo.tech must
+#   1. DNS: A records for BOTH gustvane.com and www.gustvane.com must
 #      resolve to this server's public IP. Let's Encrypt resolves the
 #      name itself; a hosts-file entry or a proxied/orange-cloud
 #      Cloudflare record will not do.
@@ -41,12 +41,12 @@
 # If you decide not to create a www DNS record, DELETE this whole block.
 # Leaving it in place with no A record means Caddy retries a doomed
 # certificate order forever and logs an error every few minutes.
-www.ergoflo.tech {
-	redir https://ergoflo.tech{uri} permanent
+www.gustvane.com {
+	redir https://gustvane.com{uri} permanent
 }
 
 # --- the site ---------------------------------------------------------
-ergoflo.tech {
+gustvane.com {
 	encode zstd gzip
 
 	# `web` is the compose service name, resolved on the internal

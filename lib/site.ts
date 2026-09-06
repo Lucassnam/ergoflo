@@ -1,16 +1,27 @@
 /* ============================================================
    SITE CONFIG — single source of truth.
 
-   CONTACT_EMAIL and SITE_URL are both set to the real ergoflo.tech
-   domain as of 2026-07-30. Two things still have to be true off-site:
-     1. hello@ergoflo.tech must actually receive mail. /privacy promises
+   CONTACT_EMAIL and SITE_URL point at gustvane.com, the domain the
+   project moved to when the brand was renamed to Gustvane. The domain
+   is registered, but NONE of the off-site plumbing has been moved yet.
+
+   ─── DO NOT DEPLOY THIS UNTIL ALL FOUR ARE TRUE. ───
+     1. hello@gustvane.com must actually receive mail. /privacy promises
         a 5-business-day answer to deletion requests at that address and
         /terms promises 30 days on disputes — those are the only two
         enforceable promises on the site, so a dead mailbox is a broken
-        legal commitment, not a cosmetic gap.
-     2. A records for ergoflo.tech AND www.ergoflo.tech must point at
+        legal commitment, not a cosmetic gap. This mailbox did not exist
+        when the rename landed.
+     2. A records for gustvane.com AND www.gustvane.com must point at
         the deploy host, or Caddy cannot issue a certificate. See the
         header of ./Caddyfile.
+     3. The Resend sender domain must be re-verified for
+        send.gustvane.com. Until it is, the mailer Worker cannot send:
+        order confirmations to people who have already paid stop.
+     4. The live Stripe payment link still shows the OLD brand on the
+        checkout page it renders. Stripe owns that copy, not this repo —
+        update it in the Stripe dashboard or buyers see one name here
+        and a different one at the moment they enter card details.
    No postal address is published on purpose — see the identity note.
    Nothing else in the codebase hardcodes these two values.
 
@@ -38,9 +49,8 @@
    Read the commerce block below and
    docs/plans/2026-08-03-preorder-commerce.md before changing any of it.
 
-   BRAND is settled: one word, capital E, capital F — "ErgoFlo".
-   Renamed from "ErgoFlow" on 2026-07-30. Read the brand note below the
-   identity block before changing it again.
+   BRAND is "Gustvane", one word, capital G. Read the brand note below
+   the identity block before changing it again.
 
    ─── CLAIMS RULE, READ BEFORE EDITING ANY NUMBER ───
    As of 2026-07-29 NOTHING on this product has been bench-measured and
@@ -56,47 +66,40 @@
    or Lanham Act problem.
    ============================================================ */
 
-export const BRAND = "ErgoFlo";
+export const BRAND = "Gustvane";
 
 /* ============================================================
-   BRAND NAME — "ErgoFlo", set 2026-07-30. Was "ErgoFlow".
+   BRAND NAME — "Gustvane". Chosen by the owners; the earlier name was
+   dropped for trademark and domain-availability reasons, both of which
+   are now moot and are deliberately not restated here.
 
-   The rename happened because ergoflow.com is not available: it has
-   been registered to a third party since 2003-12-09 and serves a parked
-   resale lander. No email on that domain could ever be reached, which
-   mattered because CONTACT_EMAIL is the address /privacy publishes for
-   data-deletion requests and /terms publishes for disputes.
+   ─── TRADEMARK CLEARANCE ON "GUSTVANE" HAS NOT BEEN DONE. ───
+   This is an OPEN item, not a settled one. The clearance research that
+   existed in this file covered the PREVIOUS name only; none of it
+   carries over, and none of its findings describe "Gustvane". Treat
+   this name as unsearched.
 
-   TWO THINGS THAT WERE KNOWN AND ACCEPTED WHEN THIS NAME WAS CHOSEN.
-   Do not treat either as an open discovery:
+   The site is in commerce on real goods, which is the posture where
+   trademark exposure actually matters — using a mark in commerce on
+   goods is a different risk profile from a waitlist page that sells
+   nothing. Before any filing, packaging run, logo spend, or paid
+   advertising, run a knock-out search at tmsearch.uspto.gov across the
+   word itself, phonetic equivalents and obvious misspellings, in
+   International Classes 018 and 009 (and 011 for the cooling function).
+   Check common-law use too — a federal register search alone does not
+   surface unregistered marks that can still block you.
 
-     1. `ERGOFLO` is a LIVE federal registration — USPTO Reg. 4286129,
-        Serial 85661701, filed 2012-06-26, registered 2013-02-05,
-        Sections 8 & 15 accepted 2018-11-30 (so it is incontestable).
-        Goods: mop handles, International Class 021. That is a distant
-        class from a backpack accessory (Class 018 / 009), so
-        coexistence is arguable — but it is an EXACT character match,
-        which "ErgoFlow" was not. Registering ERGOFLO federally for this
-        product is not a sure thing.
-     2. `ergofló` is an existing consumer product name (Perfect Fit,
-        an enema/douche system sold on Amazon). It is a Class 010
-        medical device, so not a legal conflict, but it is what shares
-        the name in consumer search results.
-
-   These WERE tolerable while this was a waitlist page that sold
-   nothing. As of 2026-08-03 the site takes orders, which raises the
-   stakes on both: an exact-character match to a live incontestable mark
-   matters more once you are using the name in commerce on goods. Run a
-   knock-out search at tmsearch.uspto.gov in Class 018 and 009 before
-   filing anything, and before any packaging or logo spend.
+   Nobody involved here is a trademark lawyer. If the search turns up
+   anything close, get an actual clearance opinion before spending money
+   on the name.
    ============================================================ */
 
-/** On ergoflo.tech, the domain the deploy stack in ./Caddyfile serves. */
-export const CONTACT_EMAIL = "hello@ergoflo.tech";
+/** On gustvane.com, the domain the deploy stack in ./Caddyfile serves. */
+export const CONTACT_EMAIL = "hello@gustvane.com";
 
 /** No trailing slash. Must match the site block in ./Caddyfile exactly —
     OG/Twitter cards, the sitemap and robots.txt all derive from it. */
-export const SITE_URL = "https://ergoflo.tech";
+export const SITE_URL = "https://gustvane.com";
 
 /* ---------------- identity ---------------- */
 
@@ -104,7 +107,7 @@ export const SITE_URL = "https://ergoflo.tech";
    NO BUSINESS ENTITY IS CLAIMED. Changed 2026-07-29.
 
    This block previously declared "Lucas Nam, sole proprietor, doing
-   business as ErgoFlo". That was removed once it became clear that
+   business as Gustvane". That was removed once it became clear that
    BOTH people building this are under 18.
 
    Why the site now asserts no structure at all:
@@ -182,14 +185,14 @@ export const TAGLINE = "Active cooling for the pack you already own.";
       US 11,779,097 (granted 2023, expires ~2042) covering a modular
       spacer device that creates airflow between a user and a wearable
       bag, attaching via extension loops that a strap passes through.
-      ErgoFlo has NOT had a freedom-to-operate opinion. Publishing a
+      Gustvane has NOT had a freedom-to-operate opinion. Publishing a
       definite product at a definite price is the exact act §271(a)
       reaches. THIS RISK IS NOW LIVE ON THE SITE.
 
    Adding a fan is NOT a design-around. Under the all-elements rule,
    practising every element of a claim infringes regardless of what else
    you add. The likely distinction is that claim 1 requires the panel gap
-   to be ADJUSTABLE via modular supports, and ErgoFlo's 5mm spacer-mesh
+   to be ADJUSTABLE via modular supports, and Gustvane's 5mm spacer-mesh
    loft is fixed. That is a question for a patent attorney, not this file.
 
    NOTHING KEEPS THIS SAFE TODAY. This paragraph used to read "WHAT KEEPS
@@ -629,7 +632,7 @@ export const LEGAL_NAV = [
 
 /* ---------------- team ---------------- */
 
-/** The people who build ErgoFlo.
+/** The people who build Gustvane.
 
     NO ROLES, NO TITLES, NO OWNERSHIP — deliberate, 2026-07-29.
     Both are minors and no business entity exists, so the site names who

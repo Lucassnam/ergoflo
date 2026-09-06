@@ -35,11 +35,11 @@
     relative path against. Served from public/logo.png by the Pages
     deploy. If the domain ever moves, this moves with it.
 
-    alt is deliberately EMPTY (alt="") rather than "ErgoFlo": the
+    alt is deliberately EMPTY (alt="") rather than "Gustvane": the
     wordmark sits beside it as live text, so alt text here would make a
     screen reader announce the brand twice. Empty alt is the correct
     markup for a decorative image, not an oversight. */
-const LOGO_URL = "https://ergoflo.tech/logo.png";
+const LOGO_URL = "https://gustvane.com/logo.png";
 
 /** Near-black on white. Mirrors the site's light theme without importing
     Tailwind tokens, which do not exist in an email context. */
@@ -89,7 +89,7 @@ export function renderShell({
                  and would otherwise draw the source at 512px. -->
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td align="left" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.01em;color:${FG};vertical-align:middle;">ErgoFlo</td>
+                <td align="left" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.01em;color:${FG};vertical-align:middle;">Gustvane</td>
                 <td align="right" style="vertical-align:middle;">
                   <img src="${LOGO_URL}" width="32" height="32" alt=""
                        style="display:block;width:32px;height:32px;border:0;outline:none;text-decoration:none;" />

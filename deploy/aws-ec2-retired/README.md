@@ -3,7 +3,7 @@
 **This is not how the site is deployed. Nothing in this folder runs.**
 It is kept only so the EC2 setup can be reconstructed if it is ever needed again.
 
-ErgoFlo now deploys to **Cloudflare Pages** as a static export. See `docs/DEPLOY.md`.
+Gustvane now deploys to **Cloudflare Pages** as a static export. See `docs/DEPLOY.md`.
 
 ## Why it was retired — 2026-07-30
 

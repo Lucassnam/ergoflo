@@ -1,4 +1,4 @@
-# Plan: ErgoFlow landing page — batch of small changes
+# Plan: Gustvane landing page — batch of small changes
 
 Date: 2026-07-27
 Status: awaiting approval

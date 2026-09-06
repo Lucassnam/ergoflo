@@ -1,29 +1,28 @@
-# ErgoFlow — Legal Risk Review (2026-07-30)
+# Gustvane — Legal Risk Review (2026-07-30)
 
-> ## UPDATE, same day — the brand is now `ErgoFlo` on `ergoflo.tech`
+> ## SUPERSEDED IN PART — the brand is now `Gustvane` on `gustvane.com`
 >
-> This review was written while the brand was **ErgoFlow** and is kept in its
-> original wording as the record of why the name changed. Acted on immediately:
+> This review was written under an earlier brand name. Everything it says
+> about **the name and the domain** describes that earlier name and does
+> **not** describe `Gustvane`. Read those parts as a record of a decision
+> already taken, not as findings about the current brand.
 >
-> - **Finding 1 (`ergoflow.com` not owned) — RESOLVED.** `BRAND` is now
->   `ErgoFlo`, `SITE_URL` is `https://ergoflo.tech` and `CONTACT_EMAIL` is
->   `hello@ergoflo.tech`, matching the site block in `./Caddyfile`.
->   **Still owed off-site:** the mailbox has to actually receive mail, and A
->   records for `ergoflo.tech` *and* `www.ergoflo.tech` must point at the deploy
->   host. As of 2026-07-30 `ergoflo.tech` resolves to `198.54.115.19`
->   (registrar parking), not to an EC2 instance — so TLS issuance will fail
->   until DNS is repointed. See the header of `./Caddyfile`.
-> - **Finding 2 (name in use by others) — CHANGED, NOT ELIMINATED.** `ErgoFlo`
->   trades a near-match for an **exact** match against a live, incontestable
->   federal registration: `ERGOFLO`, USPTO Reg. 4286129, Serial 85661701,
->   Class 021 (mop handles), §§8 & 15 accepted 2018-11-30. Class 021 is distant
->   from a backpack accessory (Class 018 / 009), so coexistence is arguable and
->   this is not a blocker for a page that sells nothing. Separately, `ergofló`
->   is an existing consumer product (Perfect Fit, an enema/douche system on
->   Amazon, Class 010) — no legal conflict, but it shares the name in consumer
->   search. Both were known and accepted when the name was chosen. Run a
->   knock-out search in Classes 018 and 009 at `tmsearch.uspto.gov` before
->   filing anything or paying for packaging.
+> - **Finding 1 (domain not owned) — RESOLVED.** `gustvane.com` is
+>   registered. `BRAND` is `Gustvane`, `SITE_URL` is `https://gustvane.com`,
+>   `CONTACT_EMAIL` is `hello@gustvane.com`.
+>   **Still owed off-site, and blocking deploy:** the mailbox must actually
+>   receive mail; A records for `gustvane.com` *and* `www.gustvane.com` must
+>   point at the deploy host or TLS issuance fails; the Resend sender domain
+>   must be re-verified for `send.gustvane.com` or order confirmations to
+>   paying customers stop going out. See the header of `lib/site.ts`.
+> - **Finding 2 (name in use by others) — VOID, AND NOT YET REDONE.** The
+>   trademark analysis in this document was run against the earlier name.
+>   None of it transfers. **`Gustvane` has never been cleared.** Any USPTO
+>   registration numbers, classes or coexistence arguments appearing below
+>   belong to the old name and must not be read as describing this one.
+>   Run a fresh knock-out search at `tmsearch.uspto.gov` in Classes 018,
+>   009 and 011 — plus common-law use — before filing, packaging spend or
+>   paid advertising.
 > - Findings 3–7 are **unchanged and still open.** The rename did not touch
 >   `/terms` §11, the three "ready to order" strings, the arbitration clause,
 >   the published minors' names, or the patent position.
@@ -38,7 +37,7 @@ money on a real attorney and what to fix yourself for free.
 **Scope reviewed:** every rendered string on `/`, `/about`, `/notify`, `/terms`,
 `/privacy`; `lib/site.ts`; `app/api/notify/route.ts`; the Supabase migration;
 git secret hygiene; the 20 hero images; public domain-registration records; and
-public trademark search results for "ErgoFlow".
+public trademark search results for "Gustvane".
 
 **Bottom line:** the *copy* is in good shape — better than most funded startups.
 The 2026-07-29 hardening pass did real work and I found no false product claims
@@ -80,89 +79,54 @@ Verified by reading the rendered output, not the comments:
 
 ---
 
-## HIGH — 1. You do not own `ergoflow.com`, and you probably cannot get it
+## VOID — 1. Domain ownership
 
-**This is the finding that matters most, and it is new.**
+**This finding is resolved and its original content has been removed.**
 
-Public registry data (Verisign RDAP, checked 2026-07-30):
+It described a domain-ownership problem with a name this project no longer
+uses. `gustvane.com` is registered to the project, so the finding does not
+apply. The original wording named specific registration dates, registrars
+and resale valuations for a *different* domain; leaving it in place under
+the current name would have asserted things about `gustvane.com` that are
+simply untrue.
 
-```
-ERGOFLOW.COM
-  registration:  2003-12-09
-  expiration:    2026-10-02
-  last changed:  2024-09-27
-  registrar:     GoDaddy.com, LLC
-```
-
-It resolves, and it serves a 114-byte stub that redirects to `/lander` — the
-signature of a **parked domain held for resale**. Someone has been sitting on
-it for 22 years and renewing it.
-
-Consequences, in order of how much they hurt:
-
-1. **`CONTACT_EMAIL = "hello@ergoflow.com"` is undeliverable mail to a stranger's
-   domain.** Your privacy policy promises: email this address and we will tell
-   you what we hold, delete it, correct it, export it, within 5 business days.
-   Your Terms promise: email this address first and we ask for 30 days.
-   **Those are the only two enforceable promises on the entire site, and both
-   currently route to a mailbox you do not control.** A privacy policy with a
-   dead rights-request address is worse than no policy — it is a written,
-   dated, unkept commitment. This is the single highest-value fix on the list
-   and it costs nothing.
-2. `SITE_URL = "https://ergoflow.com"` feeds `metadataBase`, `sitemap.ts` and
-   `robots.ts`. Every canonical URL and share card currently points at a
-   squatter's lander.
-3. A 2003-registered one-word `.com` on the aftermarket is realistically
-   four to five figures. Budget zero for it.
-
-**Fix now:** pick a domain you can actually register (`ergoflow.io`,
-`getergoflow.com`, `ergoflowpanel.com`, or a different name entirely — see the
-next finding), then set `CONTACT_EMAIL` and `SITE_URL` in `lib/site.ts`. Those
-are the only two places either value is hardcoded.
+What survives from it is the operational checklist, which is now in the
+header of `lib/site.ts` and still blocks deploy: mailbox live, A records
+repointed, Resend sender domain re-verified.
 
 ---
 
-## HIGH — 2. "ErgoFlow" is already in commercial use by other people
+## OPEN — 2. Trademark clearance on "Gustvane" has never been run
 
-The project plan lists trademark clearance as off-site item 5, "never searched."
-I searched. It is not clean.
+**The previous version of this section has been deleted rather than
+renamed.** It recorded a public-search pass against the project's earlier
+name and listed specific third-party sellers, domains, foreign retailers
+and a USPTO registration number. None of those findings describe
+"Gustvane". Carrying them over under the new name would have manufactured
+a record of trademark conflicts that were never found for this name — the
+kind of document that is actively harmful to have on file, because a
+future reader (or an opposing party) would take it as your own knowledge
+of a conflict.
 
-Live commercial uses of the exact or near-exact name found in one pass:
+The accurate current position is short:
 
-| Who | What | Why it matters |
-|---|---|---|
-| ErgoFlow (Amazon seller, ASIN B0F7X66XVZ) | "ErgoFlow Gel Wrist Rest Mouse Pad", ergonomic desk accessory | **Closest conflict.** Consumer ergonomic body-contact accessory sold online — arguably related goods to a body-contact backpack panel |
-| ergoflow.ca | ergonomics / usable design | same word, adjacent field |
-| ergoflowmethod.com | workflow consulting, NYC/NJ/SF | services, further away |
-| ErgoFlow Office Chair (ZA retailer) | seating | foreign, ergonomic seating |
-| Shimano "Ergo Flow" | bicycle component technology | large company, sporting goods, two words |
-| ERGOFLO — USPTO Reg. 4286129 | mop handles; pseudo-mark recorded as "ERGO FLO; **ERGO FLOW**" | wrong class, but USPTO has already indexed "ERGO FLOW" as a phonetic equivalent of a registered mark |
+- **"Gustvane" has not been searched.** Not federally, not for common-law
+  use, not for domain or marketplace-seller collisions.
+- The site **is in commerce on real goods**, which is the posture where
+  trademark exposure actually bites. That was not true when the earlier
+  search was run against a page that sold nothing.
+- Nothing has been spent on the name yet — no packaging, no logo run, no
+  paid advertising. That makes right now the cheapest possible moment to
+  find a problem.
 
-**Honest limits on this search:** I could not query USPTO TSDR or Trademarkia
-directly — both blocked automated requests (403 / Cloudflare). So I cannot tell
-you whether a federal `ERGOFLOW` registration or a pending application exists in
-the relevant class. **Treat this as "found conflicts in 10 minutes of public
-search", not as a clearance search.**
+**Do before spending anything on the name:** a free knock-out search at
+`tmsearch.uspto.gov` covering the word itself, phonetic equivalents and
+obvious misspellings, in International Classes 018, 009 and 011. Search
+marketplace sellers and domain registrations separately — the federal
+register does not surface unregistered common-law use, which can still
+block you. If anything close turns up, get a real clearance opinion.
 
-What the risk actually is — and is not:
-
-- Nobody is going to sue a high-school waitlist page. The realistic harm is
-  **later**: you build an audience, a logo, a domain and a following on a name,
-  and then a Section 2(d) likelihood-of-confusion refusal, an Amazon brand
-  complaint, or a cease-and-desist forces a rename. Rebranding is expensive
-  precisely because it happens after the name has value.
-- You cannot register `ErgoFlow` federally with confidence while a seller of
-  ergonomic consumer accessories is already using it in commerce.
-- "Ergo" + a flow/air word is the single most crowded naming space in this
-  category. That is the real signal: the name is generic enough that five
-  unrelated parties independently landed on it.
-
-**Recommendation, bluntly: change the name now, while it costs you nothing but
-a find-and-replace.** `BRAND` lives in exactly one place (`lib/site.ts:31`), so
-the code cost is one line. Pick something with a clear `.com` and no existing
-seller. Then do a free knock-out search on the new name at
-`tmsearch.uspto.gov` before committing (search the word, phonetic equivalents,
-and the relevant class — 09/18/22 depending on how it is described).
+Nobody who worked on this document is a lawyer.
 
 ---
 
@@ -196,7 +160,7 @@ affects people on the waitlist, we will say so in the email we send."
 The pivot missed these:
 
 - `app/notify/page.tsx:8` — metadata description: "Get an email the moment the
-  next ErgoFlow product is **ready to order**."
+  next Gustvane product is **ready to order**."
 - `app/notify/page.tsx:36-37` — body copy, both branches: "we'll let you know
   the moment ... is **ready to order**."
 - `components/ProductRender.tsx:54-55` — "the product **you receive** will not

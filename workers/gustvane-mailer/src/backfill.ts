@@ -297,8 +297,8 @@ async function main() {
       ] as const) {
         const r2 = await sendEmail({
           apiKey: resendKey,
-          from: "ErgoFlo <hello@ergoflo.tech>",
-          replyTo: "hello@ergoflo.tech",
+          from: "Gustvane <hello@gustvane.com>",
+          replyTo: "hello@gustvane.com",
           to: _order.email,
           email,
           idempotencyKey: `backfill-${id}-${kind}`,

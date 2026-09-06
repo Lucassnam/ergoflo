@@ -1,4 +1,4 @@
-# ErgoFlo — Product Requirements Document
+# Gustvane — Product Requirements Document
 
 **Status:** Draft v1.0 — **PARTIALLY SUPERSEDED, see the warning below**
 **Date:** 2026-07-24 (brand name updated 2026-07-30)
@@ -14,16 +14,14 @@
 > - `docs/plans/2026-07-30-legal-risk-review.md` — brand, domain and remaining
 >   legal findings.
 >
-> **Brand name — CHANGED 2026-07-30. The name is `ErgoFlo`.** One word, capital
-> E, capital F, no trailing "w". It was **ErgoFlow** from 2026-07-24 until
-> 2026-07-30; the rename happened because `ergoflow.com` has been registered to
-> a third party since 2003 and could never be obtained, which left the site's
-> published legal-contact address pointing at a domain nobody here controls.
-> "Ergo Float", "Ergo Flow" (two words) and "Ergo Blow" remain dead. The name
-> lives in exactly one place in the codebase — `BRAND` in `lib/site.ts`.
-> Known and accepted: `ERGOFLO` is a live federal registration for mop handles
-> (Class 021), and `ergofló` is an unrelated consumer product. See the brand
-> note in `lib/site.ts` before filing any trademark application.
+> **Brand name — the name is `Gustvane`.** One word, capital G. The domain is
+> `gustvane.com`. The name lives in exactly one place in the codebase —
+> `BRAND` in `lib/site.ts`.
+>
+> **Trademark status: unsearched.** The clearance notes that used to sit here
+> were about an earlier name and have been removed rather than renamed — none
+> of their findings describe `Gustvane`. Read the brand note in `lib/site.ts`
+> before any filing, packaging, logo or ad spend.
 
 ---
 
@@ -167,7 +165,7 @@ rather than dropping the visitor on a broken Stripe page.
 1. ~~**Paste the live Stripe Payment Link** into `STRIPE_LINK`.~~ **Void as of
    2026-07-29** — `STRIPE_LINK` was deleted and commerce removed entirely. Do
    not reinstate it without a freedom-to-operate opinion on US 11,779,097.
-2. **Make `hello@ergoflo.tech` actually receive mail.** The constant is set
+2. **Make `hello@gustvane.com` actually receive mail.** The constant is set
    (2026-07-30), but the mailbox must exist: `/privacy` promises a
    5-business-day reply to deletion requests there and `/terms` promises 30 days
    on disputes.

@@ -9,7 +9,7 @@
 #
 # Verify after every deploy — it is the only way to know this file was
 # picked up:
-#   curl -sI https://ergoflo.tech | grep -iE 'content-security|strict-transport'
+#   curl -sI https://gustvane.com | grep -iE 'content-security|strict-transport'
 #
 # Anything in public/ is copied to out/ by the export, and Cloudflare
 # Pages reads _headers from the root of the deployed directory.
@@ -36,7 +36,7 @@
   # is safe. `preload` is a one-way door: once the domain is submitted to
   # the browser preload list, removal takes months and ships with the
   # browser. The header is harmless until you actually submit it — don't,
-  # until every ergoflo.tech subdomain is permanently HTTPS-only.
+  # until every gustvane.com subdomain is permanently HTTPS-only.
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   # frame-ancestors 'none' above is the modern clickjacking defence; this

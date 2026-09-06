@@ -49,9 +49,9 @@ export default function LegalPage({
         <h1 className="mt-4 headline text-[clamp(2rem,5vw,3rem)] text-black">
           {title}
         </h1>
-        {/* LEGAL_ENTITY already begins with the brand name ("ErgoFlo, a
+        {/* LEGAL_ENTITY already begins with the brand name ("Gustvane, a
             student project by ..."), so do not prefix it with BRAND again —
-            that rendered as "Applies to ErgoFlo, operated by ErgoFlo, a
+            that rendered as "Applies to Gustvane, operated by Gustvane, a
             student project by ...". */}
         <p className="mt-4 text-[13.5px] text-neutral-500">
           Last updated {lastUpdated} · {LEGAL_ENTITY}

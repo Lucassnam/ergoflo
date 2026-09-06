@@ -1,4 +1,4 @@
-# ergoflo-mailer
+# gustvane-mailer
 
 Transactional email for preorders. A **separate Cloudflare Worker**, not part of the Pages
 project — Cron Triggers require a Worker `scheduled()` handler and Pages has no scheduled
@@ -35,19 +35,19 @@ Adds `order_number`, `promised_ship_date`, `address_confirmed_at` and `terms_sna
 
 ### 2. Resend + DNS — ALREADY DONE
 
-Verified 2026-08-06 by sending from it. `ergoflo.tech` (the **apex**) is the verified domain,
+Verified 2026-08-06 by sending from it. `gustvane.com` (the **apex**) is the verified domain,
 so any address on it can send. Records in place:
 
 | Record | Value |
 |---|---|
-| `resend._domainkey.ergoflo.tech` TXT | DKIM public key |
-| `send.ergoflo.tech` TXT | `v=spf1 include:amazonses.com ~all` |
-| `send.ergoflo.tech` MX | `feedback-smtp.us-east-1.amazonses.com` |
-| `_dmarc.ergoflo.tech` TXT | `v=DMARC1; p=none;` |
+| `resend._domainkey.gustvane.com` TXT | DKIM public key |
+| `send.gustvane.com` TXT | `v=spf1 include:amazonses.com ~all` |
+| `send.gustvane.com` MX | `feedback-smtp.us-east-1.amazonses.com` |
+| `_dmarc.gustvane.com` TXT | `v=DMARC1; p=none;` |
 
-**`send.ergoflo.tech` is not a second domain.** It is the return-path subdomain Resend
+**`send.gustvane.com` is not a second domain.** It is the return-path subdomain Resend
 creates as part of apex verification. Sending *from* an address on it returns 403. An
-earlier version of `wrangler.jsonc` had `orders@send.ergoflo.tech` as `MAIL_FROM` and would
+earlier version of `wrangler.jsonc` had `orders@send.gustvane.com` as `MAIL_FROM` and would
 have failed on the first real order.
 
 Two things to leave alone:
@@ -56,12 +56,12 @@ Two things to leave alone:
   serving the Namecheap mailbox. Resend did not touch it because its own SPF lives on the
   return-path subdomain. Never add a second `v=spf1` record to the apex — one per domain, or
   SPF permerrors and deliverability drops for the mailbox too.
-- **`MAIL_FROM = hello@ergoflo.tech`.** Not `orders@`. `hello@` demonstrably receives mail
+- **`MAIL_FROM = hello@gustvane.com`.** Not `orders@`. `hello@` demonstrably receives mail
   (`/privacy` publishes it as the deletion address); whether `orders@` has a mailbox behind
   the Namecheap MX is unknown, and these emails tell the buyer to "just reply".
 
 Worth improving: the DMARC record has no `rua=`, so nobody receives aggregate reports.
-`v=DMARC1; p=none; rua=mailto:hello@ergoflo.tech` costs nothing and shows who is sending as
+`v=DMARC1; p=none; rua=mailto:hello@gustvane.com` costs nothing and shows who is sending as
 you.
 
 ### How a live order becomes an email
@@ -89,7 +89,7 @@ slow.
 ### 3. Deploy the Worker
 
 ```sh
-cd workers/ergoflo-mailer
+cd workers/gustvane-mailer
 npx wrangler secret put SUPABASE_URL
 npx wrangler secret put SUPABASE_SECRET_KEY
 npx wrangler secret put RESEND_API_KEY
@@ -104,7 +104,7 @@ a secret and must never be committed.
 
 This is what makes any of it fire. Dashboard → Developers → Webhooks → add endpoint:
 
-- URL: `https://ergoflo.tech/api/stripe-webhook`
+- URL: `https://gustvane.com/api/stripe-webhook`
 - Event: `checkout.session.completed`
 - Copy the signing secret (`whsec_…`) into the **Pages** project env as
   `STRIPE_WEBHOOK_SECRET` (not this Worker).
@@ -118,7 +118,7 @@ On the **Pages** project (not the Worker), add two more environment variables:
 
 | Name | Value |
 |---|---|
-| `MAILER_URL` | `https://ergoflo-mailer.<your-subdomain>.workers.dev` |
+| `MAILER_URL` | `https://gustvane-mailer.<your-subdomain>.workers.dev` |
 | `MAILER_SHARED_SECRET` | the same value you set as a Worker secret in step 3 |
 
 Both optional. Without them orders are still recorded and still emailed — just on the cron's
@@ -153,8 +153,8 @@ through an imported constant that a source grep never sees.
 # from the repo root
 node node_modules/typescript/bin/tsc --strict --target ES2022 --module commonjs \
   --moduleResolution node --lib ES2022,DOM --types node --skipLibCheck \
-  --outDir /tmp/prev workers/ergoflo-mailer/src/preview.ts
-node /tmp/prev/workers/ergoflo-mailer/src/preview.js ./email-preview
+  --outDir /tmp/prev workers/gustvane-mailer/src/preview.ts
+node /tmp/prev/workers/gustvane-mailer/src/preview.js ./email-preview
 ```
 
 Exits non-zero on failure, so it works as a pre-commit hook. Sample data is in
@@ -178,7 +178,7 @@ stripe trigger checkout.session.completed
 The Worker:
 
 ```sh
-cd workers/ergoflo-mailer
+cd workers/gustvane-mailer
 npx wrangler dev --test-scheduled
 curl "http://localhost:8787/cdn-cgi/handler/scheduled"
 ```
@@ -203,7 +203,7 @@ adding it means editing the site's `package.json`. Until it is, use the command 
 Force a drain rather than waiting for 15:00 UTC:
 
 ```sh
-curl -X POST https://ergoflo-mailer.<subdomain>.workers.dev/run \
+curl -X POST https://gustvane-mailer.<subdomain>.workers.dev/run \
   -H "x-mailer-secret: <MAILER_SHARED_SECRET>"
 ```
 

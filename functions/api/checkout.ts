@@ -53,7 +53,7 @@ const PRICE_CENTS = 4999;
 const CURRENCY = "usd";
 const LEAD_TIME_DAYS = 120;
 
-const PRODUCT_NAME = "ErgoFlo Active Fan panel — preorder";
+const PRODUCT_NAME = "Gustvane Active Fan panel — preorder";
 /* Shown on the Stripe Checkout page and on the card statement descriptor
    suffix. The buyer sees this at the moment of payment, so the unbuilt
    status and the ship window belong here, not only on our own page. */

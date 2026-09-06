@@ -1,4 +1,4 @@
-# ErgoFlo — Custom Asset Shot List
+# Gustvane — Custom Asset Shot List
 
 **Date:** 2026-07-24
 **For:** white-product / white-site redesign + scroll-driven exploded view

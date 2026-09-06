@@ -385,7 +385,7 @@ export async function onRequestPost(context: {
   /* ---- Enqueue the confirmation email. -----------------------------
      NOT a send. This handler must return 2xx or Stripe retries, and a
      provider outage must not put a paid order at risk. Writing a row
-     here and letting workers/ergoflo-mailer drain it makes the order and
+     here and letting workers/gustvane-mailer drain it makes the order and
      the email independently retryable.
 
      A failure to enqueue does NOT fail the webhook. The order is
