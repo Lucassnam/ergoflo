@@ -1,6 +1,6 @@
 import Link from "next/link";
 import PreorderButton from "@/components/PreorderButton";
-import { PREORDERS_ENABLED, TAGLINE } from "@/lib/site";
+import { TAGLINE } from "@/lib/site";
 
 /**
  * Opening section. Replaced the scroll-morph hero (20 remote photos that
@@ -96,20 +96,7 @@ export default function Hero() {
       />
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center py-20 text-center">
-        <p
-          className="hero-rise inline-flex items-center gap-2.5 rounded-full border border-neutral-200 bg-white/80 px-3.5 py-1.5 font-mono text-[10.5px] tracking-[0.16em] text-neutral-500 uppercase backdrop-blur-sm"
-          style={{ animationDelay: "0ms" }}
-        >
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="hero-ping absolute inline-flex h-full w-full rounded-full bg-cyan" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan" />
-          </span>
-          {PREORDERS_ENABLED
-            ? "In development · preorders open"
-            : "In development · join the waitlist"}
-        </p>
-
-        <h1 className="headline mt-8 text-[clamp(2.9rem,8vw,6rem)] leading-[1.02] text-neutral-950">
+        <h1 className="headline text-[clamp(2.9rem,8vw,6rem)] leading-[1.02] text-neutral-950">
           <span className="hero-rise block" style={{ animationDelay: "90ms" }}>
             Never sweat
           </span>
