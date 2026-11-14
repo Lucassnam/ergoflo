@@ -144,3 +144,64 @@ body {
 }
 
 /* Bloom utility removed - using clean aesthetic without gradients */
+
+/* ---------------- hero ----------------
+   CSS-only motion for components/Hero.tsx, so the opening renders and
+   animates without waiting on JavaScript. The reduced-motion block above
+   collapses all of it: `both` fill keeps the copy at its final, visible
+   state, and the infinite loops stop. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Runs a dash along a path drawn with pathLength=1000. */
+@keyframes hero-flow {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero-flow {
+  animation: hero-flow 10s linear infinite;
+}
+
+@keyframes hero-ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.hero-ping {
+  animation: hero-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes hero-cue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(200%);
+  }
+}
+
+.hero-cue {
+  animation: hero-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
