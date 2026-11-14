@@ -1,4 +1,4 @@
-import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
+import Hero from "@/components/Hero";
 import StatCard from "@/components/StatCard";
 import ExplodedDiagram from "@/components/ExplodedDiagram";
 import ProductRender from "@/components/ProductRender";
@@ -56,7 +56,7 @@ export default function Home() {
       <StructuredData />
 
       {/* ============ HERO ============ */}
-      <ScrollMorphHero />
+      <Hero />
 
       {/* ============ STATS ============ */}
       <section id="problem" className="relative scroll-mt-24 bg-white px-5 py-24 sm:px-8">
